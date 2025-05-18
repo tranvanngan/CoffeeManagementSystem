@@ -15,41 +15,22 @@ namespace CoffeeManagementSystem
         public MainForm()
         {
             InitializeComponent();
-            LoadDashboard();
+            LoadFormCon(new DashboardForm());
         }
-        private void LoadDashboard()
+        private void LoadFormCon(Form formCon)
         {
+         
             // Xóa form con hiện tại nếu có
-            this.panelMain.Controls.Clear();
+            panelMain.Controls.Clear();
 
-            // Khởi tạo và cấu hình form con
-            DashboardForm trangChu = new DashboardForm();
-            trangChu.TopLevel = false;          // Cho phép nhúng vào panel
-            trangChu.FormBorderStyle = FormBorderStyle.None;
-            trangChu.Dock = DockStyle.Fill;
+            // Cấu hình form con
+            formCon.TopLevel = false;
+            formCon.FormBorderStyle = FormBorderStyle.None;
+            formCon.Dock = DockStyle.Fill;
 
-            // Thêm vào panel
-            this.panelMain.Controls.Add(trangChu);
-            trangChu.Show();
-        }
-        private void guna2GradientButton8_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void close_Click_1(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void guna2GradientButton5_Click(object sender, EventArgs e)
-        {
-           
-        }
-
-        private void guna2GradientButton2_Click(object sender, EventArgs e)
-        {
-
+            // Thêm vào panel và hiển thị
+            panelMain.Controls.Add(formCon);
+            formCon.Show();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -67,9 +48,44 @@ namespace CoffeeManagementSystem
 
         }
 
-        private void close_Click(object sender, EventArgs e)
+        private void btnTrangChu_Click(object sender, EventArgs e)
+        {
+            LoadFormCon(new DashboardForm());
+        }
+
+        private void btnKhachHang_Click(object sender, EventArgs e)
+        {
+            LoadFormCon(new CustomerForm());
+        }
+
+        private void btnEmployer_Click(object sender, EventArgs e)
+        {
+            LoadFormCon(new EmployerForm());
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void btnTrangChu_Click_1(object sender, EventArgs e)
+        {
+            LoadFormCon(new DashboardForm());
+        }
+
+        private void btnMenu_Click(object sender, EventArgs e)
+        {
+            LoadFormCon(new DrinksForm());
+        }
+
+        private void btnReport_Click(object sender, EventArgs e)
+        {
+            LoadFormCon(new Report());
+        }
+
+        private void btnSalary_Click(object sender, EventArgs e)
+        {
+            LoadFormCon(new SalaryForm());
         }
     }
 }

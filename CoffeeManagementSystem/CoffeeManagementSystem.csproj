@@ -64,6 +64,12 @@
     <Compile Include="AddUser.Designer.cs">
       <DependentUpon>AddUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Customer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Customer.Designer.cs">
+      <DependentUpon>Customer.cs</DependentUpon>
+    </Compile>
     <Compile Include="DangNhapForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,11 +108,20 @@
     <Compile Include="Report.Designer.cs">
       <DependentUpon>Report.cs</DependentUpon>
     </Compile>
+    <Compile Include="Salary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Salary.Designer.cs">
+      <DependentUpon>Salary.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AddDrink.resx">
       <DependentUpon>AddDrink.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AddUser.resx">
       <DependentUpon>AddUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Customer.resx">
+      <DependentUpon>Customer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DangNhapForm.resx">
       <DependentUpon>DangNhapForm.cs</DependentUpon>
@@ -134,6 +149,9 @@
     </Compile>
     <EmbeddedResource Include="Report.resx">
       <DependentUpon>Report.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Salary.resx">
+      <DependentUpon>Salary.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

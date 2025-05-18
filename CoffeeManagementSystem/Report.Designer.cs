@@ -82,11 +82,13 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblBaoCao = new System.Windows.Forms.Label();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -209,7 +211,7 @@
             this.tabPage4.Controls.Add(this.panel5);
             this.tabPage4.Location = new System.Drawing.Point(4, 25);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(792, 394);
+            this.tabPage4.Size = new System.Drawing.Size(959, 429);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Lợi Nhuận";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -313,7 +315,7 @@
             this.panel5.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel5.Location = new System.Drawing.Point(0, 0);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(792, 51);
+            this.panel5.Size = new System.Drawing.Size(959, 51);
             this.panel5.TabIndex = 3;
             // 
             // dtToGP
@@ -380,7 +382,7 @@
             this.dgvCostofGood.Name = "dgvCostofGood";
             this.dgvCostofGood.RowHeadersVisible = false;
             this.dgvCostofGood.RowHeadersWidth = 51;
-            this.dgvCostofGood.Size = new System.Drawing.Size(792, 343);
+            this.dgvCostofGood.Size = new System.Drawing.Size(959, 378);
             this.dgvCostofGood.TabIndex = 6;
             // 
             // tabControl1
@@ -393,7 +395,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 27);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(800, 423);
+            this.tabControl1.Size = new System.Drawing.Size(967, 458);
             this.tabControl1.TabIndex = 5;
             // 
             // tabPage1
@@ -403,22 +405,21 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(792, 394);
+            this.tabPage1.Size = new System.Drawing.Size(959, 429);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Khách Hàng Tiềm Năng";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // dgvTopSelling
             // 
-            this.dgvTopSelling.AllowUserToAddRows = false;
-            this.dgvTopSelling.AllowUserToDeleteRows = false;
+            this.dgvTopSelling.AllowUserToOrderColumns = true;
             this.dgvTopSelling.AllowUserToResizeColumns = false;
             this.dgvTopSelling.AllowUserToResizeRows = false;
             this.dgvTopSelling.BackgroundColor = System.Drawing.Color.White;
             this.dgvTopSelling.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(205)))), ((int)(((byte)(239)))));
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle3.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -430,14 +431,16 @@
             this.Column1,
             this.Column2,
             this.Column3,
-            this.Column4});
+            this.Column4,
+            this.Column6,
+            this.Column7});
             this.dgvTopSelling.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvTopSelling.EnableHeadersVisualStyles = false;
             this.dgvTopSelling.Location = new System.Drawing.Point(3, 54);
             this.dgvTopSelling.Name = "dgvTopSelling";
             this.dgvTopSelling.RowHeadersVisible = false;
             this.dgvTopSelling.RowHeadersWidth = 51;
-            this.dgvTopSelling.Size = new System.Drawing.Size(786, 337);
+            this.dgvTopSelling.Size = new System.Drawing.Size(953, 372);
             this.dgvTopSelling.TabIndex = 4;
             // 
             // panel2
@@ -449,7 +452,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(786, 51);
+            this.panel2.Size = new System.Drawing.Size(953, 51);
             this.panel2.TabIndex = 0;
             // 
             // dtToTopSelling
@@ -495,7 +498,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(792, 394);
+            this.tabPage2.Size = new System.Drawing.Size(959, 429);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Doanh Thu";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -528,7 +531,7 @@
             this.dgvRevenus.Name = "dgvRevenus";
             this.dgvRevenus.RowHeadersVisible = false;
             this.dgvRevenus.RowHeadersWidth = 51;
-            this.dgvRevenus.Size = new System.Drawing.Size(786, 337);
+            this.dgvRevenus.Size = new System.Drawing.Size(953, 372);
             this.dgvRevenus.TabIndex = 5;
             // 
             // dataGridViewTextBoxColumn1
@@ -565,7 +568,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(3, 3);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(786, 51);
+            this.panel3.Size = new System.Drawing.Size(953, 51);
             this.panel3.TabIndex = 1;
             // 
             // lblRevenus
@@ -631,7 +634,7 @@
             this.tabPage3.Controls.Add(this.panel4);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(792, 394);
+            this.tabPage3.Size = new System.Drawing.Size(959, 429);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Chi Phí";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -647,7 +650,7 @@
             this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(792, 51);
+            this.panel4.Size = new System.Drawing.Size(959, 51);
             this.panel4.TabIndex = 2;
             // 
             // panel1
@@ -657,39 +660,8 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(800, 27);
+            this.panel1.Size = new System.Drawing.Size(967, 27);
             this.panel1.TabIndex = 4;
-            // 
-            // Column4
-            // 
-            this.Column4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Column4.HeaderText = "Email";
-            this.Column4.MinimumWidth = 6;
-            this.Column4.Name = "Column4";
-            this.Column4.Width = 83;
-            // 
-            // Column3
-            // 
-            this.Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Column3.HeaderText = "Số Điện Thoại";
-            this.Column3.MinimumWidth = 6;
-            this.Column3.Name = "Column3";
-            this.Column3.Width = 148;
-            // 
-            // Column2
-            // 
-            this.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Column2.HeaderText = "Họ Tên";
-            this.Column2.MinimumWidth = 6;
-            this.Column2.Name = "Column2";
-            // 
-            // Column1
-            // 
-            this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Column1.HeaderText = "Mã KH";
-            this.Column1.MinimumWidth = 6;
-            this.Column1.Name = "Column1";
-            this.Column1.Width = 96;
             // 
             // lblBaoCao
             // 
@@ -701,11 +673,56 @@
             this.lblBaoCao.TabIndex = 0;
             this.lblBaoCao.Text = "Báo Cáo Doanh Thu";
             // 
+            // Column1
+            // 
+            this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Column1.HeaderText = "Mã KH";
+            this.Column1.MinimumWidth = 6;
+            this.Column1.Name = "Column1";
+            this.Column1.Width = 53;
+            // 
+            // Column2
+            // 
+            this.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column2.HeaderText = "Họ Tên";
+            this.Column2.MinimumWidth = 6;
+            this.Column2.Name = "Column2";
+            // 
+            // Column3
+            // 
+            this.Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Column3.HeaderText = "Số Điện Thoại";
+            this.Column3.MinimumWidth = 6;
+            this.Column3.Name = "Column3";
+            this.Column3.Width = 109;
+            // 
+            // Column4
+            // 
+            this.Column4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Column4.HeaderText = "Email";
+            this.Column4.MinimumWidth = 6;
+            this.Column4.Name = "Column4";
+            this.Column4.Width = 68;
+            // 
+            // Column6
+            // 
+            this.Column6.HeaderText = "Điểm tích lũy";
+            this.Column6.MinimumWidth = 6;
+            this.Column6.Name = "Column6";
+            this.Column6.Width = 125;
+            // 
+            // Column7
+            // 
+            this.Column7.HeaderText = "Ngày đăng ký";
+            this.Column7.MinimumWidth = 6;
+            this.Column7.Name = "Column7";
+            this.Column7.Width = 125;
+            // 
             // Report
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(967, 485);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -788,10 +805,12 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label lblBaoCao;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.Label lblBaoCao;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
     }
 }
