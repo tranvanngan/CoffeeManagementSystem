@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.btnhome = new Guna.UI2.WinForms.Guna2GradientButton();
             this.guna2GradientPanel1 = new Guna.UI2.WinForms.Guna2GradientPanel();
+            this.lblChucvu = new System.Windows.Forms.Label();
             this.btnReport = new Guna.UI2.WinForms.Guna2GradientButton();
             this.guna2CirclePictureBox1 = new Guna.UI2.WinForms.Guna2CirclePictureBox();
             this.guna2GradientButton1 = new Guna.UI2.WinForms.Guna2GradientButton();
@@ -38,8 +39,8 @@
             this.btnMenu = new Guna.UI2.WinForms.Guna2GradientButton();
             this.btnSalary = new Guna.UI2.WinForms.Guna2GradientButton();
             this.btnCustomer = new Guna.UI2.WinForms.Guna2GradientButton();
-            this.add1 = new CoffeeManagementSystem.Add();
-            this.lblChucvu = new System.Windows.Forms.Label();
+            this.close = new System.Windows.Forms.Label();
+            this.panelMain = new System.Windows.Forms.Panel();
             this.guna2GradientPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2CirclePictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -80,6 +81,17 @@
             this.guna2GradientPanel1.Name = "guna2GradientPanel1";
             this.guna2GradientPanel1.Size = new System.Drawing.Size(177, 457);
             this.guna2GradientPanel1.TabIndex = 11;
+            // 
+            // lblChucvu
+            // 
+            this.lblChucvu.AutoSize = true;
+            this.lblChucvu.BackColor = System.Drawing.Color.Transparent;
+            this.lblChucvu.Font = new System.Drawing.Font("Goudy Old Style", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblChucvu.Location = new System.Drawing.Point(64, 62);
+            this.lblChucvu.Name = "lblChucvu";
+            this.lblChucvu.Size = new System.Drawing.Size(50, 16);
+            this.lblChucvu.TabIndex = 13;
+            this.lblChucvu.Text = "Quản lý";
             // 
             // btnReport
             // 
@@ -205,32 +217,33 @@
             this.btnCustomer.Text = "Khách Hàng";
             this.btnCustomer.Click += new System.EventHandler(this.guna2GradientButton2_Click);
             // 
-            // add1
+            // close
             // 
-            this.add1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-            this.add1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.add1.Location = new System.Drawing.Point(177, 0);
-            this.add1.Name = "add1";
-            this.add1.Size = new System.Drawing.Size(667, 457);
-            this.add1.TabIndex = 12;
+            this.close.AutoSize = true;
+            this.close.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.close.Location = new System.Drawing.Point(809, 6);
+            this.close.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.close.Name = "close";
+            this.close.Size = new System.Drawing.Size(22, 23);
+            this.close.TabIndex = 18;
+            this.close.Text = "X";
+            this.close.Click += new System.EventHandler(this.close_Click);
             // 
-            // lblChucvu
+            // panelMain
             // 
-            this.lblChucvu.AutoSize = true;
-            this.lblChucvu.BackColor = System.Drawing.Color.Transparent;
-            this.lblChucvu.Font = new System.Drawing.Font("Goudy Old Style", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblChucvu.Location = new System.Drawing.Point(64, 62);
-            this.lblChucvu.Name = "lblChucvu";
-            this.lblChucvu.Size = new System.Drawing.Size(50, 16);
-            this.lblChucvu.TabIndex = 13;
-            this.lblChucvu.Text = "Quản lý";
+            this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelMain.Location = new System.Drawing.Point(177, 0);
+            this.panelMain.Name = "panelMain";
+            this.panelMain.Size = new System.Drawing.Size(667, 457);
+            this.panelMain.TabIndex = 19;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(844, 457);
-            this.Controls.Add(this.add1);
+            this.Controls.Add(this.panelMain);
+            this.Controls.Add(this.close);
             this.Controls.Add(this.guna2GradientPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MainForm";
@@ -240,6 +253,7 @@
             this.guna2GradientPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2CirclePictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -254,7 +268,8 @@
         private Guna.UI2.WinForms.Guna2CirclePictureBox guna2CirclePictureBox1;
         private Guna.UI2.WinForms.Guna2GradientButton guna2GradientButton1;
         private Guna.UI2.WinForms.Guna2GradientButton btnReport;
-        private Add add1;
         private System.Windows.Forms.Label lblChucvu;
+        private System.Windows.Forms.Label close;
+        private System.Windows.Forms.Panel panelMain;
     }
 }

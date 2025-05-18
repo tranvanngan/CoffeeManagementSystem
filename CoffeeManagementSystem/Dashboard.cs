@@ -10,21 +10,11 @@ using System.Windows.Forms;
 
 namespace CoffeeManagementSystem
 {
-    public partial class Add : UserControl
+    public partial class DashboardForm : Form
     {
-        public Add()
+        public DashboardForm()
         {
             InitializeComponent();
-        }
-
-        private void guna2Button2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Add_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

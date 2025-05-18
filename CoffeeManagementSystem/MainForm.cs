@@ -15,8 +15,23 @@ namespace CoffeeManagementSystem
         public MainForm()
         {
             InitializeComponent();
+            LoadDashboard();
         }
+        private void LoadDashboard()
+        {
+            // Xóa form con hiện tại nếu có
+            this.panelMain.Controls.Clear();
 
+            // Khởi tạo và cấu hình form con
+            DashboardForm trangChu = new DashboardForm();
+            trangChu.TopLevel = false;          // Cho phép nhúng vào panel
+            trangChu.FormBorderStyle = FormBorderStyle.None;
+            trangChu.Dock = DockStyle.Fill;
+
+            // Thêm vào panel
+            this.panelMain.Controls.Add(trangChu);
+            trangChu.Show();
+        }
         private void guna2GradientButton8_Click(object sender, EventArgs e)
         {
 
@@ -50,6 +65,11 @@ namespace CoffeeManagementSystem
         private void guna2GradientPanel2_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void close_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
