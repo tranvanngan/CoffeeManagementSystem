@@ -10,16 +10,11 @@ using System.Windows.Forms;
 
 namespace CoffeeManagementSystem
 {
-    public partial class AddUser : Form
+    public partial class AddDrinkForm : Form
     {
-        public AddUser()
+        public AddDrinkForm()
         {
             InitializeComponent();
-        }
-
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

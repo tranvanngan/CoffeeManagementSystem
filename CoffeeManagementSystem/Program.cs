@@ -16,7 +16,7 @@ namespace CoffeeManagementSystem
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new EmployerForm());
+            Application.Run(new AddDrinkForm());
         }
     }
 }

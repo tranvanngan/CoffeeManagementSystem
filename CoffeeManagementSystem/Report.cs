@@ -10,14 +10,14 @@ using System.Windows.Forms;
 
 namespace CoffeeManagementSystem
 {
-    public partial class AddUser : Form
+    public partial class Report : Form
     {
-        public AddUser()
+        public Report()
         {
             InitializeComponent();
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
+        private void label5_Click(object sender, EventArgs e)
         {
 
         }

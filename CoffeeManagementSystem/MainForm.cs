@@ -17,9 +17,39 @@ namespace CoffeeManagementSystem
             InitializeComponent();
         }
 
-        private void close_Click(object sender, EventArgs e)
+        private void guna2GradientButton8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void close_Click_1(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void guna2GradientButton5_Click(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void guna2GradientButton2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void add1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2GradientPanel2_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
