@@ -46,6 +46,10 @@
             // 
             // btnTrangChu
             // 
+            this.btnTrangChu.Animated = true;
+            this.btnTrangChu.BackColor = System.Drawing.Color.Transparent;
+            this.btnTrangChu.BorderColor = System.Drawing.Color.DarkOrange;
+            this.btnTrangChu.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
             this.btnTrangChu.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             this.btnTrangChu.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.btnTrangChu.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
@@ -61,6 +65,7 @@
             this.btnTrangChu.Size = new System.Drawing.Size(164, 45);
             this.btnTrangChu.TabIndex = 10;
             this.btnTrangChu.Text = "Trang Chủ";
+            this.btnTrangChu.UseTransparentBackground = true;
             this.btnTrangChu.Click += new System.EventHandler(this.btnTrangChu_Click_1);
             // 
             // guna2GradientPanel1

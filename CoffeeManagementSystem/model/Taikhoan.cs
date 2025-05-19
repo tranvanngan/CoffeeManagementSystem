@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+namespace QuanLyCafe.Model
+{
+    public class Taikhoan
+    {
+        [Key]
+        public string Mataikhoan { get; set; }
+        public string Tendangnhap { get; set; }
+        public string Matkhau { get; set; }
+        public string Vaitro { get; set; }
+
+        [ForeignKey("Nhanvien")]
+        public string Manhanvien { get; set; }
+
+        public Nhanvien Nhanvien { get; set; }
+    }
+}

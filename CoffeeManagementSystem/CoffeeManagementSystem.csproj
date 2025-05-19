@@ -37,6 +37,10 @@
       <HintPath>..\packages\Guna.UI2.WinForms.2.0.4.7\lib\net48\Guna.UI2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Management" />
@@ -100,6 +104,19 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="model\Calamviec.cs" />
+    <Compile Include="model\Chamcong.cs" />
+    <Compile Include="model\Chitietdonhang.cs" />
+    <Compile Include="model\Donhang.cs" />
+    <Compile Include="model\Douong.cs" />
+    <Compile Include="model\Giadouong.cs" />
+    <Compile Include="model\Khachhang.cs" />
+    <Compile Include="model\Lichsuluong.cs" />
+    <Compile Include="model\Loaidouong.cs" />
+    <Compile Include="model\Luong.cs" />
+    <Compile Include="model\Nhanvien.cs" />
+    <Compile Include="model\Taikhoan.cs" />
+    <Compile Include="model\Thanhtoan.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Report.cs">
