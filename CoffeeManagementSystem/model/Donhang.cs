@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
-namespace QuanLyCafe.Model
+namespace CoffeeManagementSystem
 {
     public class Donhang
     {

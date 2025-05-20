@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLyCafe.Model
+namespace CoffeeManagementSystem
 {
     public class Lichsuluong
     {

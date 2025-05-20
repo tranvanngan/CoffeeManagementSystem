@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
-namespace QuanLyCafe.Model
+namespace CoffeeManagementSystem
 {
     public class Loaidouong
     {
