@@ -87,6 +87,12 @@
     <Compile Include="AddUser.Designer.cs">
       <DependentUpon>AddUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Calamviec.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calamviec.Designer.cs">
+      <DependentUpon>Calamviec.cs</DependentUpon>
+    </Compile>
     <Compile Include="Customer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,7 +106,10 @@
       <DependentUpon>CustomerInfor.cs</DependentUpon>
     </Compile>
     <Compile Include="DAL\BaseDataAccess.cs" />
+    <Compile Include="DAL\CalamviecDAL.cs" />
+    <Compile Include="DAL\ChamcongDAL.cs" />
     <Compile Include="DAL\KhachHangDAL.cs" />
+    <Compile Include="DAL\NhanvienDAL.cs" />
     <Compile Include="DangNhapForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,6 +156,11 @@
     <Compile Include="model\Thanhtoan.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Report.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -164,6 +178,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddUser.resx">
       <DependentUpon>AddUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Calamviec.resx">
+      <DependentUpon>Calamviec.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Customer.resx">
       <DependentUpon>Customer.cs</DependentUpon>
@@ -187,14 +204,10 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="Report.resx">
       <DependentUpon>Report.cs</DependentUpon>
     </EmbeddedResource>
@@ -214,6 +227,29 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\3bestseller.png" />
+    <None Include="Resources\banner.png" />
+    <Content Include="Resources\BaoCao.png" />
+    <None Include="Resources\BaoCao1.png" />
+    <Content Include="Resources\bestseller.png" />
+    <Content Include="Resources\Cam nhạt đơn giản thức uống banner.png" />
+    <Content Include="Resources\CoffeCover.png" />
+    <None Include="Resources\CoffeCover1.png" />
+    <Content Include="Resources\coffeeshopLogin.jpg" />
+    <Content Include="Resources\DoUong.png" />
+    <None Include="Resources\LuongThuong1.png" />
+    <None Include="Resources\DoUong1.png" />
+    <Content Include="Resources\KhachHang.png" />
+    <None Include="Resources\NhanVien1.png" />
+    <None Include="Resources\KhachHang1.png" />
+    <Content Include="Resources\LuongThuong.png" />
+    <Content Include="Resources\NhanVien.png" />
+    <Content Include="Resources\TrangChu.png" />
+    <None Include="Resources\TrangChu1.png" />
+    <Content Include="Resources\Trắng Xanh Hình Ảnh Hiện Đại Đồng Giá Sale Deal Ưu Đãi Đồ Ăn Thức Uống Banner Ngang.png" />
+    <Content Include="Resources\Đầy Màu Sắc Minh Họa Vui Tươi Hình Ảnh Sale Deal Ưu Đãi Đồ Ăn Thức Uống Banner.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

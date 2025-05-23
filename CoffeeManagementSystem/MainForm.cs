@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guna.UI2.WinForms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Guna.UI2.WinForms; 
 
 namespace CoffeeManagementSystem
 {
@@ -35,7 +37,7 @@ namespace CoffeeManagementSystem
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
+            
         }
 
         private void add1_Load(object sender, EventArgs e)
@@ -86,6 +88,26 @@ namespace CoffeeManagementSystem
         private void btnSalary_Click(object sender, EventArgs e)
         {
             LoadFormCon(new SalaryForm());
+        }
+
+        private void lblQuanLy_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panelMain_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void guna2GradientPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblName_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

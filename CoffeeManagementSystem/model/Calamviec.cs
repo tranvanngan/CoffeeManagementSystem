@@ -15,5 +15,6 @@ namespace CoffeeManagementSystem
         public TimeSpan Thoigianbatdau { get; set; }
         public TimeSpan Thoigianketthuc { get; set; }
         public decimal Sogio { get; set; }
+        public ICollection<Chamcong> Chamcongs { get; set; }
     }
 }

@@ -41,5 +41,15 @@ namespace CoffeeManagementSystem
                 btnAdd.Visible = false;
             
         }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblTong_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

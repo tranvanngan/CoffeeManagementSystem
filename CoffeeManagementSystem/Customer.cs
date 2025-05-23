@@ -21,7 +21,7 @@ namespace CoffeeManagementSystem
             InitializeComponent();
             khachhangDAL = new KhachhangDAL(); // Khởi tạo đối tượng DAL
             //this.txtSearch.KeyDown += new KeyEventHandler(txtSearch_KeyDown);
-
+            LoadDanhSachKhachHang();
             // Gán sự kiện TextChanged cho TextBox tìm kiếm (để tìm khi gõ)
             this.txtSearch.TextChanged += new EventHandler(txtSearch_TextChanged);
         }
@@ -199,5 +199,17 @@ namespace CoffeeManagementSystem
             // }
         }
 
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            FormChitiet formChiTiet = new FormChitiet();
+            // Hiển thị Form Chi Tiết dưới dạng Dialog
+            // formChiTiet.ShowDialog() sẽ dừng thực thi code ở đây cho đến khi FormChiTiet đóng lại
+            if (formChiTiet.ShowDialog() == DialogResult.OK)
+            {
+                // Nếu Form Chi Tiết trả về DialogResult.OK (nghĩa là đã lưu thành công)
+                // Tải lại danh sách khách hàng trên Form chính để hiển thị dữ liệu mới
+                LoadDanhSachKhachHang(); // Gọi lại phương thức tải danh sách khách hàng của Form chính
+            }
+        }
     }
 }
