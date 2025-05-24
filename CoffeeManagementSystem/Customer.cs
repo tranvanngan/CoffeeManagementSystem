@@ -24,6 +24,11 @@ namespace CoffeeManagementSystem
             LoadDanhSachKhachHang();
             // Gán sự kiện TextChanged cho TextBox tìm kiếm (để tìm khi gõ)
             this.txtSearch.TextChanged += new EventHandler(txtSearch_TextChanged);
+            // Gán sự kiện CellClick cho DataGridView (để hiển thị Form Chi Tiết)
+            this.dgvKhachHang.CellClick += new DataGridViewCellEventHandler(dgvKhachHang_CellClick);
+
+            // Gán sự kiện Click cho nút Thêm mới (giả định tên nút là btnAdd)
+            this.btnAdd.Click += new EventHandler(btnAdd_Click); // Đã đổi tên nút
         }
 
         // Sự kiện Form Load: Tải dữ liệu khi Form được hiển thị
@@ -106,97 +111,40 @@ namespace CoffeeManagementSystem
         // Đảm bảo sự kiện CellClick của dgvKhachHang được kết nối trong Designer
         // Sự kiện khi click vào một dòng trong DataGridView
         // Đảm bảo sự kiện CellClick của dgvKhachHang được kết nối trong Designer
+        // Sự kiện khi click vào một dòng trong DataGridView
         private void dgvKhachHang_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             // Kiểm tra xem có phải click vào một dòng dữ liệu hợp lệ không
-            // (Tránh click vào header hoặc các dòng không phải dữ liệu)
-            // Đảm bảo tên control dgvKhachHang khớp
-            if (e.RowIndex >= 0 && e.RowIndex < dgvKhachHang.Rows.Count)
+            // Tránh click vào header hoặc các dòng không phải dữ liệu
+            // Tránh dòng trống thêm mới ở cuối (nếu AllowUserToAddRows là true)
+            if (e.RowIndex >= 0 && e.RowIndex < dgvKhachHang.Rows.Count - (dgvKhachHang.AllowUserToAddRows ? 1 : 0))
             {
-                // Lấy dòng được click
-                DataGridViewRow row = dgvKhachHang.Rows[e.RowIndex];
+                // Lấy đối tượng Khachhang được liên kết với dòng
+                // Đây là cách đáng tin cậy nhất để lấy dữ liệu từ dòng đã chọn
+                Khachhang selectedKhachhang = dgvKhachHang.Rows[e.RowIndex].DataBoundItem as Khachhang;
 
-                // Lấy Mã khách hàng từ dòng được click
-                // Lỗi "Column named Makhachhang cannot be found" xảy ra ở đây.
-                // Điều này có thể do DataGridView đang tìm cột theo tên (Name) thay vì DataPropertyName.
-                // Dựa trên ảnh bạn gửi, tên (Name) của cột Mã khách hàng là "Column1".
-
-                string makhachhang = null;
-
-                try
-                {
-                    // Thử truy cập bằng tên (Name) của cột trong Designer
-                    // Thay "Column1" bằng tên (Name) thực tế của cột Mã khách hàng nếu khác
-                    makhachhang = row.Cells["Column1"].Value?.ToString(); // <-- Sửa lỗi ở đây
-
-                    // Nếu cách trên không hoạt động, bạn có thể thử tìm cột theo DataPropertyName
-                    // DataGridViewColumn maKHColumn = dgvKhachHang.Columns.Cast<DataGridViewColumn>()
-                    //                                     .FirstOrDefault(col => col.DataPropertyName == "Makhachhang");
-                    // if (maKHColumn != null)
-                    // {
-                    //      makhachhang = row.Cells[maKHColumn.Index].Value?.ToString();
-                    // }
-                    // else
-                    // {
-                    //      MessageBox.Show("Cột 'Makhachhang' không được tìm thấy trong DataGridView. Vui lòng kiểm tra cấu hình cột.", "Lỗi cấu hình", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    //      return; // Dừng xử lý nếu không tìm thấy cột
-                    // }
-                }
-                catch (Exception ex)
-                {
-                    // Xử lý lỗi nếu việc truy cập cell bằng tên cột thất bại
-                    MessageBox.Show($"Lỗi khi truy cập cột Mã khách hàng: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return; // Dừng xử lý
-                }
-
-
-                if (!string.IsNullOrEmpty(makhachhang))
+                if (selectedKhachhang != null)
                 {
                     try
                     {
-                        // Lấy thông tin chi tiết khách hàng từ DAL
-                        // Đảm bảo đối tượng khachhangDAL đã được khởi tạo
-                        // Đảm bảo lớp KhachhangDAL được using đúng namespace
-                        Khachhang selectedKhachhang = khachhangDAL.GetKhachhangById(makhachhang);
+                        // Tạo một instance mới của Form Chi Tiết ở chế độ Cập nhật
+                        // Đảm bảo tên lớp Form Chi Tiết của bạn là FormChitiet hoặc CustomerInfor
+                        FormChitiet formChiTiet = new FormChitiet(selectedKhachhang); // Hoặc CustomerInfor formChiTiet = new CustomerInfor(selectedKhachhang);
 
-                        if (selectedKhachhang != null)
+                        // Hiển thị Form Chi Tiết dưới dạng Dialog
+                        if (formChiTiet.ShowDialog() == DialogResult.OK)
                         {
-                            // Tạo một instance mới của Form Chi Tiết ở chế độ Cập nhật
-                            // Đảm bảo tên lớp Form Chi Tiết là CustomerInfor và namespace được using
-                            FormChitiet formChiTiet = new FormChitiet(selectedKhachhang);
-
-                            // Hiển thị Form Chi Tiết dưới dạng Dialog
-                            if (formChiTiet.ShowDialog() == DialogResult.OK)
-                            {
-                                // Nếu Form Chi Tiết trả về DialogResult.OK (nghĩa là đã lưu thành công)
-                                // Tải lại danh sách khách hàng trên Form chính
-                                LoadDanhSachKhachHang();
-                            }
-                            // Nếu DialogResult không phải OK (ví dụ: Cancel), không làm gì
-                        }
-                        else
-                        {
-                            // Nếu GetKhachhangById trả về null (không tìm thấy khách hàng với mã này)
-                            MessageBox.Show($"Không tìm thấy thông tin chi tiết cho khách hàng có mã '{makhachhang}'.", "Lỗi dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            // Nếu Form Chi Tiết trả về DialogResult.OK (nghĩa là đã lưu thành công)
+                            // Tải lại danh sách khách hàng trên Form chính
+                            LoadDanhSachKhachHang();
                         }
                     }
                     catch (Exception ex)
                     {
-                        // Xử lý lỗi khi lấy thông tin chi tiết khách hàng hoặc mở Form
                         MessageBox.Show("Lỗi khi lấy thông tin chi tiết khách hàng hoặc mở Form: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                // else
-                // {
-                //     // Nếu Makhachhang từ dòng được click là rỗng hoặc null (có thể xảy ra với dòng trống cuối cùng)
-                //     // Không làm gì hoặc hiển thị thông báo tùy ý
-                // }
             }
-            // else
-            // {
-            //     // Nếu click vào header hoặc vùng không phải dòng dữ liệu
-            //     // Không làm gì hoặc hiển thị thông báo tùy ý
-            // }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)

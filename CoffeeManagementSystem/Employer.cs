@@ -181,46 +181,32 @@ namespace CoffeeManagementSystem
             LoadFilteredNhanvienData(searchTerm);
         }
 
-        
+
         private void dgvNhanvien_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.RowIndex < dgvNhanvien.Rows.Count)
+            // Kiểm tra xem có phải click vào một dòng dữ liệu hợp lệ không
+            // Tránh click vào header hoặc các dòng không phải dữ liệu
+            // Tránh dòng trống thêm mới ở cuối (nếu AllowUserToAddRows là true)
+            if (e.RowIndex >= 0 && e.RowIndex < dgvNhanvien.Rows.Count - (dgvNhanvien.AllowUserToAddRows ? 1 : 0))
             {
-                DataGridViewRow row = dgvNhanvien.Rows[e.RowIndex];
+                // Lấy đối tượng Nhanvien được liên kết với dòng
+                // Đây là cách đáng tin cậy nhất để lấy dữ liệu từ dòng đã chọn
+                Nhanvien selectedNhanvien = dgvNhanvien.Rows[e.RowIndex].DataBoundItem as Nhanvien;
 
-                // Get employee ID from the clicked row
-                // Ensure the column name "Manhanvien" matches the DataPropertyName or Name of the column in the DGV
-                string manhanvien = null;
-                try
-                {
-                    // Thử truy cập bằng tên (Name) của cột trong Designer
-                    // Thay "Column1" bằng tên (Name) thực tế của cột Mã khách hàng nếu khác
-                    manhanvien = row.Cells["Column1"].Value?.ToString();
-                }
-                catch (Exception ex)
-                {
-                    // Xử lý lỗi nếu việc truy cập cell bằng tên cột thất bại
-                    MessageBox.Show($"Lỗi khi truy cập cột Mã nhân viên: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return; // Dừng xử lý
-                }
-
-                if (!string.IsNullOrEmpty(manhanvien))
+                if (selectedNhanvien != null)
                 {
                     try
                     {
-                        Nhanvien selectedNhanvien = nhanvienDAL.GetNhanvienById(manhanvien);
+                        // Tạo một instance mới của Form Chi Tiết ở chế độ Cập nhật
+                        // Đảm bảo tên lớp Form Chi Tiết của bạn là FormChiTietNhanvien
+                        FormChiTietNhanvien formChiTiet = new FormChiTietNhanvien(selectedNhanvien);
 
-                        if (selectedNhanvien != null)
+                        // Hiển thị Form Chi Tiết dưới dạng Dialog
+                        if (formChiTiet.ShowDialog() == DialogResult.OK)
                         {
-                            FormChiTietNhanvien formChiTiet = new FormChiTietNhanvien(selectedNhanvien);
-                            if (formChiTiet.ShowDialog() == DialogResult.OK)
-                            {
-                                LoadDanhSachNhanvien(); // Reload list after successful update/delete
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show($"Không tìm thấy thông tin chi tiết cho nhân viên có mã '{manhanvien}'.", "Lỗi dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            // Nếu Form Chi Tiết trả về DialogResult.OK (nghĩa là đã lưu thành công)
+                            // Tải lại danh sách nhân viên trên Form chính
+                            LoadDanhSachNhanvien();
                         }
                     }
                     catch (Exception ex)
@@ -230,6 +216,7 @@ namespace CoffeeManagementSystem
                 }
             }
         }
+        
         //private void btnAddCalamviec_Click(object sender, EventArgs e)
         //{
         //    FormChiTietCalamviec formChiTiet = new FormChiTietCalamviec();

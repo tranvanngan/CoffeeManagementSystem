@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CoffeeManagementSystem
 {
-    public class Douong
+    public partial class Douong
     {
         [Key]
         public string Madouong { get; set; }
@@ -20,6 +20,10 @@ namespace CoffeeManagementSystem
         public Loaidouong Loaidouong { get; set; }
         public ICollection<Giadouong> Giadouongs { get; set; }
         public ICollection<Chitietdonhang> Chitietdonhangs { get; set; }
-    }
 
+        // Thêm thuộc tính này để lưu trữ giá hiện tại khi hiển thị
+        // [NotMapped] báo hiệu rằng thuộc tính này không được ánh xạ trực tiếp vào cột CSDL
+        [NotMapped]
+        public decimal CurrentGia { get; set; }
+    }
 }

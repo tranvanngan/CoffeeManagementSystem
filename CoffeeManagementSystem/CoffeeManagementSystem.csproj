@@ -81,6 +81,12 @@
     <Compile Include="AddDrink.Designer.cs">
       <DependentUpon>AddDrink.cs</DependentUpon>
     </Compile>
+    <Compile Include="AddTypeofdrink.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddTypeofdrink.Designer.cs">
+      <DependentUpon>AddTypeofdrink.cs</DependentUpon>
+    </Compile>
     <Compile Include="AddUser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -108,7 +114,10 @@
     <Compile Include="DAL\BaseDataAccess.cs" />
     <Compile Include="DAL\CalamviecDAL.cs" />
     <Compile Include="DAL\ChamcongDAL.cs" />
+    <Compile Include="DAL\DouongDAL.cs" />
+    <Compile Include="DAL\GiadouongDAL.cs" />
     <Compile Include="DAL\KhachHangDAL.cs" />
+    <Compile Include="DAL\LoaidouongDAL.cs" />
     <Compile Include="DAL\NhanvienDAL.cs" />
     <Compile Include="DangNhapForm.cs">
       <SubType>Form</SubType>
@@ -175,6 +184,9 @@
     </Compile>
     <EmbeddedResource Include="AddDrink.resx">
       <DependentUpon>AddDrink.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddTypeofdrink.resx">
+      <DependentUpon>AddTypeofdrink.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AddUser.resx">
       <DependentUpon>AddUser.cs</DependentUpon>

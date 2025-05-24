@@ -77,7 +77,7 @@ namespace CoffeeManagementSystem
 
         private void btnMenu_Click(object sender, EventArgs e)
         {
-            LoadFormCon(new DrinksForm());
+            LoadFormCon(new DrinkForm());
         }
 
         private void btnReport_Click(object sender, EventArgs e)
