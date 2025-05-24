@@ -119,6 +119,7 @@
     <Compile Include="DAL\KhachHangDAL.cs" />
     <Compile Include="DAL\LoaidouongDAL.cs" />
     <Compile Include="DAL\NhanvienDAL.cs" />
+    <Compile Include="DAL\TaikhoanDAL.cs" />
     <Compile Include="DangNhapForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -250,6 +251,7 @@
     <Content Include="Resources\CoffeCover.png" />
     <None Include="Resources\CoffeCover1.png" />
     <Content Include="Resources\coffeeshopLogin.jpg" />
+    <None Include="Resources\coffeeshopLogin1.jpg" />
     <Content Include="Resources\DoUong.png" />
     <None Include="Resources\LuongThuong1.png" />
     <None Include="Resources\DoUong1.png" />

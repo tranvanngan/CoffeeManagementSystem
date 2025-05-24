@@ -317,5 +317,10 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
             btnCapNhat.Enabled = capNhatEnabled;
             btnXoa.Enabled = xoaEnabled;
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

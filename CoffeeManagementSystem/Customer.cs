@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CoffeeManagementSystem.DAL;
+
 namespace CoffeeManagementSystem
 {
     public partial class CustomerForm : Form
@@ -20,7 +21,6 @@ namespace CoffeeManagementSystem
         {
             InitializeComponent();
             khachhangDAL = new KhachhangDAL(); // Khởi tạo đối tượng DAL
-            //this.txtSearch.KeyDown += new KeyEventHandler(txtSearch_KeyDown);
             LoadDanhSachKhachHang();
             // Gán sự kiện TextChanged cho TextBox tìm kiếm (để tìm khi gõ)
             this.txtSearch.TextChanged += new EventHandler(txtSearch_TextChanged);
@@ -28,7 +28,7 @@ namespace CoffeeManagementSystem
             this.dgvKhachHang.CellClick += new DataGridViewCellEventHandler(dgvKhachHang_CellClick);
 
             // Gán sự kiện Click cho nút Thêm mới (giả định tên nút là btnAdd)
-            this.btnAdd.Click += new EventHandler(btnAdd_Click); // Đã đổi tên nút
+            this.btnAdd.Click += new EventHandler(btnAdd_Click);
         }
 
         // Sự kiện Form Load: Tải dữ liệu khi Form được hiển thị
@@ -46,14 +46,10 @@ namespace CoffeeManagementSystem
                 List<Khachhang> danhSach = khachhangDAL.GetAllKhachhangs();
 
                 // Gán danh sách làm nguồn dữ liệu cho DataGridView
-                // dgvKhachHang là tên DataGridView trên Form của bạn
                 dgvKhachHang.DataSource = danhSach;
 
                 // Tùy chọn: Tự động điều chỉnh kích thước cột
                 // dgvKhachHang.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
-
-                // Tùy chọn: Xóa trắng các ô nhập liệu sau khi tải lại
-                //ClearInputFields();
             }
             catch (Exception ex)
             {
@@ -61,6 +57,7 @@ namespace CoffeeManagementSystem
                 MessageBox.Show("Không thể tải danh sách khách hàng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void LoadFilteredData(string searchTerm)
         {
             try
@@ -79,7 +76,6 @@ namespace CoffeeManagementSystem
                     ketQuaHienThi = khachhangDAL.SearchKhachhangs(searchTerm);
                 }
 
-
                 // Gán kết quả (toàn bộ hoặc đã lọc) làm nguồn dữ liệu cho DataGridView
                 dgvKhachHang.DataSource = ketQuaHienThi;
 
@@ -89,16 +85,13 @@ namespace CoffeeManagementSystem
                     // Bạn có thể hiển thị thông báo hoặc không, tùy ý
                     // MessageBox.Show($"Không tìm thấy khách hàng nào phù hợp với từ khóa '{searchTerm}'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-
-                // Tùy chọn: Xóa trắng các ô nhập liệu sau khi tìm kiếm
-                //ClearInputFields();
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi tìm kiếm khách hàng: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             // Lấy từ khóa hiện tại trong TextBox
@@ -107,34 +100,33 @@ namespace CoffeeManagementSystem
             // Gọi phương thức tải dữ liệu đã lọc
             LoadFilteredData(searchTerm);
         }
-        // Sự kiện khi click vào một dòng trong DataGridView
-        // Đảm bảo sự kiện CellClick của dgvKhachHang được kết nối trong Designer
-        // Sự kiện khi click vào một dòng trong DataGridView
-        // Đảm bảo sự kiện CellClick của dgvKhachHang được kết nối trong Designer
+
         // Sự kiện khi click vào một dòng trong DataGridView
         private void dgvKhachHang_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Kiểm tra xem có phải click vào một dòng dữ liệu hợp lệ không
-            // Tránh click vào header hoặc các dòng không phải dữ liệu
-            // Tránh dòng trống thêm mới ở cuối (nếu AllowUserToAddRows là true)
-            if (e.RowIndex >= 0 && e.RowIndex < dgvKhachHang.Rows.Count - (dgvKhachHang.AllowUserToAddRows ? 1 : 0))
+            // Kiểm tra xem có phải click vào một dòng dữ liệu hợp lệ không (loại trừ header).
+            if (e.RowIndex >= 0) // Chỉ cần đảm bảo không click vào header
             {
-                // Lấy đối tượng Khachhang được liên kết với dòng
-                // Đây là cách đáng tin cậy nhất để lấy dữ liệu từ dòng đã chọn
+                // Lấy đối tượng Khachhang được liên kết với dòng.
+                // Nếu dòng đó không chứa dữ liệu hợp lệ (ví dụ: là dòng trống hoặc không được gán DataBoundItem),
+                // thì DataBoundItem sẽ là null hoặc không thể chuyển đổi thành Khachhang.
                 Khachhang selectedKhachhang = dgvKhachHang.Rows[e.RowIndex].DataBoundItem as Khachhang;
 
+                // Kiểm tra xem selectedKhachhang có phải là một đối tượng Khachhang hợp lệ không.
+                // Điều kiện này giúp bỏ qua các dòng trống không chứa dữ liệu thực sự,
+                // bao gồm cả dòng "Add New Row" nếu nó được hiển thị và không có DataBoundItem.
                 if (selectedKhachhang != null)
                 {
                     try
                     {
                         // Tạo một instance mới của Form Chi Tiết ở chế độ Cập nhật
                         // Đảm bảo tên lớp Form Chi Tiết của bạn là FormChitiet hoặc CustomerInfor
-                        FormChitiet formChiTiet = new FormChitiet(selectedKhachhang); // Hoặc CustomerInfor formChiTiet = new CustomerInfor(selectedKhachhang);
+                        FormChitiet formChiTiet = new FormChitiet(selectedKhachhang); // Truyền đối tượng Khachhang
 
                         // Hiển thị Form Chi Tiết dưới dạng Dialog
                         if (formChiTiet.ShowDialog() == DialogResult.OK)
                         {
-                            // Nếu Form Chi Tiết trả về DialogResult.OK (nghĩa là đã lưu thành công)
+                            // Nếu Form Chi Tiết trả về DialogResult.OK (nghĩa là đã lưu/cập nhật/xóa thành công)
                             // Tải lại danh sách khách hàng trên Form chính
                             LoadDanhSachKhachHang();
                         }
@@ -144,19 +136,22 @@ namespace CoffeeManagementSystem
                         MessageBox.Show("Lỗi khi lấy thông tin chi tiết khách hàng hoặc mở Form: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+                // Nếu selectedKhachhang là null, tức là dòng đó trống hoặc không hợp lệ,
+                // thì không làm gì cả, không hiển thị Form chi tiết. Điều này đã đáp ứng yêu cầu của bạn.
             }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
+            // Tạo một instance mới của Form Chi Tiết ở chế độ Thêm mới (không truyền đối tượng Khachhang)
             FormChitiet formChiTiet = new FormChitiet();
+
             // Hiển thị Form Chi Tiết dưới dạng Dialog
-            // formChiTiet.ShowDialog() sẽ dừng thực thi code ở đây cho đến khi FormChiTiet đóng lại
             if (formChiTiet.ShowDialog() == DialogResult.OK)
             {
-                // Nếu Form Chi Tiết trả về DialogResult.OK (nghĩa là đã lưu thành công)
+                // Nếu Form Chi Tiết trả về DialogResult.OK (nghĩa là đã thêm thành công)
                 // Tải lại danh sách khách hàng trên Form chính để hiển thị dữ liệu mới
-                LoadDanhSachKhachHang(); // Gọi lại phương thức tải danh sách khách hàng của Form chính
+                LoadDanhSachKhachHang();
             }
         }
     }

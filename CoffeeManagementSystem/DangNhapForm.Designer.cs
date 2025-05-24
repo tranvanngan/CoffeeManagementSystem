@@ -28,150 +28,169 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DangNhapForm));
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.login_btn = new System.Windows.Forms.Button();
-            this.login_showPass = new System.Windows.Forms.CheckBox();
-            this.login_password = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.login_username = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.close = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.btnDangNhap = new System.Windows.Forms.Button();
+            this.chkHienMatKhau = new System.Windows.Forms.CheckBox();
+            this.txtMatkhau = new System.Windows.Forms.TextBox();
+            this.lblMatKhau = new System.Windows.Forms.Label();
+            this.txtTenTaiKhoan = new System.Windows.Forms.TextBox();
+            this.lblTenDangNhap = new System.Windows.Forms.Label();
+            this.lblDangNhap = new System.Windows.Forms.Label();
+            this.lblClose = new System.Windows.Forms.Label();
+            this.lblXinChao = new System.Windows.Forms.Label();
+            this.lblDauGach = new System.Windows.Forms.Label();
+            this.panelHinhDangNhap = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
-            // panel1
+            // btnDangNhap
             // 
-            this.panel1.BackColor = System.Drawing.Color.White;
-            this.panel1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("panel1.BackgroundImage")));
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(449, 549);
-            this.panel1.TabIndex = 9;
+            this.btnDangNhap.BackColor = System.Drawing.Color.Sienna;
+            this.btnDangNhap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDangNhap.Font = new System.Drawing.Font("Segoe UI Variable Display", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDangNhap.ForeColor = System.Drawing.Color.SeaShell;
+            this.btnDangNhap.Location = new System.Drawing.Point(473, 386);
+            this.btnDangNhap.Margin = new System.Windows.Forms.Padding(4);
+            this.btnDangNhap.Name = "btnDangNhap";
+            this.btnDangNhap.Size = new System.Drawing.Size(382, 38);
+            this.btnDangNhap.TabIndex = 17;
+            this.btnDangNhap.Text = "Đăng nhập";
+            this.btnDangNhap.UseVisualStyleBackColor = false;
             // 
-            // login_btn
+            // chkHienMatKhau
             // 
-            this.login_btn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.login_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.login_btn.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.login_btn.ForeColor = System.Drawing.Color.White;
-            this.login_btn.Location = new System.Drawing.Point(606, 387);
-            this.login_btn.Margin = new System.Windows.Forms.Padding(4);
-            this.login_btn.Name = "login_btn";
-            this.login_btn.Size = new System.Drawing.Size(153, 46);
-            this.login_btn.TabIndex = 17;
-            this.login_btn.Text = "LOGIN";
-            this.login_btn.UseVisualStyleBackColor = false;
+            this.chkHienMatKhau.AutoSize = true;
+            this.chkHienMatKhau.Font = new System.Drawing.Font("Segoe UI Variable Text Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkHienMatKhau.Location = new System.Drawing.Point(473, 343);
+            this.chkHienMatKhau.Margin = new System.Windows.Forms.Padding(4);
+            this.chkHienMatKhau.Name = "chkHienMatKhau";
+            this.chkHienMatKhau.Size = new System.Drawing.Size(131, 24);
+            this.chkHienMatKhau.TabIndex = 16;
+            this.chkHienMatKhau.Text = "Hiện mật khẩu";
+            this.chkHienMatKhau.UseVisualStyleBackColor = true;
+            this.chkHienMatKhau.CheckedChanged += new System.EventHandler(this.chkHienMatKhau_CheckedChanged);
             // 
-            // login_showPass
+            // txtMatkhau
             // 
-            this.login_showPass.AutoSize = true;
-            this.login_showPass.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.login_showPass.Location = new System.Drawing.Point(493, 330);
-            this.login_showPass.Margin = new System.Windows.Forms.Padding(4);
-            this.login_showPass.Name = "login_showPass";
-            this.login_showPass.Size = new System.Drawing.Size(177, 26);
-            this.login_showPass.TabIndex = 16;
-            this.login_showPass.Text = "Show Password";
-            this.login_showPass.UseVisualStyleBackColor = true;
+            this.txtMatkhau.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMatkhau.Location = new System.Drawing.Point(473, 305);
+            this.txtMatkhau.Margin = new System.Windows.Forms.Padding(4);
+            this.txtMatkhau.Name = "txtMatkhau";
+            this.txtMatkhau.PasswordChar = '*';
+            this.txtMatkhau.Size = new System.Drawing.Size(383, 30);
+            this.txtMatkhau.TabIndex = 15;
+            this.txtMatkhau.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMatkhau_KeyDown);
             // 
-            // login_password
+            // lblMatKhau
             // 
-            this.login_password.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.login_password.Location = new System.Drawing.Point(495, 289);
-            this.login_password.Margin = new System.Windows.Forms.Padding(4);
-            this.login_password.Name = "login_password";
-            this.login_password.PasswordChar = '*';
-            this.login_password.Size = new System.Drawing.Size(365, 30);
-            this.login_password.TabIndex = 15;
+            this.lblMatKhau.AutoSize = true;
+            this.lblMatKhau.Font = new System.Drawing.Font("Segoe UI Variable Small Semibol", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMatKhau.Location = new System.Drawing.Point(469, 281);
+            this.lblMatKhau.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblMatKhau.Name = "lblMatKhau";
+            this.lblMatKhau.Size = new System.Drawing.Size(79, 20);
+            this.lblMatKhau.TabIndex = 14;
+            this.lblMatKhau.Text = "Mật khẩu:";
             // 
-            // label4
+            // txtTenTaiKhoan
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(491, 263);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(106, 22);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "Password:";
+            this.txtTenTaiKhoan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTenTaiKhoan.Location = new System.Drawing.Point(473, 230);
+            this.txtTenTaiKhoan.Margin = new System.Windows.Forms.Padding(4);
+            this.txtTenTaiKhoan.Name = "txtTenTaiKhoan";
+            this.txtTenTaiKhoan.Size = new System.Drawing.Size(383, 30);
+            this.txtTenTaiKhoan.TabIndex = 13;
             // 
-            // login_username
+            // lblTenDangNhap
             // 
-            this.login_username.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.login_username.Location = new System.Drawing.Point(493, 214);
-            this.login_username.Margin = new System.Windows.Forms.Padding(4);
-            this.login_username.Name = "login_username";
-            this.login_username.Size = new System.Drawing.Size(365, 30);
-            this.login_username.TabIndex = 13;
+            this.lblTenDangNhap.AutoSize = true;
+            this.lblTenDangNhap.Font = new System.Drawing.Font("Segoe UI Variable Small Semibol", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTenDangNhap.Location = new System.Drawing.Point(469, 206);
+            this.lblTenDangNhap.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblTenDangNhap.Name = "lblTenDangNhap";
+            this.lblTenDangNhap.Size = new System.Drawing.Size(106, 20);
+            this.lblTenDangNhap.TabIndex = 12;
+            this.lblTenDangNhap.Text = "Tên tài khoản:";
             // 
-            // label3
+            // lblDangNhap
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(489, 188);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(109, 22);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Username:";
+            this.lblDangNhap.AutoSize = true;
+            this.lblDangNhap.Font = new System.Drawing.Font("Segoe UI Variable Display", 20.14286F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDangNhap.Location = new System.Drawing.Point(565, 89);
+            this.lblDangNhap.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblDangNhap.Name = "lblDangNhap";
+            this.lblDangNhap.Size = new System.Drawing.Size(191, 46);
+            this.lblDangNhap.TabIndex = 11;
+            this.lblDangNhap.Text = "Đăng nhập";
             // 
-            // label2
+            // lblClose
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Arial Rounded MT Bold", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(632, 154);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(105, 28);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "SIGN IN";
+            this.lblClose.AutoSize = true;
+            this.lblClose.Font = new System.Drawing.Font("Segoe UI Variable Display", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblClose.ForeColor = System.Drawing.Color.SaddleBrown;
+            this.lblClose.Location = new System.Drawing.Point(865, 6);
+            this.lblClose.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblClose.Name = "lblClose";
+            this.lblClose.Size = new System.Drawing.Size(25, 27);
+            this.lblClose.TabIndex = 10;
+            this.lblClose.Text = "X";
+            this.lblClose.Click += new System.EventHandler(this.lblClose_Click);
             // 
-            // close
+            // lblXinChao
             // 
-            this.close.AutoSize = true;
-            this.close.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.close.Location = new System.Drawing.Point(860, 0);
-            this.close.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.close.Name = "close";
-            this.close.Size = new System.Drawing.Size(22, 23);
-            this.close.TabIndex = 10;
-            this.close.Text = "X";
-            this.close.Click += new System.EventHandler(this.close_Click);
+            this.lblXinChao.AutoSize = true;
+            this.lblXinChao.Font = new System.Drawing.Font("Segoe UI Variable Text", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblXinChao.Location = new System.Drawing.Point(487, 144);
+            this.lblXinChao.Name = "lblXinChao";
+            this.lblXinChao.Size = new System.Drawing.Size(347, 20);
+            this.lblXinChao.TabIndex = 18;
+            this.lblXinChao.Text = "Chào mừng trở lại. Đăng nhập để bắt đầu làm việc.\r\n";
             // 
-            // label1
+            // lblDauGach
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Mistral", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(631, 98);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(117, 35);
-            this.label1.TabIndex = 18;
-            this.label1.Text = "Xin chào!";
+            this.lblDauGach.AutoSize = true;
+            this.lblDauGach.Font = new System.Drawing.Font("Segoe UI Variable Text", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDauGach.Location = new System.Drawing.Point(469, 164);
+            this.lblDauGach.Name = "lblDauGach";
+            this.lblDauGach.Size = new System.Drawing.Size(381, 20);
+            this.lblDauGach.TabIndex = 19;
+            this.lblDauGach.Text = "______________________________________________________________\r\n";
+            // 
+            // panelHinhDangNhap
+            // 
+            this.panelHinhDangNhap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelHinhDangNhap.BackColor = System.Drawing.Color.White;
+            this.panelHinhDangNhap.BackgroundImage = global::CoffeeManagementSystem.Properties.Resources.coffeeshopLogin;
+            this.panelHinhDangNhap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panelHinhDangNhap.Location = new System.Drawing.Point(0, 0);
+            this.panelHinhDangNhap.Margin = new System.Windows.Forms.Padding(4);
+            this.panelHinhDangNhap.Name = "panelHinhDangNhap";
+            this.panelHinhDangNhap.Size = new System.Drawing.Size(428, 512);
+            this.panelHinhDangNhap.TabIndex = 9;
             // 
             // DangNhapForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Linen;
-            this.ClientSize = new System.Drawing.Size(895, 549);
+            this.BackColor = System.Drawing.Color.Tan;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.ClientSize = new System.Drawing.Size(895, 512);
             this.ControlBox = false;
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.login_btn);
-            this.Controls.Add(this.login_showPass);
-            this.Controls.Add(this.login_password);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.login_username);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.close);
+            this.Controls.Add(this.lblDauGach);
+            this.Controls.Add(this.lblXinChao);
+            this.Controls.Add(this.panelHinhDangNhap);
+            this.Controls.Add(this.btnDangNhap);
+            this.Controls.Add(this.chkHienMatKhau);
+            this.Controls.Add(this.txtMatkhau);
+            this.Controls.Add(this.lblMatKhau);
+            this.Controls.Add(this.txtTenTaiKhoan);
+            this.Controls.Add(this.lblTenDangNhap);
+            this.Controls.Add(this.lblDangNhap);
+            this.Controls.Add(this.lblClose);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "DangNhapForm";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -179,16 +198,17 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button login_btn;
-        private System.Windows.Forms.CheckBox login_showPass;
-        private System.Windows.Forms.TextBox login_password;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox login_username;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label close;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Panel panelHinhDangNhap;
+        private System.Windows.Forms.Button btnDangNhap;
+        private System.Windows.Forms.CheckBox chkHienMatKhau;
+        private System.Windows.Forms.TextBox txtMatkhau;
+        private System.Windows.Forms.Label lblMatKhau;
+        private System.Windows.Forms.TextBox txtTenTaiKhoan;
+        private System.Windows.Forms.Label lblTenDangNhap;
+        private System.Windows.Forms.Label lblDangNhap;
+        private System.Windows.Forms.Label lblClose;
+        private System.Windows.Forms.Label lblXinChao;
+        private System.Windows.Forms.Label lblDauGach;
     }
 }
 
