@@ -1,25 +1,409 @@
-﻿using System;
+﻿using CoffeeManagementSystem.DAL;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Linq; // Cần thiết nếu bạn dùng LINQ (cho Sum())
 
 namespace CoffeeManagementSystem
 {
-    public partial class Report : Form
+    public partial class ReportForm : Form
     {
-        public Report()
+        private KhachhangDAL _khachhangDAL;
+        private DonhangDAL _donhangDAL;
+        private DouongReportDAL _douongReportDAL; // Khai báo DouongReportDAL mới
+
+        public ReportForm()
         {
             InitializeComponent();
+
+            _khachhangDAL = new KhachhangDAL();
+            _donhangDAL = new DonhangDAL();
+            _douongReportDAL = new DouongReportDAL(); // Khởi tạo DouongReportDAL
+
+            // Thiết lập giá trị mặc định cho DateTimePicker của báo cáo doanh thu
+            dtpRevenueStartDate.Value = DateTime.Now.AddMonths(-1);
+            dtpRevenueEndDate.Value = DateTime.Now;
+
+            // Thiết lập giá trị mặc định cho DateTimePicker của báo cáo bán hàng theo đồ uống (nếu có)
+            // Giả sử bạn có dtpProductSalesStartDate và dtpProductSalesEndDate trong Designer
+            // dtpProductSalesStartDate.Value = DateTime.Now.AddMonths(-1);
+            // dtpProductSalesEndDate.Value = DateTime.Now;
+
+            // Gắn sự kiện SelectedIndexChanged cho TabControl chính
+            this.tabControlReports.SelectedIndexChanged += new EventHandler(this.tabControlReports_SelectedIndexChanged);
+
+            // Tải báo cáo cho tab được chọn mặc định khi form được mở lần đầu
+            tabControlReports_SelectedIndexChanged(tabControlReports, EventArgs.Empty);
         }
 
-        private void label5_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Xử lý sự kiện khi người dùng thay đổi TabPage trên TabControl.
+        /// Tải dữ liệu báo cáo tương ứng với TabPage được chọn.
+        /// </summary>
+        private void tabControlReports_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (tabControlReports.SelectedTab == tabPage1) // Tab Khách hàng tiềm năng
+            {
+                LoadPotentialCustomersReport();
+            }
+            else if (tabControlReports.SelectedTab == tabPage2) // Tab Doanh thu
+            {
+                LoadRevenueReport();
+            }
+            // Thêm điều kiện cho TabPage báo cáo bán hàng theo đồ uống
+            // Đảm bảo tên TabPage của bạn trong Designer là 'tabPageProductSales'
+            else if (tabControlReports.SelectedTab == tabPage3)
+            {
+                LoadProductSalesReport();
+            }
+            // Thêm các điều kiện 'else if' cho các TabPage báo cáo khác nếu có
+        }
 
+        /// <summary>
+        /// Tải dữ liệu báo cáo 10 khách hàng có điểm tích lũy cao nhất và hiển thị lên DataGridView.
+        /// Các cột được cấu hình để tự động lấp đầy không gian.
+        /// </summary>
+        private void LoadPotentialCustomersReport()
+        {
+            try
+            {
+                List<Khachhang> potentialCustomers = _khachhangDAL.GetTop10HighestDiemTichLuyCustomers();
+
+                dgvPotentialCustomers.AutoGenerateColumns = false;
+                dgvPotentialCustomers.Rows.Clear();
+                dgvPotentialCustomers.Columns.Clear();
+
+                // Cột "STT"
+                DataGridViewTextBoxColumn sttColumn = new DataGridViewTextBoxColumn();
+                sttColumn.Name = "STT";
+                sttColumn.HeaderText = "STT";
+                sttColumn.Width = 50; // Chiều rộng cố định
+                sttColumn.ReadOnly = true;
+                sttColumn.Resizable = DataGridViewTriState.False;
+                sttColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvPotentialCustomers.Columns.Add(sttColumn);
+
+                // Cột "Makhachhang"
+                DataGridViewTextBoxColumn maKHColumn = new DataGridViewTextBoxColumn();
+                maKHColumn.DataPropertyName = "Makhachhang";
+                maKHColumn.Name = "Makhachhang";
+                maKHColumn.HeaderText = "Mã Khách hàng";
+                maKHColumn.Width = 120; // Chiều rộng cố định
+                maKHColumn.ReadOnly = true;
+                maKHColumn.Resizable = DataGridViewTriState.False;
+                maKHColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvPotentialCustomers.Columns.Add(maKHColumn);
+
+                // Cột "TenKhachhang" - Tự động lấp đầy
+                DataGridViewTextBoxColumn tenKHColumn = new DataGridViewTextBoxColumn();
+                tenKHColumn.DataPropertyName = "TenKhachhang";
+                tenKHColumn.Name = "TenKhachhang";
+                tenKHColumn.HeaderText = "Tên Khách hàng";
+                tenKHColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Tự động lấp đầy
+                tenKHColumn.ReadOnly = true;
+                tenKHColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvPotentialCustomers.Columns.Add(tenKHColumn);
+
+                // Cột "Sodienthoa"
+                DataGridViewTextBoxColumn sdtColumn = new DataGridViewTextBoxColumn();
+                sdtColumn.DataPropertyName = "Sodienthoa";
+                sdtColumn.Name = "Sodienthoa";
+                sdtColumn.HeaderText = "Số điện thoại";
+                sdtColumn.Width = 120; // Chiều rộng cố định
+                sdtColumn.ReadOnly = true;
+                sdtColumn.Resizable = DataGridViewTriState.False;
+                sdtColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvPotentialCustomers.Columns.Add(sdtColumn);
+
+                // Cột "Email" - Tự động lấp đầy
+                DataGridViewTextBoxColumn emailColumn = new DataGridViewTextBoxColumn();
+                emailColumn.DataPropertyName = "Email";
+                emailColumn.Name = "Email";
+                emailColumn.HeaderText = "Email";
+                emailColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Tự động lấp đầy
+                emailColumn.ReadOnly = true;
+                emailColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvPotentialCustomers.Columns.Add(emailColumn);
+
+                // Cột "Ngaydangky"
+                DataGridViewTextBoxColumn ngayDangKyColumn = new DataGridViewTextBoxColumn();
+                ngayDangKyColumn.DataPropertyName = "Ngaydangky";
+                ngayDangKyColumn.Name = "Ngaydangky";
+                ngayDangKyColumn.HeaderText = "Ngày đăng ký";
+                ngayDangKyColumn.Width = 150; // Chiều rộng cố định
+                ngayDangKyColumn.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm"; // Định dạng ngày giờ
+                ngayDangKyColumn.ReadOnly = true;
+                ngayDangKyColumn.Resizable = DataGridViewTriState.False;
+                ngayDangKyColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvPotentialCustomers.Columns.Add(ngayDangKyColumn);
+
+                // Cột "DiemTichLuy"
+                DataGridViewTextBoxColumn diemTichLuyColumn = new DataGridViewTextBoxColumn();
+                diemTichLuyColumn.DataPropertyName = "DiemTichLuy";
+                diemTichLuyColumn.Name = "DiemTichLuy";
+                diemTichLuyColumn.HeaderText = "Điểm Tích Lũy";
+                diemTichLuyColumn.Width = 100; // Chiều rộng cố định
+                diemTichLuyColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                diemTichLuyColumn.ReadOnly = true;
+                diemTichLuyColumn.Resizable = DataGridViewTriState.False;
+                diemTichLuyColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvPotentialCustomers.Columns.Add(diemTichLuyColumn);
+
+                // Gán dữ liệu vào DataGridView SAU KHI CÁC CỘT ĐÃ ĐƯỢC CẤU HÌNH ĐẦY ĐỦ
+                dgvPotentialCustomers.DataSource = potentialCustomers;
+
+                // Điền STT sau khi gán DataSource
+                for (int i = 0; i < dgvPotentialCustomers.Rows.Count; i++)
+                {
+                    dgvPotentialCustomers.Rows[i].Cells["STT"].Value = i + 1;
+                }
+
+                if (potentialCustomers.Count == 0)
+                {
+                    MessageBox.Show("Không tìm thấy khách hàng nào có điểm tích lũy.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    // MessageBox.Show($"Đã tải báo cáo TOP {potentialCustomers.Count} khách hàng có điểm tích lũy cao nhất.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải báo cáo TOP khách hàng tiềm năng: {ex.Message}\nVui lòng kiểm tra kết nối CSDL và dữ liệu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Tải dữ liệu báo cáo doanh thu và hiển thị lên DataGridView.
+        /// Các cột "No", "Date" có chiều rộng cố định, "Price" tự động lấp đầy.
+        /// </summary>
+        private void LoadRevenueReport()
+        {
+            try
+            {
+                DateTime startDate = dtpRevenueStartDate.Value.Date; // Lấy chỉ ngày
+                DateTime endDate = dtpRevenueEndDate.Value.Date;    // Lấy chỉ ngày
+
+                if (startDate > endDate)
+                {
+                    MessageBox.Show("Ngày bắt đầu không được lớn hơn ngày kết thúc.", "Lỗi Ngày", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Gọi phương thức từ DAL để lấy dữ liệu doanh thu
+                List<RevenueReportItem> revenueData = _donhangDAL.GetRevenueByDateRange(startDate, endDate);
+
+                // Quan trọng: Đảm bảo AutoGenerateColumns là false
+                dgvRevenue.AutoGenerateColumns = false;
+
+                // Xóa tất cả các hàng và cột hiện có để đảm bảo cấu trúc mới
+                dgvRevenue.Rows.Clear();
+                dgvRevenue.Columns.Clear();
+
+                // Cột "No" (Số thứ tự)
+                DataGridViewTextBoxColumn noColumn = new DataGridViewTextBoxColumn();
+                noColumn.Name = "No";
+                noColumn.HeaderText = "No";
+                noColumn.Width = 100; // Chiều rộng cố định
+                noColumn.ReadOnly = true; // Không cho phép chỉnh sửa
+                noColumn.Resizable = DataGridViewTriState.False; // Ngăn không cho người dùng thay đổi kích thước
+                noColumn.SortMode = DataGridViewColumnSortMode.NotSortable; // Không cho phép sắp xếp
+                dgvRevenue.Columns.Add(noColumn);
+
+                // Cột "Date" (Ngày)
+                DataGridViewTextBoxColumn dateColumn = new DataGridViewTextBoxColumn();
+                dateColumn.Name = "Date";
+                dateColumn.HeaderText = "Date";
+                dateColumn.Width = 200; // Chiều rộng cố định
+                dateColumn.DefaultCellStyle.Format = "dd/MM/yyyy"; // Định dạng ngày tháng
+                dateColumn.ReadOnly = true;
+                dateColumn.Resizable = DataGridViewTriState.False; // Ngăn không cho người dùng thay đổi kích thước
+                dateColumn.SortMode = DataGridViewColumnSortMode.NotSortable; // Không cho phép sắp xếp
+                dgvRevenue.Columns.Add(dateColumn);
+
+                // Cột "Price" (Giá) - Sẽ tự động điền đầy phần còn lại
+                DataGridViewTextBoxColumn priceColumn = new DataGridViewTextBoxColumn();
+                priceColumn.Name = "Price";
+                priceColumn.HeaderText = "Price";
+                priceColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight; // Căn phải cho số
+                priceColumn.DefaultCellStyle.Format = "N0"; // Định dạng tiền tệ không có số thập phân
+                priceColumn.ReadOnly = true;
+                priceColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // QUAN TRỌNG: Cột này sẽ tự động điền đầy
+                priceColumn.SortMode = DataGridViewColumnSortMode.NotSortable; // Không cho phép sắp xếp
+                dgvRevenue.Columns.Add(priceColumn);
+
+                // Thêm dữ liệu vào các cột đã có sẵn
+                for (int i = 0; i < revenueData.Count; i++)
+                {
+                    RevenueReportItem item = revenueData[i];
+                    int rowIndex = dgvRevenue.Rows.Add(); // Thêm một hàng mới
+
+                    // Gán giá trị vào các ô của hàng mới
+                    dgvRevenue.Rows[rowIndex].Cells["No"].Value = i + 1; // Số thứ tự tự động
+                    dgvRevenue.Rows[rowIndex].Cells["Date"].Value = item.Ngay; // Gán trực tiếp DateTime
+                    dgvRevenue.Rows[rowIndex].Cells["Price"].Value = item.Tongtien; // Gán trực tiếp Decimal
+                }
+
+                // Tính tổng doanh thu và hiển thị lên lblTotalPrice
+                // Đảm bảo tên Label của bạn trong Designer là 'lblTotalPrice'
+                decimal totalRevenue = revenueData.Sum(item => item.Tongtien);
+                lblTotalPrice.Text = totalRevenue.ToString("N0") + " VNĐ"; // Định dạng tiền tệ
+
+                if (revenueData.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu doanh thu trong khoảng thời gian đã chọn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show($"Đã tải báo cáo doanh thu từ {startDate.ToString("dd/MM/yyyy")} đến {endDate.ToString("dd/MM/yyyy")}. Tổng doanh thu: {totalRevenue.ToString("N0")} VNĐ", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải báo cáo doanh thu: {ex.Message}\nVui lòng kiểm tra kết nối CSDL và dữ liệu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Tải dữ liệu báo cáo bán hàng theo đồ uống và hiển thị lên DataGridView.
+        /// </summary>
+        private void LoadProductSalesReport()
+        {
+            try
+            {
+                // Giả sử bạn có dtpProductSalesStartDate và dtpProductSalesEndDate trong Designer
+                // Nếu không có, bạn có thể sử dụng DateTime.Now hoặc một khoảng thời gian mặc định.
+                DateTime startDate = DateTime.Now.AddMonths(-1).Date; // Ví dụ: 1 tháng trước
+                DateTime endDate = DateTime.Now.Date; // Ví dụ: Hôm nay
+
+                // Gọi phương thức từ DAL để lấy dữ liệu báo cáo bán hàng theo đồ uống
+                List<ProductSalesReportItem> productSalesData = _douongReportDAL.GetProductSalesReport(startDate, endDate);
+
+                // Tính tổng doanh thu toàn bộ để tính tỷ lệ đóng góp
+                decimal overallTotalRevenue = productSalesData.Sum(item => item.TongDoanhThuMon);
+
+                // Quan trọng: Đảm bảo AutoGenerateColumns là false
+                dgvProductSales.AutoGenerateColumns = false; // Giả sử tên DGV là dgvProductSales
+
+                // Xóa tất cả các hàng và cột hiện có để đảm bảo cấu trúc mới
+                dgvProductSales.Rows.Clear();
+                dgvProductSales.Columns.Clear();
+
+                // Thêm và cấu hình các cột
+                // Cột "STT"
+                DataGridViewTextBoxColumn sttColumn = new DataGridViewTextBoxColumn();
+                sttColumn.Name = "STT";
+                sttColumn.HeaderText = "STT";
+                sttColumn.Width = 50;
+                sttColumn.ReadOnly = true;
+                sttColumn.Resizable = DataGridViewTriState.False;
+                sttColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvProductSales.Columns.Add(sttColumn);
+
+                // Cột "Madouong"
+                DataGridViewTextBoxColumn maDouongColumn = new DataGridViewTextBoxColumn();
+                maDouongColumn.DataPropertyName = "Madouong";
+                maDouongColumn.Name = "Madouong";
+                maDouongColumn.HeaderText = "Mã Đồ uống";
+                maDouongColumn.Width = 100;
+                maDouongColumn.ReadOnly = true;
+                maDouongColumn.Resizable = DataGridViewTriState.False;
+                maDouongColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvProductSales.Columns.Add(maDouongColumn);
+
+                // Cột "Tendouong" - Tự động lấp đầy
+                DataGridViewTextBoxColumn tenDouongColumn = new DataGridViewTextBoxColumn();
+                tenDouongColumn.DataPropertyName = "Tendouong";
+                tenDouongColumn.Name = "Tendouong";
+                tenDouongColumn.HeaderText = "Tên Đồ uống";
+                tenDouongColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Tự động lấp đầy
+                tenDouongColumn.ReadOnly = true;
+                tenDouongColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvProductSales.Columns.Add(tenDouongColumn);
+
+                // Cột "Maloai"
+                DataGridViewTextBoxColumn maLoaiColumn = new DataGridViewTextBoxColumn();
+                maLoaiColumn.DataPropertyName = "Maloai";
+                maLoaiColumn.Name = "Maloai";
+                maLoaiColumn.HeaderText = "Loại Đồ uống";
+                maLoaiColumn.Width = 120;
+                maLoaiColumn.ReadOnly = true;
+                maLoaiColumn.Resizable = DataGridViewTriState.False;
+                maLoaiColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvProductSales.Columns.Add(maLoaiColumn);
+
+                // Cột "SoLuongBan"
+                DataGridViewTextBoxColumn soLuongBanColumn = new DataGridViewTextBoxColumn();
+                soLuongBanColumn.DataPropertyName = "SoLuongBan";
+                soLuongBanColumn.Name = "SoLuongBan";
+                soLuongBanColumn.HeaderText = "Số lượng bán";
+                soLuongBanColumn.Width = 100;
+                soLuongBanColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                soLuongBanColumn.ReadOnly = true;
+                soLuongBanColumn.Resizable = DataGridViewTriState.False;
+                soLuongBanColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvProductSales.Columns.Add(soLuongBanColumn);
+
+                // Cột "TongDoanhThuMon"
+                DataGridViewTextBoxColumn tongDoanhThuMonColumn = new DataGridViewTextBoxColumn();
+                tongDoanhThuMonColumn.DataPropertyName = "TongDoanhThuMon";
+                tongDoanhThuMonColumn.Name = "TongDoanhThuMon";
+                tongDoanhThuMonColumn.HeaderText = "Tổng Doanh thu";
+                tongDoanhThuMonColumn.Width = 150;
+                tongDoanhThuMonColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                tongDoanhThuMonColumn.DefaultCellStyle.Format = "N0";
+                tongDoanhThuMonColumn.ReadOnly = true;
+                tongDoanhThuMonColumn.Resizable = DataGridViewTriState.False;
+                tongDoanhThuMonColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvProductSales.Columns.Add(tongDoanhThuMonColumn);
+
+                // Cột "TyLeDongGopDoanhThu" (Tính toán ở đây)
+                DataGridViewTextBoxColumn tyLeDongGopColumn = new DataGridViewTextBoxColumn();
+                tyLeDongGopColumn.Name = "TyLeDongGopDoanhThu";
+                tyLeDongGopColumn.HeaderText = "Tỷ lệ đóng góp";
+                tyLeDongGopColumn.Width = 120;
+                tyLeDongGopColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                tyLeDongGopColumn.DefaultCellStyle.Format = "P2"; // Định dạng phần trăm với 2 chữ số thập phân
+                tyLeDongGopColumn.ReadOnly = true;
+                tyLeDongGopColumn.Resizable = DataGridViewTriState.False;
+                tyLeDongGopColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dgvProductSales.Columns.Add(tyLeDongGopColumn);
+
+
+                // Gán dữ liệu vào DataGridView
+                dgvProductSales.DataSource = productSalesData;
+
+                // Điền STT và tính toán Tỷ lệ đóng góp doanh thu
+                for (int i = 0; i < dgvProductSales.Rows.Count; i++)
+                {
+                    ProductSalesReportItem item = productSalesData[i];
+                    dgvProductSales.Rows[i].Cells["STT"].Value = i + 1;
+
+                    // Tính toán và gán tỷ lệ đóng góp
+                    if (overallTotalRevenue > 0)
+                    {
+                        item.TyLeDongGopDoanhThu = item.TongDoanhThuMon / overallTotalRevenue;
+                        dgvProductSales.Rows[i].Cells["TyLeDongGopDoanhThu"].Value = item.TyLeDongGopDoanhThu;
+                    }
+                    else
+                    {
+                        dgvProductSales.Rows[i].Cells["TyLeDongGopDoanhThu"].Value = 0m;
+                    }
+                }
+
+                if (productSalesData.Count == 0)
+                {
+                    MessageBox.Show("Không có dữ liệu bán hàng theo đồ uống trong khoảng thời gian đã chọn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show($"Đã tải báo cáo bán hàng theo đồ uống từ {startDate.ToString("dd/MM/yyyy")} đến {endDate.ToString("dd/MM/yyyy")}. Tổng số món: {productSalesData.Count}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải báo cáo bán hàng theo đồ uống: {ex.Message}\nVui lòng kiểm tra kết nối CSDL và dữ liệu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

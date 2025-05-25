@@ -1,88 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Windows.Forms; // Chỉ dùng cho MessageBox ví dụ
-using System.Data; // Cần cho DBNull.Value
+using System.Windows.Forms; // Only used for MessageBox in error handling examples
+using System.Data; // Needed for DBNull.Value
 
-// Đảm bảo using namespace chứa lớp BaseDataAccess
-// using YourNamespace.DAL;
+// Ensure using namespace contains your BaseDataAccess class
+// Ensure using namespace contains your Khachhang Model class
+using CoffeeManagementSystem; // Based on the namespace of your Khachhang class
 
-// Đảm bảo using namespace chứa lớp Model Khachhang
-// using YourNamespace.Models; // Hoặc namespace thực tế của bạn
-using CoffeeManagementSystem;
 namespace CoffeeManagementSystem.DAL
 {
-    public class KhachhangDAL : BaseDataAccess // Kế thừa từ lớp BaseDataAccess
+    public class KhachhangDAL : BaseDataAccess
     {
-        public KhachhangDAL() : base() // Gọi constructor của lớp base để lấy ConnectionString
-        {
-        }
-
-        // =====================================================
-        // PHƯƠNG THỨC LẤY DANH SÁCH KHÁCH HÀNG
-        // =====================================================
+        public KhachhangDAL() : base() { }
 
         /// <summary>
-        /// Lấy tất cả khách hàng từ CSDL.
+        /// Retrieves all customers from the database.
         /// </summary>
-        /// <returns>Danh sách các đối tượng Khachhang.</returns>
+        /// <returns>A list of Khachhang objects.</returns>
         public List<Khachhang> GetAllKhachhangs()
         {
             List<Khachhang> khachhangs = new List<Khachhang>();
-
-            // Sử dụng ConnectionString từ lớp BaseDataAccess
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
             {
                 try
                 {
-                    connection.Open(); // Mở kết nối
-
+                    connection.Open();
+                    // SELECT statement matching your provided structure
                     string selectSql = "SELECT Makhachhang, Hoten, Sodienthoai, Email, Ngaydangky, Diemtichluy FROM Khachhang";
 
                     using (SQLiteCommand command = new SQLiteCommand(selectSql, connection))
                     {
-                        using (SQLiteDataReader reader = command.ExecuteReader()) // Thực thi SELECT và lấy DataReader
+                        using (SQLiteDataReader reader = command.ExecuteReader())
                         {
-                            while (reader.Read()) // Đọc từng dòng dữ liệu
+                            while (reader.Read())
                             {
                                 Khachhang khachhang = new Khachhang
                                 {
-                                    // Đọc dữ liệu từ reader và ánh xạ vào thuộc tính của object Khachhang
                                     Makhachhang = reader["Makhachhang"].ToString(),
                                     Hoten = reader["Hoten"].ToString(),
-                                    // Kiểm tra DBNull cho các cột có thể NULL
                                     Sodienthoai = reader["Sodienthoai"] != DBNull.Value ? reader["Sodienthoai"].ToString() : null,
                                     Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : null,
-                                    // Đọc TEXT và chuyển đổi sang DateTime
                                     Ngaydangky = DateTime.Parse(reader["Ngaydangky"].ToString()),
-                                    // Đọc INTEGER và chuyển đổi sang int
                                     Diemtichluy = Convert.ToInt32(reader["Diemtichluy"])
                                 };
-                                khachhangs.Add(khachhang); // Thêm object vào danh sách
+                                khachhangs.Add(khachhang);
                             }
-                        } // DataReader tự đóng khi thoát using
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Xử lý lỗi (ví dụ: hiển thị MessageBox hoặc ghi log)
                     MessageBox.Show($"Lỗi khi lấy danh sách khách hàng: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // Tùy chọn: ném lại exception để lớp gọi xử lý
-                    // throw;
+                    // throw; // Optional: re-throw for higher-level error handling
                 }
-            } // Connection tự đóng khi thoát using
-            return khachhangs; // Trả về danh sách khách hàng
+            }
+            return khachhangs;
         }
 
-        // =====================================================
-        // PHƯƠNG THỨC LẤY KHÁCH HÀNG THEO ID
-        // =====================================================
-
         /// <summary>
-        /// Lấy thông tin khách hàng theo Mã khách hàng.
+        /// Retrieves customer information by ID.
         /// </summary>
-        /// <param name="makhachhang">Mã khách hàng cần lấy.</param>
-        /// <returns>Đối tượng Khachhang nếu tìm thấy, ngược lại trả về null.</returns>
+        /// <param name="makhachhang">The ID of the customer to retrieve.</param>
+        /// <returns>A Khachhang object if found, otherwise null.</returns>
         public Khachhang GetKhachhangById(string makhachhang)
         {
             Khachhang khachhang = null;
@@ -91,16 +71,16 @@ namespace CoffeeManagementSystem.DAL
                 try
                 {
                     connection.Open();
+                    // SELECT statement matching your provided structure
                     string selectSql = "SELECT Makhachhang, Hoten, Sodienthoai, Email, Ngaydangky, Diemtichluy FROM Khachhang WHERE Makhachhang = @Makhachhang";
 
                     using (SQLiteCommand command = new SQLiteCommand(selectSql, connection))
                     {
-                        // Sử dụng Parameter cho điều kiện WHERE
                         command.Parameters.AddWithValue("@Makhachhang", makhachhang);
 
                         using (SQLiteDataReader reader = command.ExecuteReader())
                         {
-                            if (reader.Read()) // Đọc hàng đầu tiên (và duy nhất) nếu có
+                            if (reader.Read())
                             {
                                 khachhang = new Khachhang
                                 {
@@ -121,17 +101,59 @@ namespace CoffeeManagementSystem.DAL
                     // throw;
                 }
             }
-            return khachhang; // Trả về object Khachhang hoặc null
+            return khachhang;
         }
 
-        // =====================================================
-        // PHƯƠNG THỨC THÊM KHÁCH HÀNG MỚI
-        // =====================================================
+        /// <summary>
+        /// Searches for a customer by their name (case-insensitive).
+        /// This method was added for the auto-save customer feature.
+        /// </summary>
+        /// <param name="tenKhachhang">The name of the customer to search for.</param>
+        /// <returns>A Khachhang object if found, otherwise null.</returns>
+        public Khachhang GetKhachhangByName(string tenKhachhang)
+        {
+            Khachhang khachhang = null;
+            using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    // Compare case-insensitively using LOWER()
+                    // SELECT statement matching your provided structure
+                    string selectSql = "SELECT Makhachhang, Hoten, Sodienthoai, Email, Ngaydangky, Diemtichluy FROM Khachhang WHERE LOWER(Hoten) = LOWER(@Tenkhachhang)";
+                    using (SQLiteCommand command = new SQLiteCommand(selectSql, connection))
+                    {
+                        command.Parameters.AddWithValue("@Tenkhachhang", tenKhachhang);
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                khachhang = new Khachhang
+                                {
+                                    Makhachhang = reader["Makhachhang"].ToString(),
+                                    Hoten = reader["Hoten"].ToString(),
+                                    Sodienthoai = reader["Sodienthoai"] != DBNull.Value ? reader["Sodienthoai"].ToString() : null,
+                                    Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : null,
+                                    Ngaydangky = DateTime.Parse(reader["Ngaydangky"].ToString()),
+                                    Diemtichluy = Convert.ToInt32(reader["Diemtichluy"])
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi tìm khách hàng theo tên: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    throw; // Re-throw to allow calling layer to handle
+                }
+            }
+            return khachhang;
+        }
 
         /// <summary>
-        /// Thêm một khách hàng mới vào CSDL.
+        /// Adds a new customer to the database.
         /// </summary>
-        /// <param name="khachhang">Đối tượng Khachhang cần thêm.</param>
+        /// <param name="khachhang">The Khachhang object to add.</param>
         public void AddKhachhang(Khachhang khachhang)
         {
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
@@ -139,24 +161,21 @@ namespace CoffeeManagementSystem.DAL
                 try
                 {
                     connection.Open();
+                    // INSERT statement matching your provided structure
                     string insertSql = @"
                     INSERT INTO Khachhang (Makhachhang, Hoten, Sodienthoai, Email, Ngaydangky, Diemtichluy)
                     VALUES (@Makhachhang, @Hoten, @Sodienthoai, @Email, @Ngaydangky, @Diemtichluy)";
 
                     using (SQLiteCommand command = new SQLiteCommand(insertSql, connection))
                     {
-                        // Sử dụng Parameters để chèn dữ liệu
                         command.Parameters.AddWithValue("@Makhachhang", khachhang.Makhachhang);
                         command.Parameters.AddWithValue("@Hoten", khachhang.Hoten);
-                        // Xử lý cột có thể NULL: nếu giá trị C# là null, chèn DBNull.Value
                         command.Parameters.AddWithValue("@Sodienthoai", (object)khachhang.Sodienthoai ?? DBNull.Value);
                         command.Parameters.AddWithValue("@Email", (object)khachhang.Email ?? DBNull.Value);
-                        // Chuyển DateTime sang TEXT để lưu
                         command.Parameters.AddWithValue("@Ngaydangky", khachhang.Ngaydangky.ToString("yyyy-MM-dd HH:mm:ss"));
-                        command.Parameters.AddWithValue("@Diemtichluy", khachhang.Diemtichluy); // int -> INTEGER
+                        command.Parameters.AddWithValue("@Diemtichluy", khachhang.Diemtichluy);
 
-                        command.ExecuteNonQuery(); // Thực thi lệnh INSERT
-                                                   // MessageBox.Show("Đã thêm khách hàng thành công.", "Thông báo"); // Tùy chọn
+                        command.ExecuteNonQuery();
                     }
                 }
                 catch (Exception ex)
@@ -167,14 +186,10 @@ namespace CoffeeManagementSystem.DAL
             }
         }
 
-        // =====================================================
-        // PHƯƠNG THỨC CẬP NHẬT THÔNG TIN KHÁCH HÀNG
-        // =====================================================
-
         /// <summary>
-        /// Cập nhật thông tin của một khách hàng.
+        /// Updates the information of a customer.
         /// </summary>
-        /// <param name="khachhang">Đối tượng Khachhang chứa thông tin cập nhật (cần có Makhachhang).</param>
+        /// <param name="khachhang">The Khachhang object containing updated information (Makhachhang is required).</param>
         public void UpdateKhachhang(Khachhang khachhang)
         {
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
@@ -182,6 +197,7 @@ namespace CoffeeManagementSystem.DAL
                 try
                 {
                     connection.Open();
+                    // UPDATE statement matching your provided structure
                     string updateSql = @"
                     UPDATE Khachhang
                     SET Hoten = @Hoten,
@@ -189,21 +205,18 @@ namespace CoffeeManagementSystem.DAL
                         Email = @Email,
                         Ngaydangky = @Ngaydangky,
                         Diemtichluy = @Diemtichluy
-                    WHERE Makhachhang = @Makhachhang"; // Cập nhật dựa trên khóa chính
+                    WHERE Makhachhang = @Makhachhang";
 
                     using (SQLiteCommand command = new SQLiteCommand(updateSql, connection))
                     {
-                        // Sử dụng Parameters để cập nhật dữ liệu
                         command.Parameters.AddWithValue("@Hoten", khachhang.Hoten);
                         command.Parameters.AddWithValue("@Sodienthoai", (object)khachhang.Sodienthoai ?? DBNull.Value);
                         command.Parameters.AddWithValue("@Email", (object)khachhang.Email ?? DBNull.Value);
                         command.Parameters.AddWithValue("@Ngaydangky", khachhang.Ngaydangky.ToString("yyyy-MM-dd HH:mm:ss"));
                         command.Parameters.AddWithValue("@Diemtichluy", khachhang.Diemtichluy);
-                        // Parameter cho điều kiện WHERE
                         command.Parameters.AddWithValue("@Makhachhang", khachhang.Makhachhang);
 
-                        int rowsAffected = command.ExecuteNonQuery(); // Thực thi lệnh UPDATE
-                                                                      // MessageBox.Show($"Đã cập nhật {rowsAffected} khách hàng.", "Thông báo"); // Tùy chọn
+                        int rowsAffected = command.ExecuteNonQuery();
                     }
                 }
                 catch (Exception ex)
@@ -214,14 +227,10 @@ namespace CoffeeManagementSystem.DAL
             }
         }
 
-        // =====================================================
-        // PHƯƠNG THỨC XÓA KHÁCH HÀNG
-        // =====================================================
-
         /// <summary>
-        /// Xóa một khách hàng khỏi CSDL.
+        /// Deletes a customer from the database.
         /// </summary>
-        /// <param name="makhachhang">Mã khách hàng cần xóa.</param>
+        /// <param name="makhachhang">The ID of the customer to delete.</param>
         public void DeleteKhachhang(string makhachhang)
         {
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
@@ -233,11 +242,9 @@ namespace CoffeeManagementSystem.DAL
 
                     using (SQLiteCommand command = new SQLiteCommand(deleteSql, connection))
                     {
-                        // Sử dụng Parameter cho điều kiện WHERE
                         command.Parameters.AddWithValue("@Makhachhang", makhachhang);
 
-                        int rowsAffected = command.ExecuteNonQuery(); // Thực thi lệnh DELETE
-                                                                      // MessageBox.Show($"Đã xóa {rowsAffected} khách hàng.", "Thông báo"); // Tùy chọn
+                        int rowsAffected = command.ExecuteNonQuery();
                     }
                 }
                 catch (Exception ex)
@@ -248,20 +255,15 @@ namespace CoffeeManagementSystem.DAL
             }
         }
 
-        // =====================================================
-        // PHƯƠNG THỨC TÌM KIẾM KHÁCH HÀNG
-        // =====================================================
-
         /// <summary>
-        /// Tìm kiếm khách hàng dựa trên từ khóa trong các cột Makhachhang, Hoten, Sodienthoai, Email.
+        /// Searches for customers based on a keyword in Makhachhang, Hoten, Sodienthoai, Email columns.
         /// </summary>
-        /// <param name="searchTerm">Từ khóa tìm kiếm.</param>
-        /// <returns>Danh sách các đối tượng Khachhang phù hợp.</returns>
+        /// <param name="searchTerm">The search keyword.</param>
+        /// <returns>A list of matching Khachhang objects.</returns>
         public List<Khachhang> SearchKhachhangs(string searchTerm)
         {
             List<Khachhang> khachhangs = new List<Khachhang>();
 
-            // Kiểm tra nếu từ khóa rỗng hoặc null, trả về danh sách rỗng
             if (string.IsNullOrWhiteSpace(searchTerm))
             {
                 return khachhangs;
@@ -272,22 +274,17 @@ namespace CoffeeManagementSystem.DAL
                 try
                 {
                     connection.Open();
-
-                    // Câu lệnh SELECT với điều kiện WHERE sử dụng LIKE để tìm kiếm theo mẫu
-                    // Tìm kiếm trong Makhachhang, Hoten, Sodienthoai, Email
-                    // Sử dụng LOWER() để tìm kiếm không phân biệt chữ hoa/thường
+                    // SELECT statement with search conditions matching your provided structure
                     string selectSql = @"
                     SELECT Makhachhang, Hoten, Sodienthoai, Email, Ngaydangky, Diemtichluy
                     FROM Khachhang
                     WHERE LOWER(Makhachhang) LIKE @SearchTerm
-                       OR LOWER(Hoten) LIKE @SearchTerm
-                       OR LOWER(Sodienthoai) LIKE @SearchTerm
-                       OR LOWER(Email) LIKE @SearchTerm";
+                        OR LOWER(Hoten) LIKE @SearchTerm
+                        OR LOWER(Sodienthoai) LIKE @SearchTerm
+                        OR LOWER(Email) LIKE @SearchTerm";
 
                     using (SQLiteCommand command = new SQLiteCommand(selectSql, connection))
                     {
-                        // Sử dụng Parameter với ký tự wildcard %
-                        // % ở đầu và cuối cho phép tìm kiếm bất kỳ chuỗi nào chứa searchTerm
                         command.Parameters.AddWithValue("@SearchTerm", "%" + searchTerm.ToLower() + "%");
 
                         using (SQLiteDataReader reader = command.ExecuteReader())
@@ -314,7 +311,50 @@ namespace CoffeeManagementSystem.DAL
                     // throw;
                 }
             }
-            return khachhangs; // Trả về danh sách khách hàng phù hợp
+            return khachhangs;
+        }
+
+        public List<Khachhang> GetTop10HighestDiemTichLuyCustomers() // Đã đổi tên phương thức
+        {
+            List<Khachhang> customers = new List<Khachhang>();
+            using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = @"
+                        SELECT Makhachhang, Hoten, Sodienthoai, Email, Ngaydangky, Diemtichluy
+                        FROM Khachhang
+                        ORDER BY DiemTichLuy DESC
+                        LIMIT 10;"; // Chỉ sắp xếp và lấy TOP 10
+
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                    {
+                        // Đã loại bỏ: command.Parameters.AddWithValue("@MinDiemTichLuy", minDiemTichLuy);
+
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                customers.Add(new Khachhang
+                                {
+                                    Makhachhang = reader["Makhachhang"].ToString(),
+                                    Hoten = reader["Hoten"].ToString(),
+                                    Sodienthoai = reader["Sodienthoai"].ToString(),
+                                    Email = reader["Email"].ToString(),
+                                    Ngaydangky = DateTime.Parse(reader["Ngaydangky"].ToString()),
+                                    Diemtichluy = Convert.ToInt32(reader["Diemtichluy"])
+                                });
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi lấy TOP 10 khách hàng điểm cao nhất: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            return customers;
         }
     }
 }

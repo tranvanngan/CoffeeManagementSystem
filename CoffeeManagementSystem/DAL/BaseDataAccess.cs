@@ -3,7 +3,7 @@
 
 public class BaseDataAccess
 {
-    protected string ConnectionString { get; private set; } // Sử dụng protected để lớp con kế thừa truy cập
+    public string ConnectionString { get; private set; } // Sử dụng protected để lớp con kế thừa truy cập
 
     public BaseDataAccess()
     {

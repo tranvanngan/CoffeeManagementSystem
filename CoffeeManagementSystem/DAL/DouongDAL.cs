@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Windows.Forms; // Chỉ dùng cho MessageBox ví dụ
+using System.Windows.Forms; // Chỉ dùng cho MessageBox ví dụ (sẽ được thay thế bằng throw)
 using System.Linq; // Cần cho LINQ (FirstOrDefault)
+using System.Data; // Needed for DBNull.Value
 
 namespace CoffeeManagementSystem.DAL
 {
@@ -60,8 +61,8 @@ namespace CoffeeManagementSystem.DAL
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi lấy tất cả đồ uống: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // throw; // Có thể ném lỗi để lớp gọi xử lý cụ thể hơn
+                    // ĐIỀU CHỈNH: Thay thế MessageBox.Show bằng cách ném lỗi để BLL xử lý
+                    throw new Exception($"Lỗi DAL khi lấy tất cả đồ uống: {ex.Message}", ex);
                 }
             }
             return douongs;
@@ -112,8 +113,8 @@ namespace CoffeeManagementSystem.DAL
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi tìm kiếm đồ uống: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // throw;
+                    // ĐIỀU CHỈNH: Thay thế MessageBox.Show bằng cách ném lỗi để BLL xử lý
+                    throw new Exception($"Lỗi DAL khi tìm kiếm đồ uống: {ex.Message}", ex);
                 }
             }
             return douongs;
@@ -157,8 +158,8 @@ namespace CoffeeManagementSystem.DAL
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi lấy đồ uống theo ID: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // throw;
+                    // ĐIỀU CHỈNH: Thay thế MessageBox.Show bằng cách ném lỗi để BLL xử lý
+                    throw new Exception($"Lỗi DAL khi lấy đồ uống theo ID: {ex.Message}", ex);
                 }
             }
             return douong;
@@ -192,8 +193,8 @@ namespace CoffeeManagementSystem.DAL
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi thêm đồ uống: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    throw; // Ném lỗi để Form gọi có thể xử lý
+                    // ĐIỀU CHỈNH: Thay thế MessageBox.Show bằng cách ném lỗi để BLL xử lý
+                    throw new Exception($"Lỗi DAL khi thêm đồ uống: {ex.Message}", ex);
                 }
             }
         }
@@ -222,8 +223,8 @@ namespace CoffeeManagementSystem.DAL
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi cập nhật đồ uống: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    throw;
+                    // ĐIỀU CHỈNH: Thay thế MessageBox.Show bằng cách ném lỗi để BLL xử lý
+                    throw new Exception($"Lỗi DAL khi cập nhật đồ uống: {ex.Message}", ex);
                 }
             }
         }
@@ -249,8 +250,8 @@ namespace CoffeeManagementSystem.DAL
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi xóa đồ uống: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    throw;
+                    // ĐIỀU CHỈNH: Thay thế MessageBox.Show bằng cách ném lỗi để BLL xử lý
+                    throw new Exception($"Lỗi DAL khi xóa đồ uống: {ex.Message}", ex);
                 }
             }
         }

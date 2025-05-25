@@ -73,27 +73,15 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với For
                     // 3. Xác định vai trò và hiển thị Main Form tương ứng
                     if (taiKhoan.Vaitro == "Quản lý")
                     {
-                        // Hiển thị Form quản lý (EmployerForm)
-                        MainForm QuanLyForm = new MainForm();
+                        MainForm QuanLyForm = new MainForm(taiKhoan.Manhanvien, tenNhanVienHienThi); // TRUYỀN THAM SỐ
                         QuanLyForm.Show();
-                        this.Hide(); // Ẩn Form đăng nhập
+                        this.Hide();
                     }
                     else if (taiKhoan.Vaitro == "Nhân viên")
                     {
-                        // Hiển thị Form cho nhân viên (ví dụ: NhanvienMainForm, nếu có)
-                        // Giả định bạn có một Form NhanvienMainForm riêng biệt
-                        // Nếu NhanvienForm là UserControl, bạn cần một Main Form để chứa nó.
-                        // Ví dụ:
-                        // NhanvienMainForm nhanvienMainForm = new NhanvienMainForm();
-                        // nhanvienMainForm.Show();
-                        // this.Hide();
-
-                        // Tạm thời, nếu chưa có NhanvienMainForm, có thể hiển thị một thông báo
-                        MessageBox.Show("Chức năng cho Nhân viên đang được phát triển.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        // Hoặc nếu bạn muốn nhân viên cũng vào EmployerForm nhưng với quyền hạn bị giới hạn
-                        // EmployerForm employerForm = new EmployerForm();
-                        // employerForm.Show();
-                        // this.Hide();
+                        MainEmployer NhanVienForm = new MainEmployer(taiKhoan.Manhanvien, tenNhanVienHienThi); // TRUYỀN THAM SỐ
+                        NhanVienForm.Show();
+                        this.Hide();
                     }
                     else
                     {
@@ -122,5 +110,6 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với For
         {
             this.Close();
         }
+
     }
 }

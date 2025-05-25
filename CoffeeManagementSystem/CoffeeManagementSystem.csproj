@@ -93,6 +93,9 @@
     <Compile Include="AddUser.Designer.cs">
       <DependentUpon>AddUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="BLL\DouongBLL.cs" />
+    <Compile Include="BLL\InforBLL.cs" />
+    <Compile Include="BLL\OrderBLL.cs" />
     <Compile Include="Calamviec.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,11 +117,16 @@
     <Compile Include="DAL\BaseDataAccess.cs" />
     <Compile Include="DAL\CalamviecDAL.cs" />
     <Compile Include="DAL\ChamcongDAL.cs" />
+    <Compile Include="DAL\ChitietdonhangDAL.cs" />
+    <Compile Include="DAL\DonhangDAL.cs" />
     <Compile Include="DAL\DouongDAL.cs" />
+    <Compile Include="DAL\DouongReportDAL.cs" />
     <Compile Include="DAL\GiadouongDAL.cs" />
     <Compile Include="DAL\KhachHangDAL.cs" />
     <Compile Include="DAL\LoaidouongDAL.cs" />
+    <Compile Include="DAL\LuongDAL.cs" />
     <Compile Include="DAL\NhanvienDAL.cs" />
+    <Compile Include="DAL\ReportDAL.cs" />
     <Compile Include="DAL\TaikhoanDAL.cs" />
     <Compile Include="DangNhapForm.cs">
       <SubType>Form</SubType>
@@ -145,6 +153,18 @@
     <Compile Include="Employer.Designer.cs">
       <DependentUpon>Employer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Infor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Infor.Designer.cs">
+      <DependentUpon>Infor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainEmployer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainEmployer.Designer.cs">
+      <DependentUpon>MainEmployer.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -164,6 +184,18 @@
     <Compile Include="model\Nhanvien.cs" />
     <Compile Include="model\Taikhoan.cs" />
     <Compile Include="model\Thanhtoan.cs" />
+    <Compile Include="Order.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Order.Designer.cs">
+      <DependentUpon>Order.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Payment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Payment.Designer.cs">
+      <DependentUpon>Payment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -213,8 +245,20 @@
     <EmbeddedResource Include="Employer.resx">
       <DependentUpon>Employer.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Infor.resx">
+      <DependentUpon>Infor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainEmployer.resx">
+      <DependentUpon>MainEmployer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Order.resx">
+      <DependentUpon>Order.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Payment.resx">
+      <DependentUpon>Payment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -258,8 +302,11 @@
     <Content Include="Resources\KhachHang.png" />
     <None Include="Resources\NhanVien1.png" />
     <None Include="Resources\KhachHang1.png" />
+    <None Include="Resources\Logout_35px.png" />
     <Content Include="Resources\LuongThuong.png" />
     <Content Include="Resources\NhanVien.png" />
+    <None Include="Resources\TaiKhoan.png" />
+    <None Include="Resources\Services_35px.png" />
     <Content Include="Resources\TrangChu.png" />
     <None Include="Resources\TrangChu1.png" />
     <Content Include="Resources\Trắng Xanh Hình Ảnh Hiện Đại Đồng Giá Sale Deal Ưu Đãi Đồ Ăn Thức Uống Banner Ngang.png" />
