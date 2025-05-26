@@ -7,19 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CoffeeManagementSystem.DAL;
+using CoffeeManagementSystem.BLL; // THAY THẾ using DAL bằng using BLL
+// using CoffeeManagementSystem.DAL; // BỎ DÒNG NÀY
+
 namespace CoffeeManagementSystem
 {
-
     public partial class FormChitiet : Form
     {
-        private KhachhangDAL khachhangDAL = new KhachhangDAL(); // Đối tượng DAL
+        private KhachhangBLL khachhangBLL; // Thay đổi từ KhachhangDAL sang KhachhangBLL
         private Khachhang currentKhachhang; // Đối tượng Khachhang hiện tại (null nếu thêm mới)
 
         // Constructor cho chế độ Thêm mới
         public FormChitiet()
         {
             InitializeComponent(); // GIỮ NGUYÊN DÒNG NÀY - Nó được tạo bởi Designer
+            khachhangBLL = new KhachhangBLL(); // Khởi tạo đối tượng BLL
 
             this.Text = "Thêm Khách Hàng Mới"; // Tiêu đề Form
 
@@ -41,6 +43,7 @@ namespace CoffeeManagementSystem
         public FormChitiet(Khachhang khachhangToEdit)
         {
             InitializeComponent(); // GIỮ NGUYÊN DÒNG NÀY - Nó được tạo bởi Designer
+            khachhangBLL = new KhachhangBLL(); // Khởi tạo đối tượng BLL
 
             this.Text = "Cập Nhật Thông Tin Khách Hàng"; // Tiêu đề Form
             currentKhachhang = khachhangToEdit; // Lưu đối tượng khách hàng cần sửa
@@ -110,7 +113,7 @@ namespace CoffeeManagementSystem
             // Lấy thông tin từ các control
             Khachhang newKhachhang = GetKhachhangInfoFromControls();
 
-            // Kiểm tra dữ liệu bắt buộc (ví dụ: Mã KH, Họ tên)
+            // Kiểm tra dữ liệu bắt buộc (ví dụ: Mã KH, Họ tên) - Có thể chuyển logic này vào BLL
             if (string.IsNullOrEmpty(newKhachhang.Makhachhang) || string.IsNullOrEmpty(newKhachhang.Hoten))
             {
                 MessageBox.Show("Mã khách hàng và Họ tên không được để trống.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -119,10 +122,18 @@ namespace CoffeeManagementSystem
 
             try
             {
-                khachhangDAL.AddKhachhang(newKhachhang); // Gọi phương thức Thêm từ DAL
+                khachhangBLL.AddKhachhang(newKhachhang); // Gọi phương thức Thêm từ BLL
                 MessageBox.Show("Thêm khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK; // Đặt kết quả Form là OK
                 this.Close(); // Đóng Form
+            }
+            catch (ArgumentException argEx) // Bắt lỗi đối số không hợp lệ từ BLL
+            {
+                MessageBox.Show($"Lỗi nhập liệu: {argEx.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (InvalidOperationException invOpEx) // Bắt lỗi nghiệp vụ từ BLL
+            {
+                MessageBox.Show($"Lỗi nghiệp vụ: {invOpEx.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
@@ -137,7 +148,7 @@ namespace CoffeeManagementSystem
             // Sử dụng currentKhachhang để giữ nguyên Mã KH (đã xử lý trong GetKhachhangInfoFromControls)
             Khachhang updatedKhachhang = GetKhachhangInfoFromControls();
 
-            // Kiểm tra dữ liệu bắt buộc (ví dụ: Họ tên)
+            // Kiểm tra dữ liệu bắt buộc (ví dụ: Họ tên) - Có thể chuyển logic này vào BLL
             if (string.IsNullOrEmpty(updatedKhachhang.Hoten))
             {
                 MessageBox.Show("Họ tên không được để trống.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -146,10 +157,18 @@ namespace CoffeeManagementSystem
 
             try
             {
-                khachhangDAL.UpdateKhachhang(updatedKhachhang); // Gọi phương thức Cập nhật từ DAL
+                khachhangBLL.UpdateKhachhang(updatedKhachhang); // Gọi phương thức Cập nhật từ BLL
                 MessageBox.Show("Cập nhật khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK; // Đặt kết quả Form là OK
                 this.Close(); // Đóng Form
+            }
+            catch (ArgumentException argEx) // Bắt lỗi đối số không hợp lệ từ BLL
+            {
+                MessageBox.Show($"Lỗi nhập liệu: {argEx.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (InvalidOperationException invOpEx) // Bắt lỗi nghiệp vụ từ BLL
+            {
+                MessageBox.Show($"Lỗi nghiệp vụ: {invOpEx.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
@@ -172,10 +191,18 @@ namespace CoffeeManagementSystem
             {
                 try
                 {
-                    khachhangDAL.DeleteKhachhang(currentKhachhang.Makhachhang); // Gọi phương thức Xóa từ DAL
+                    khachhangBLL.DeleteKhachhang(currentKhachhang.Makhachhang); // Gọi phương thức Xóa từ BLL
                     MessageBox.Show("Xóa khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.DialogResult = DialogResult.OK; // Đặt kết quả Form là OK (để Form cha biết cần tải lại dữ liệu)
                     this.Close(); // Đóng Form
+                }
+                catch (ArgumentException argEx) // Bắt lỗi đối số không hợp lệ từ BLL
+                {
+                    MessageBox.Show($"Lỗi nhập liệu: {argEx.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                catch (InvalidOperationException invOpEx) // Bắt lỗi nghiệp vụ từ BLL
+                {
+                    MessageBox.Show($"Lỗi nghiệp vụ: {invOpEx.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 catch (Exception ex)
                 {

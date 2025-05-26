@@ -1,4 +1,5 @@
 ﻿using CoffeeManagementSystem.DAL;
+using CoffeeManagementSystem.BLL; // Thêm dòng này để sử dụng BLL
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -8,18 +9,14 @@ namespace CoffeeManagementSystem
 {
     public partial class ReportForm : Form
     {
-        private KhachhangDAL _khachhangDAL;
-        private DonhangDAL _donhangDAL;
-        private DouongReportDAL _douongReportDAL; // Khai báo DouongReportDAL mới
+        private ReportBLL _reportBLL; // Khai báo đối tượng BLL thay vì các DAL riêng lẻ
 
         public ReportForm()
         {
             InitializeComponent();
 
-            _khachhangDAL = new KhachhangDAL();
-            _donhangDAL = new DonhangDAL();
-            _douongReportDAL = new DouongReportDAL(); // Khởi tạo DouongReportDAL
-
+            _reportBLL = new ReportBLL(); // Khởi tạo BLL
+        
             // Thiết lập giá trị mặc định cho DateTimePicker của báo cáo doanh thu
             dtpRevenueStartDate.Value = DateTime.Now.AddMonths(-1);
             dtpRevenueEndDate.Value = DateTime.Now;
@@ -31,11 +28,29 @@ namespace CoffeeManagementSystem
 
             // Gắn sự kiện SelectedIndexChanged cho TabControl chính
             this.tabControlReports.SelectedIndexChanged += new EventHandler(this.tabControlReports_SelectedIndexChanged);
-
+            this.dtpRevenueStartDate.ValueChanged += new EventHandler(this.dtpRevenue_ValueChanged);
+            this.dtpRevenueEndDate.ValueChanged += new EventHandler(this.dtpRevenue_ValueChanged);
+            this.dtpProductSalesStartDate.ValueChanged += new EventHandler(this.dtpProductSales_ValueChanged);
+            this.dtpProductSalesEndDate.ValueChanged += new EventHandler(this.dtpProductSales_ValueChanged);
             // Tải báo cáo cho tab được chọn mặc định khi form được mở lần đầu
             tabControlReports_SelectedIndexChanged(tabControlReports, EventArgs.Empty);
         }
-
+        private void dtpRevenue_ValueChanged(object sender, EventArgs e)
+        {
+            // Chỉ tải lại báo cáo doanh thu nếu người dùng đang ở tab doanh thu
+            if (tabControlReports.SelectedTab == tabPage2) // Tab Doanh thu
+            {
+                LoadRevenueReport();
+            }
+        }
+        private void dtpProductSales_ValueChanged(object sender, EventArgs e)
+        {
+            // Chỉ tải lại báo cáo bán hàng theo đồ uống nếu người dùng đang ở tab đó
+            if (tabControlReports.SelectedTab == tabPage3)
+            {
+                LoadProductSalesReport();
+            }
+        }
         /// <summary>
         /// Xử lý sự kiện khi người dùng thay đổi TabPage trên TabControl.
         /// Tải dữ liệu báo cáo tương ứng với TabPage được chọn.
@@ -61,13 +76,13 @@ namespace CoffeeManagementSystem
 
         /// <summary>
         /// Tải dữ liệu báo cáo 10 khách hàng có điểm tích lũy cao nhất và hiển thị lên DataGridView.
-        /// Các cột được cấu hình để tự động lấp đầy không gian.
         /// </summary>
         private void LoadPotentialCustomersReport()
         {
             try
             {
-                List<Khachhang> potentialCustomers = _khachhangDAL.GetTop10HighestDiemTichLuyCustomers();
+                // Gọi BLL để lấy dữ liệu
+                List<Khachhang> potentialCustomers = _reportBLL.GetPotentialCustomersReport();
 
                 dgvPotentialCustomers.AutoGenerateColumns = false;
                 dgvPotentialCustomers.Rows.Clear();
@@ -77,7 +92,7 @@ namespace CoffeeManagementSystem
                 DataGridViewTextBoxColumn sttColumn = new DataGridViewTextBoxColumn();
                 sttColumn.Name = "STT";
                 sttColumn.HeaderText = "STT";
-                sttColumn.Width = 50; // Chiều rộng cố định
+                sttColumn.Width = 50;
                 sttColumn.ReadOnly = true;
                 sttColumn.Resizable = DataGridViewTriState.False;
                 sttColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
@@ -88,7 +103,7 @@ namespace CoffeeManagementSystem
                 maKHColumn.DataPropertyName = "Makhachhang";
                 maKHColumn.Name = "Makhachhang";
                 maKHColumn.HeaderText = "Mã Khách hàng";
-                maKHColumn.Width = 120; // Chiều rộng cố định
+                maKHColumn.Width = 120;
                 maKHColumn.ReadOnly = true;
                 maKHColumn.Resizable = DataGridViewTriState.False;
                 maKHColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
@@ -99,17 +114,17 @@ namespace CoffeeManagementSystem
                 tenKHColumn.DataPropertyName = "Hoten";
                 tenKHColumn.Name = "TenKhachhang";
                 tenKHColumn.HeaderText = "Tên Khách hàng";
-                tenKHColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Tự động lấp đầy
+                tenKHColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 tenKHColumn.ReadOnly = true;
                 tenKHColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvPotentialCustomers.Columns.Add(tenKHColumn);
 
-                // Cột "Sodienthoa"
+                // Cột "Sodienthoai"
                 DataGridViewTextBoxColumn sdtColumn = new DataGridViewTextBoxColumn();
                 sdtColumn.DataPropertyName = "Sodienthoai";
                 sdtColumn.Name = "Sodienthoa";
                 sdtColumn.HeaderText = "Số điện thoại";
-                sdtColumn.Width = 120; // Chiều rộng cố định
+                sdtColumn.Width = 120;
                 sdtColumn.ReadOnly = true;
                 sdtColumn.Resizable = DataGridViewTriState.False;
                 sdtColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
@@ -120,7 +135,7 @@ namespace CoffeeManagementSystem
                 emailColumn.DataPropertyName = "Email";
                 emailColumn.Name = "Email";
                 emailColumn.HeaderText = "Email";
-                emailColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Tự động lấp đầy
+                emailColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 emailColumn.ReadOnly = true;
                 emailColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvPotentialCustomers.Columns.Add(emailColumn);
@@ -130,8 +145,8 @@ namespace CoffeeManagementSystem
                 ngayDangKyColumn.DataPropertyName = "Ngaydangky";
                 ngayDangKyColumn.Name = "Ngaydangky";
                 ngayDangKyColumn.HeaderText = "Ngày đăng ký";
-                ngayDangKyColumn.Width = 150; // Chiều rộng cố định
-                ngayDangKyColumn.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm"; // Định dạng ngày giờ
+                ngayDangKyColumn.Width = 150;
+                ngayDangKyColumn.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
                 ngayDangKyColumn.ReadOnly = true;
                 ngayDangKyColumn.Resizable = DataGridViewTriState.False;
                 ngayDangKyColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
@@ -142,7 +157,7 @@ namespace CoffeeManagementSystem
                 diemTichLuyColumn.DataPropertyName = "DiemTichLuy";
                 diemTichLuyColumn.Name = "DiemTichLuy";
                 diemTichLuyColumn.HeaderText = "Điểm Tích Lũy";
-                diemTichLuyColumn.Width = 100; // Chiều rộng cố định
+                diemTichLuyColumn.Width = 100;
                 diemTichLuyColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                 diemTichLuyColumn.ReadOnly = true;
                 diemTichLuyColumn.Resizable = DataGridViewTriState.False;
@@ -162,10 +177,6 @@ namespace CoffeeManagementSystem
                 {
                     MessageBox.Show("Không tìm thấy khách hàng nào có điểm tích lũy.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                else
-                {
-                    // MessageBox.Show($"Đã tải báo cáo TOP {potentialCustomers.Count} khách hàng có điểm tích lũy cao nhất.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
             }
             catch (Exception ex)
             {
@@ -175,23 +186,27 @@ namespace CoffeeManagementSystem
 
         /// <summary>
         /// Tải dữ liệu báo cáo doanh thu và hiển thị lên DataGridView.
-        /// Các cột "No", "Date" có chiều rộng cố định, "Price" tự động lấp đầy.
         /// </summary>
         private void LoadRevenueReport()
         {
             try
             {
-                DateTime startDate = dtpRevenueStartDate.Value.Date; // Lấy chỉ ngày
-                DateTime endDate = dtpRevenueEndDate.Value.Date;    // Lấy chỉ ngày
+                DateTime startDate = dtpRevenueStartDate.Value.Date;
+                DateTime endDate = dtpRevenueEndDate.Value.Date;
+                dgvRevenue.DataSource = null;
+                dgvRevenue.Rows.Clear();
+                dgvRevenue.Columns.Clear();
 
+                // Kiểm tra lỗi ngày trước khi gọi BLL
                 if (startDate > endDate)
                 {
                     MessageBox.Show("Ngày bắt đầu không được lớn hơn ngày kết thúc.", "Lỗi Ngày", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                    lblTotalPrice.Text = "0 VNĐ"; // Reset tổng tiền
+                    return; // Thoát khỏi phương thức
                 }
 
-                // Gọi phương thức từ DAL để lấy dữ liệu doanh thu
-                List<RevenueReportItem> revenueData = _donhangDAL.GetRevenueByDateRange(startDate, endDate);
+                // Gọi BLL để lấy dữ liệu, BLL sẽ ném exception nếu ngày không hợp lệ
+                List<RevenueReportItem> revenueData = _reportBLL.GetRevenueReport(startDate, endDate);
 
                 // Quan trọng: Đảm bảo AutoGenerateColumns là false
                 dgvRevenue.AutoGenerateColumns = false;
@@ -204,59 +219,58 @@ namespace CoffeeManagementSystem
                 DataGridViewTextBoxColumn noColumn = new DataGridViewTextBoxColumn();
                 noColumn.Name = "No";
                 noColumn.HeaderText = "No";
-                noColumn.Width = 100; // Chiều rộng cố định
-                noColumn.ReadOnly = true; // Không cho phép chỉnh sửa
-                noColumn.Resizable = DataGridViewTriState.False; // Ngăn không cho người dùng thay đổi kích thước
-                noColumn.SortMode = DataGridViewColumnSortMode.NotSortable; // Không cho phép sắp xếp
+                noColumn.Width = 100;
+                noColumn.ReadOnly = true;
+                noColumn.Resizable = DataGridViewTriState.False;
+                noColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvRevenue.Columns.Add(noColumn);
 
                 // Cột "Date" (Ngày)
                 DataGridViewTextBoxColumn dateColumn = new DataGridViewTextBoxColumn();
                 dateColumn.Name = "Date";
                 dateColumn.HeaderText = "Date";
-                dateColumn.Width = 200; // Chiều rộng cố định
-                dateColumn.DefaultCellStyle.Format = "dd/MM/yyyy"; // Định dạng ngày tháng
+                dateColumn.Width = 200;
+                dateColumn.DefaultCellStyle.Format = "dd/MM/yyyy";
                 dateColumn.ReadOnly = true;
-                dateColumn.Resizable = DataGridViewTriState.False; // Ngăn không cho người dùng thay đổi kích thước
-                dateColumn.SortMode = DataGridViewColumnSortMode.NotSortable; // Không cho phép sắp xếp
+                dateColumn.Resizable = DataGridViewTriState.False;
+                dateColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvRevenue.Columns.Add(dateColumn);
 
                 // Cột "Price" (Giá) - Sẽ tự động điền đầy phần còn lại
                 DataGridViewTextBoxColumn priceColumn = new DataGridViewTextBoxColumn();
                 priceColumn.Name = "Price";
                 priceColumn.HeaderText = "Price";
-                priceColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight; // Căn phải cho số
-                priceColumn.DefaultCellStyle.Format = "N0"; // Định dạng tiền tệ không có số thập phân
+                priceColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                priceColumn.DefaultCellStyle.Format = "N0";
                 priceColumn.ReadOnly = true;
-                priceColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // QUAN TRỌNG: Cột này sẽ tự động điền đầy
-                priceColumn.SortMode = DataGridViewColumnSortMode.NotSortable; // Không cho phép sắp xếp
+                priceColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                priceColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvRevenue.Columns.Add(priceColumn);
 
                 // Thêm dữ liệu vào các cột đã có sẵn
                 for (int i = 0; i < revenueData.Count; i++)
                 {
                     RevenueReportItem item = revenueData[i];
-                    int rowIndex = dgvRevenue.Rows.Add(); // Thêm một hàng mới
+                    int rowIndex = dgvRevenue.Rows.Add();
 
                     // Gán giá trị vào các ô của hàng mới
-                    dgvRevenue.Rows[rowIndex].Cells["No"].Value = i + 1; // Số thứ tự tự động
-                    dgvRevenue.Rows[rowIndex].Cells["Date"].Value = item.Ngay; // Gán trực tiếp DateTime
-                    dgvRevenue.Rows[rowIndex].Cells["Price"].Value = item.Tongtien; // Gán trực tiếp Decimal
+                    dgvRevenue.Rows[rowIndex].Cells["No"].Value = i + 1;
+                    dgvRevenue.Rows[rowIndex].Cells["Date"].Value = item.Ngay;
+                    dgvRevenue.Rows[rowIndex].Cells["Price"].Value = item.Tongtien;
                 }
 
                 // Tính tổng doanh thu và hiển thị lên lblTotalPrice
-                // Đảm bảo tên Label của bạn trong Designer là 'lblTotalPrice'
                 decimal totalRevenue = revenueData.Sum(item => item.Tongtien);
-                lblTotalPrice.Text = totalRevenue.ToString("N0") + " VNĐ"; // Định dạng tiền tệ
+                lblTotalPrice.Text = totalRevenue.ToString("N0") + " VNĐ";
 
                 if (revenueData.Count == 0)
                 {
                     MessageBox.Show("Không có dữ liệu doanh thu trong khoảng thời gian đã chọn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                else
-                {
-                    MessageBox.Show($"Đã tải báo cáo doanh thu từ {startDate.ToString("dd/MM/yyyy")} đến {endDate.ToString("dd/MM/yyyy")}. Tổng doanh thu: {totalRevenue.ToString("N0")} VNĐ", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+            }
+            catch (ArgumentException ex) // Bắt lỗi từ BLL nếu ngày không hợp lệ
+            {
+                MessageBox.Show(ex.Message, "Lỗi Ngày", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
@@ -275,9 +289,20 @@ namespace CoffeeManagementSystem
                 // Nếu không có, bạn có thể sử dụng DateTime.Now hoặc một khoảng thời gian mặc định.
                 DateTime startDate = DateTime.Now.AddMonths(-1).Date; // Ví dụ: 1 tháng trước
                 DateTime endDate = DateTime.Now.Date; // Ví dụ: Hôm nay
+                dgvProductSales.DataSource = null; // Ngắt kết nối nguồn dữ liệu
+                dgvProductSales.Rows.Clear();     // Xóa tất cả các hàng
+                dgvProductSales.Columns.Clear();  // Xóa tất cả các cột
 
-                // Gọi phương thức từ DAL để lấy dữ liệu báo cáo bán hàng theo đồ uống
-                List<ProductSalesReportItem> productSalesData = _douongReportDAL.GetProductSalesReport(startDate, endDate);
+                // Kiểm tra lỗi ngày trước khi gọi BLL
+                if (startDate > endDate)
+                {
+                    MessageBox.Show("Ngày bắt đầu không được lớn hơn ngày kết thúc.", "Lỗi Ngày", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    lblTotalProductSales.Text = "0 VNĐ";
+                    return; // Thoát khỏi phương thức
+                }
+
+                // Gọi BLL để lấy dữ liệu báo cáo bán hàng theo đồ uống
+                List<ProductSalesReportItem> productSalesData = _reportBLL.GetProductSalesReport(startDate, endDate);
 
                 // Tính tổng doanh thu toàn bộ để tính tỷ lệ đóng góp
                 decimal overallTotalRevenue = productSalesData.Sum(item => item.TongDoanhThuMon);
@@ -316,7 +341,7 @@ namespace CoffeeManagementSystem
                 tenDouongColumn.DataPropertyName = "Tendouong";
                 tenDouongColumn.Name = "Tendouong";
                 tenDouongColumn.HeaderText = "Tên Đồ uống";
-                tenDouongColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Tự động lấp đầy
+                tenDouongColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 tenDouongColumn.ReadOnly = true;
                 tenDouongColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvProductSales.Columns.Add(tenDouongColumn);
@@ -357,7 +382,7 @@ namespace CoffeeManagementSystem
                 tongDoanhThuMonColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvProductSales.Columns.Add(tongDoanhThuMonColumn);
 
-                // Cột "TyLeDongGopDoanhThu" (Tính toán ở đây)
+                // Cột "TyLeDongGopDoanhThu" (Tính toán ở đây, không phải DataPropertyName trực tiếp từ ProductSalesReportItem)
                 DataGridViewTextBoxColumn tyLeDongGopColumn = new DataGridViewTextBoxColumn();
                 tyLeDongGopColumn.Name = "TyLeDongGopDoanhThu";
                 tyLeDongGopColumn.HeaderText = "Tỷ lệ đóng góp";
@@ -382,23 +407,25 @@ namespace CoffeeManagementSystem
                     // Tính toán và gán tỷ lệ đóng góp
                     if (overallTotalRevenue > 0)
                     {
-                        item.TyLeDongGopDoanhThu = item.TongDoanhThuMon / overallTotalRevenue;
-                        dgvProductSales.Rows[i].Cells["TyLeDongGopDoanhThu"].Value = item.TyLeDongGopDoanhThu;
+                        // Giả sử ProductSalesReportItem đã có thuộc tính TyLeDongGopDoanhThu
+                        // Bạn sẽ cần cập nhật thuộc tính này TRONG BLL hoặc tính toán trực tiếp ở đây.
+                        // Để đơn giản, tôi sẽ tính toán ở đây và gán vào cột hiển thị.
+                        dgvProductSales.Rows[i].Cells["TyLeDongGopDoanhThu"].Value = (double)item.TongDoanhThuMon / (double)overallTotalRevenue;
                     }
                     else
                     {
-                        dgvProductSales.Rows[i].Cells["TyLeDongGopDoanhThu"].Value = 0m;
+                        dgvProductSales.Rows[i].Cells["TyLeDongGopDoanhThu"].Value = 0d;
                     }
                 }
-
+                lblTotalProductSales.Text = overallTotalRevenue.ToString("N0") + " VNĐ";
                 if (productSalesData.Count == 0)
                 {
                     MessageBox.Show("Không có dữ liệu bán hàng theo đồ uống trong khoảng thời gian đã chọn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                else
-                {
-                    MessageBox.Show($"Đã tải báo cáo bán hàng theo đồ uống từ {startDate.ToString("dd/MM/yyyy")} đến {endDate.ToString("dd/MM/yyyy")}. Tổng số món: {productSalesData.Count}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+            }
+            catch (ArgumentException ex) // Bắt lỗi từ BLL nếu ngày không hợp lệ
+            {
+                MessageBox.Show(ex.Message, "Lỗi Ngày", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {

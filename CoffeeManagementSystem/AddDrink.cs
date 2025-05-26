@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using CoffeeManagementSystem.DAL;
-using CoffeeManagementSystem;
-using System.IO; // Required for File.Exists
+using CoffeeManagementSystem.BLL; // Đã có sẵn và được giữ nguyên
+using CoffeeManagementSystem;      // Tham chiếu đến các Model
+using System.IO;                   // Required for File.Exists
 
-namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với namespace của Form và các Model
+namespace CoffeeManagementSystem
 {
-    public partial class AddDrinkForm : Form // Đã đổi tên lớp Form thành AddDrinkForm
+    public partial class AddDrinkForm : Form
     {
-        private DouongDAL douongDAL = new DouongDAL();
-        private GiadouongDAL giadouongDAL = new GiadouongDAL();
-        private LoaidouongDAL loaidouongDAL = new LoaidouongDAL(); // Cần để tải ComboBox loại đồ uống
+        // Khởi tạo các đối tượng BLL. Cấu trúc này được giữ nguyên theo phiên bản bạn muốn dùng BLL.
+        private DouongBLL _douongBLL = new DouongBLL();
+        private GiadouongBLL _giadouongBLL = new GiadouongBLL();
+        private LoaidouongBLL _loaidouongBLL = new LoaidouongBLL();
 
-        private Douong _currentDouong; // Đối tượng đồ uống hiện tại
-        private bool _isNewEntry = false; // Cờ hiệu xác định là thêm mới hay chỉnh sửa
-        private string _selectedImagePath = ""; // Biến để lưu trữ đường dẫn ảnh được chọn
+        private Douong _currentDouong;
+        private bool _isNewEntry = false;
+        private string _selectedImagePath = "";
 
         // Constructor cho trường hợp thêm mới
         public AddDrinkForm()
@@ -23,21 +24,22 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
             InitializeComponent();
             _isNewEntry = true;
             this.Text = "Thêm Đồ Uống Mới";
-            txtMadouong.Enabled = true; // Cho phép nhập Mã đồ uống khi thêm mới
-            LoadLoaiDouongComboBox(); // Tải ComboBox loại đồ uống
+            txtMadouong.Enabled = true;
+            LoadLoaiDouongComboBox();
 
             // Gán sự kiện cho các nút
-            btnLuu.Click += btnLuu_Click; // Nút "Lưu"
-            btnCapNhat.Click += btnCapNhat_Click; // Nút "Cập nhật"
-            btnXoa.Click += btnXoa_Click; // Nút "Xóa"
-            btnSelectImage.Click += btnSelectImage_Click; // Nút "Chọn" ảnh
+            btnLuu.Click += btnLuu_Click;
+            btnCapNhat.Click += btnCapNhat_Click;
+            btnXoa.Click += btnXoa_Click;
+            btnSelectImage.Click += btnSelectImage_Click;
+            button1.Click += button1_Click; // Nút Hủy/Đóng
 
             // Khởi tạo trạng thái cho PictureBox và đường dẫn ảnh
             pbHinhanh.Image = null;
             _selectedImagePath = "";
 
             // Đặt trạng thái nút ban đầu cho chế độ thêm mới
-            SetButtonState(true, false, false); // Lưu enabled, Cập nhật/Xóa disabled
+            SetButtonState(true, false, false);
         }
 
         // Constructor cho trường hợp chỉnh sửa
@@ -46,33 +48,35 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
             InitializeComponent();
             _isNewEntry = false;
             this.Text = "Chi Tiết Đồ Uống";
-            txtMadouong.Enabled = false; // Không cho phép chỉnh sửa Mã đồ uống khi cập nhật
-            LoadLoaiDouongComboBox(); // Tải ComboBox loại đồ uống
+            txtMadouong.Enabled = false;
+            LoadLoaiDouongComboBox();
 
             // Gán sự kiện cho các nút
-            btnLuu.Click += btnLuu_Click; // Nút "Lưu"
-            btnCapNhat.Click += btnCapNhat_Click; // Nút "Cập nhật"
-            btnXoa.Click += btnXoa_Click; // Nút "Xóa"
-            btnSelectImage.Click += btnSelectImage_Click; // Nút "Chọn" ảnh
+            btnLuu.Click += btnLuu_Click;
+            btnCapNhat.Click += btnCapNhat_Click;
+            btnXoa.Click += btnXoa_Click;
+            btnSelectImage.Click += btnSelectImage_Click;
+            button1.Click += button1_Click; // Nút Hủy/Đóng
 
             LoadDouongDetails(madouong);
 
             // Đặt trạng thái nút ban đầu cho chế độ chỉnh sửa
-            SetButtonState(false, true, true); // Lưu disabled, Cập nhật/Xóa enabled
+            SetButtonState(false, true, true);
         }
 
         /// <summary>
         /// Tải danh sách loại đồ uống vào ComboBox.
+        /// Sử dụng LoaidouongBLL.
         /// </summary>
         private void LoadLoaiDouongComboBox()
         {
             try
             {
-                List<Loaidouong> loaiDouongs = loaidouongDAL.GetAllLoaidouongs();
+                List<Loaidouong> loaiDouongs = _loaidouongBLL.GetAllLoaidouongs();
                 cbLoaiDouong.DataSource = loaiDouongs;
                 cbLoaiDouong.DisplayMember = "Tenloai";
                 cbLoaiDouong.ValueMember = "Maloai";
-                cbLoaiDouong.SelectedIndex = -1; // Không chọn gì ban đầu
+                cbLoaiDouong.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -82,30 +86,33 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
 
         /// <summary>
         /// Tải thông tin chi tiết đồ uống vào các control.
+        /// Sử dụng DouongBLL và GiadouongBLL.
         /// </summary>
         /// <param name="madouong">Mã đồ uống cần tải.</param>
         private void LoadDouongDetails(string madouong)
         {
             try
             {
-                _currentDouong = douongDAL.GetDouongById(madouong); // Phương thức này đã điền CurrentGia
+                _currentDouong = _douongBLL.GetDouongById(madouong);
                 if (_currentDouong != null)
                 {
                     txtMadouong.Text = _currentDouong.Madouong;
                     txtTendouong.Text = _currentDouong.Tendouong;
-                    cbLoaiDouong.SelectedValue = _currentDouong.Maloai; // Chọn loại đồ uống trong ComboBox
-                    txtGiaBan.Text = _currentDouong.CurrentGia.ToString(); // Hiển thị giá hiện tại
+                    cbLoaiDouong.SelectedValue = _currentDouong.Maloai;
+
+                    _currentDouong.CurrentGia = _giadouongBLL.GetCurrentGia(madouong);
+                    txtGiaBan.Text = _currentDouong.CurrentGia.ToString();
+
                     txtMota.Text = _currentDouong.Mota;
 
-                    // Tải ảnh vào PictureBox nếu đường dẫn hợp lệ
                     if (!string.IsNullOrEmpty(_currentDouong.Hinhanh) && File.Exists(_currentDouong.Hinhanh))
                     {
                         pbHinhanh.ImageLocation = _currentDouong.Hinhanh;
-                        _selectedImagePath = _currentDouong.Hinhanh; // Cập nhật đường dẫn ảnh đã chọn
+                        _selectedImagePath = _currentDouong.Hinhanh;
                     }
                     else
                     {
-                        pbHinhanh.Image = null; // Xóa ảnh nếu đường dẫn không hợp lệ
+                        pbHinhanh.Image = null;
                         _selectedImagePath = "";
                     }
                 }
@@ -134,171 +141,13 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 _selectedImagePath = openFileDialog.FileName;
-                pbHinhanh.ImageLocation = _selectedImagePath; // Hiển thị ảnh trong PictureBox
+                pbHinhanh.ImageLocation = _selectedImagePath;
             }
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện click nút "Lưu" (thêm mới).
-        /// </summary>
-        private void btnLuu_Click(object sender, EventArgs e)
-        {
-            // Validate input for price
-            decimal newGia;
-            if (!decimal.TryParse(txtGiaBan.Text, out newGia) || newGia < 0)
-            {
-                MessageBox.Show("Giá bán không hợp lệ. Vui lòng nhập một số dương.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Validate required fields
-            if (string.IsNullOrEmpty(txtMadouong.Text) || string.IsNullOrEmpty(txtTendouong.Text) || cbLoaiDouong.SelectedValue == null)
-            {
-                MessageBox.Show("Mã đồ uống, Tên đồ uống và Loại đồ uống không được để trống.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            try
-            {
-                Douong newDouong = new Douong
-                {
-                    Madouong = txtMadouong.Text.Trim(),
-                    Tendouong = txtTendouong.Text.Trim(),
-                    Maloai = cbLoaiDouong.SelectedValue.ToString(),
-                    Mota = txtMota.Text.Trim(),
-                    Hinhanh = _selectedImagePath // Lấy đường dẫn ảnh từ biến đã chọn
-                };
-
-                douongDAL.AddDouong(newDouong);
-
-                // Thêm bản ghi giá ban đầu
-                Giadouong initialGia = new Giadouong
-                {
-                    Magia = GenerateNewGiadouongId(),
-                    Madouong = newDouong.Madouong,
-                    Giaban = newGia,
-                    Thoigianapdung = DateTime.Now
-                };
-                giadouongDAL.AddGiadouong(initialGia);
-
-                MessageBox.Show("Thêm đồ uống thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.DialogResult = DialogResult.OK; // Đặt DialogResult là OK khi lưu thành công
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi thêm đồ uống: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện click nút "Cập nhật".
-        /// </summary>
-        private void btnCapNhat_Click(object sender, EventArgs e)
-        {
-            if (_currentDouong == null)
-            {
-                MessageBox.Show("Không có đồ uống nào được chọn để cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Lấy giá trị mới từ các TextBox
-            string newTendouong = txtTendouong.Text.Trim();
-            string newMaloai = cbLoaiDouong.SelectedValue?.ToString();
-            string newMota = txtMota.Text.Trim();
-            string newHinhanh = _selectedImagePath; // Lấy đường dẫn ảnh từ biến đã chọn
-            decimal newGia;
-
-            if (!decimal.TryParse(txtGiaBan.Text, out newGia) || newGia < 0)
-            {
-                MessageBox.Show("Giá bán không hợp lệ. Vui lòng nhập một số dương.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (string.IsNullOrEmpty(newTendouong) || string.IsNullOrEmpty(newMaloai))
-            {
-                MessageBox.Show("Tên đồ uống và Loại đồ uống không được để trống.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Cập nhật thông tin đồ uống (trừ giá)
-            _currentDouong.Tendouong = newTendouong;
-            _currentDouong.Maloai = newMaloai;
-            _currentDouong.Mota = newMota;
-            _currentDouong.Hinhanh = newHinhanh;
-
-            try
-            {
-                douongDAL.UpdateDouong(_currentDouong);
-
-                // Kiểm tra và cập nhật giá nếu có thay đổi
-                if (newGia != _currentDouong.CurrentGia)
-                {
-                    Giadouong newGiadouong = new Giadouong
-                    {
-                        Magia = GenerateNewGiadouongId(),
-                        Madouong = _currentDouong.Madouong,
-                        Giaban = newGia,
-                        Thoigianapdung = DateTime.Now
-                    };
-                    giadouongDAL.AddGiadouong(newGiadouong);
-                    MessageBox.Show("Đã cập nhật thông tin đồ uống và giá mới!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Đã cập nhật thông tin đồ uống.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                this.DialogResult = DialogResult.OK; // Đặt DialogResult là OK khi lưu thành công
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi cập nhật đồ uống: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện click nút "Xóa".
-        /// </summary>
-        private void btnXoa_Click(object sender, EventArgs e)
-        {
-            if (_currentDouong == null)
-            {
-                MessageBox.Show("Không có đồ uống nào được chọn để xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            DialogResult confirmResult = MessageBox.Show($"Bạn có chắc chắn muốn xóa đồ uống '{_currentDouong.Tendouong}' (Mã: {_currentDouong.Madouong}) không?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (confirmResult == DialogResult.Yes)
-            {
-                try
-                {
-                    douongDAL.DeleteDouong(_currentDouong.Madouong);
-                    MessageBox.Show("Xóa đồ uống thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    this.DialogResult = DialogResult.OK; // Đặt DialogResult là OK để Form cha biết cần tải lại dữ liệu
-                    this.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Lỗi khi xóa đồ uống: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện click nút "Hủy".
-        /// </summary>
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            pbHinhanh.Image = null; // Xóa ảnh khi hủy
-            _selectedImagePath = ""; // Xóa đường dẫn ảnh khi hủy
-            this.DialogResult = DialogResult.Cancel; // Đặt DialogResult là Cancel khi hủy
-            this.Close();
         }
 
         /// <summary>
         /// Helper method để tạo ID duy nhất cho Magia.
+        /// Phương thức này được giữ nguyên trong Form theo cấu trúc bạn muốn.
         /// </summary>
         private string GenerateNewGiadouongId()
         {
@@ -318,9 +167,207 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
             btnXoa.Enabled = xoaEnabled;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        // --- Event Handlers (Chỉ gọi các phương thức xử lý logic nghiệp vụ) ---
+
+        private void btnLuu_Click(object sender, EventArgs e)
         {
+            HandleAddDouong();
+        }
+
+        private void btnCapNhat_Click(object sender, EventArgs e)
+        {
+            HandleUpdateDouong();
+        }
+
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            HandleDeleteDouong();
+        }
+
+        private void button1_Click(object sender, EventArgs e) // Nút Hủy/Đóng
+        {
+            this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        // --- Các phương thức xử lý logic nghiệp vụ đã được tách ra ---
+
+        /// <summary>
+        /// Xử lý logic thêm một đồ uống mới và giá ban đầu.
+        /// Sử dụng DouongBLL và GiadouongBLL.
+        /// </summary>
+        private void HandleAddDouong()
+        {
+            decimal newGia;
+            if (!decimal.TryParse(txtGiaBan.Text, out newGia) || newGia < 0)
+            {
+                MessageBox.Show("Giá bán không hợp lệ. Vui lòng nhập một số dương.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(txtMadouong.Text) || string.IsNullOrEmpty(txtTendouong.Text) || cbLoaiDouong.SelectedValue == null)
+            {
+                MessageBox.Show("Mã đồ uống, Tên đồ uống và Loại đồ uống không được để trống.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                // Kiểm tra mã đồ uống đã tồn tại chưa bằng cách gọi BLL
+                if (_douongBLL.GetDouongById(txtMadouong.Text.Trim()) != null)
+                {
+                    MessageBox.Show($"Mã đồ uống '{txtMadouong.Text.Trim()}' đã tồn tại.", "Lỗi nghiệp vụ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                Douong newDouong = new Douong
+                {
+                    Madouong = txtMadouong.Text.Trim(),
+                    Tendouong = txtTendouong.Text.Trim(),
+                    Maloai = cbLoaiDouong.SelectedValue.ToString(),
+                    Mota = txtMota.Text.Trim(),
+                    Hinhanh = _selectedImagePath
+                };
+
+                // Gọi DouongBLL để thêm đồ uống
+                _douongBLL.AddDouong(newDouong);
+
+                // Thêm bản ghi giá ban đầu thông qua GiadouongBLL
+                Giadouong initialGia = new Giadouong
+                {
+                    Magia = _giadouongBLL.GenerateNewGiadouongId(), // Lấy ID từ GiadouongBLL
+                    Madouong = newDouong.Madouong,
+                    Giaban = newGia,
+                    Thoigianapdung = DateTime.Now
+                };
+                _giadouongBLL.AddGiadouong(initialGia); // Gọi GiadouongBLL để thêm giá
+
+                MessageBox.Show("Thêm đồ uống thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (ArgumentException aex)
+            {
+                MessageBox.Show(aex.Message, "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (InvalidOperationException ioex)
+            {
+                MessageBox.Show(ioex.Message, "Lỗi nghiệp vụ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi hệ thống khi thêm đồ uống: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Xử lý logic cập nhật thông tin đồ uống và giá.
+        /// Sử dụng DouongBLL và GiadouongBLL.
+        /// </summary>
+        private void HandleUpdateDouong()
+        {
+            if (_currentDouong == null)
+            {
+                MessageBox.Show("Không có đồ uống nào được chọn để cập nhật.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            decimal newGia;
+            if (!decimal.TryParse(txtGiaBan.Text, out newGia) || newGia < 0)
+            {
+                MessageBox.Show("Giá bán không hợp lệ. Vui lòng nhập một số dương.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(txtTendouong.Text) || cbLoaiDouong.SelectedValue == null)
+            {
+                MessageBox.Show("Tên đồ uống và Loại đồ uống không được để trống.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Cập nhật thông tin _currentDouong từ Form
+            _currentDouong.Tendouong = txtTendouong.Text.Trim();
+            _currentDouong.Maloai = cbLoaiDouong.SelectedValue.ToString();
+            _currentDouong.Mota = txtMota.Text.Trim();
+            _currentDouong.Hinhanh = _selectedImagePath;
+
+            try
+            {
+                // Gọi DouongBLL để cập nhật thông tin đồ uống
+                _douongBLL.UpdateDouong(_currentDouong);
+
+                // Kiểm tra và cập nhật giá nếu có thay đổi thông qua GiadouongBLL
+                decimal currentGia = _giadouongBLL.GetCurrentGia(_currentDouong.Madouong);
+                if (newGia != currentGia)
+                {
+                    Giadouong newGiadouongRecord = new Giadouong
+                    {
+                        Magia = _giadouongBLL.GenerateNewGiadouongId(), // Lấy ID từ GiadouongBLL
+                        Madouong = _currentDouong.Madouong,
+                        Giaban = newGia,
+                        Thoigianapdung = DateTime.Now
+                    };
+                    _giadouongBLL.AddGiadouong(newGiadouongRecord); // Gọi GiadouongBLL để thêm giá mới
+                    MessageBox.Show("Đã cập nhật thông tin đồ uống và giá mới!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Đã cập nhật thông tin đồ uống.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (ArgumentException aex)
+            {
+                MessageBox.Show(aex.Message, "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (InvalidOperationException ioex)
+            {
+                MessageBox.Show(ioex.Message, "Lỗi nghiệp vụ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi hệ thống khi cập nhật đồ uống: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Xử lý logic xóa một đồ uống.
+        /// Sử dụng DouongBLL.
+        /// </summary>
+        private void HandleDeleteDouong()
+        {
+            if (_currentDouong == null)
+            {
+                MessageBox.Show("Không có đồ uống nào được chọn để xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DialogResult confirmResult = MessageBox.Show($"Bạn có chắc chắn muốn xóa đồ uống '{_currentDouong.Tendouong}' (Mã: {_currentDouong.Madouong}) không?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (confirmResult == DialogResult.Yes)
+            {
+                try
+                {
+                    // Gọi DouongBLL để xóa đồ uống
+                    _douongBLL.DeleteDouong(_currentDouong.Madouong);
+                    MessageBox.Show("Xóa đồ uống thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
+                catch (ArgumentException aex)
+                {
+                    MessageBox.Show(aex.Message, "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                catch (InvalidOperationException ioex)
+                {
+                    MessageBox.Show(ioex.Message, "Lỗi nghiệp vụ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi hệ thống khi xóa đồ uống: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }

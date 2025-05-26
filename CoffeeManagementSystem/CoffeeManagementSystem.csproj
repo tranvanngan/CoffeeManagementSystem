@@ -93,10 +93,18 @@
     <Compile Include="AddUser.Designer.cs">
       <DependentUpon>AddUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="BLL\AuthBLL.cs" />
+    <Compile Include="BLL\ChitietdonhangBLL.cs" />
+    <Compile Include="BLL\DonhangBLL.cs" />
     <Compile Include="BLL\DouongBLL.cs" />
+    <Compile Include="BLL\GiadouongBLL.cs" />
     <Compile Include="BLL\InforBLL.cs" />
+    <Compile Include="BLL\KhachhangBLL.cs" />
+    <Compile Include="BLL\LoaidouongBLL.cs" />
     <Compile Include="BLL\NhanvienBLL.cs" />
     <Compile Include="BLL\OrderBLL.cs" />
+    <Compile Include="BLL\PaymentBLL.cs" />
+    <Compile Include="BLL\ReportBLL.cs" />
     <Compile Include="Calamviec.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -216,6 +224,7 @@
     <Compile Include="Salary.Designer.cs">
       <DependentUpon>Salary.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\Logger.cs" />
     <EmbeddedResource Include="AddDrink.resx">
       <DependentUpon>AddDrink.cs</DependentUpon>
     </EmbeddedResource>

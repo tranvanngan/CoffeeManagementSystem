@@ -1,5 +1,5 @@
-﻿using CoffeeManagementSystem.DAL;
-using CoffeeManagementSystem.BLL; // Thêm using cho BLL
+﻿using CoffeeManagementSystem.BLL; // Chỉ cần BLL, không cần DAL trực tiếp
+using CoffeeManagementSystem;      // Để sử dụng các Model như Douong, Chitietdonhang
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,37 +18,34 @@ namespace CoffeeManagementSystem
         public string CurrentTenNhanvien { get; set; }
 
         private Timer _messageTimer;
-        private DouongDAL douongDAL; // GIỮ NGUYÊN: Biến này vẫn được giữ theo yêu cầu của bạn
-        
+        // KHÔNG CÒN KHAI BÁO DOUONGDAL TRỰC TIẾP TẠI ĐÂY NỮA
+        // private DouongDAL douongDAL; // ĐÃ BỎ: Logic này thuộc về BLL
 
-        // KHAI BÁO THÊM: Đối tượng BLL để xử lý logic nghiệp vụ
         private OrderBLL _orderBLL;
 
-        // KHAI BÁO THIẾU: Danh sách chi tiết hóa đơn tạm thời
-        private List<Chitietdonhang> danhSachChiTietHoaDonTamThoi;
+        // KHÔNG CÒN KHAI BÁO DANH SÁCH TẠM THỜI TRỰC TIẾP TẠI ĐÂY NỮA
+        // private List<Chitietdonhang> danhSachChiTietHoaDonTamThoi; // ĐÃ BỎ: Logic này thuộc về BLL
 
         public OrderForm()
         {
-            InitializeComponent(); // Đảm bảo dòng này luôn ở đầu constructor
+            InitializeComponent();
 
-            douongDAL = new DouongDAL();
-            danhSachChiTietHoaDonTamThoi = new List<Chitietdonhang>();
+            // KHÔNG CÒN KHỞI TẠO DOUONGDAL TRỰC TIẾP TẠI ĐÂY NỮA
+            // douongDAL = new DouongDAL(); // ĐÃ BỎ
 
-            // KHỞI TẠO: OrderBLL với mã nhân viên mặc định là null.
-            // Nó sẽ được cập nhật khi constructor có tham số được gọi.
-            _orderBLL = new OrderBLL(null);
+            // KHÔNG CÒN KHỞI TẠO DANH SÁCH TẠM THỜI TRỰC TIẾP TẠI ĐÂY NỮA
+            // danhSachChiTietHoaDonTamThoi = new List<Chitietdonhang>(); // ĐÃ BỎ
 
-            // Khởi tạo lblStatusMessage nếu nó không được tạo trong Designer.cs
-            // Nếu bạn đã kéo Label vào Form và đặt tên là lblStatusMessage, bạn không cần dòng này
-            // Đảm bảo Label này có trên Form của bạn
+            // OrderBLL sẽ được khởi tạo lại trong constructor có tham số, hoặc dùng mã mặc định ban đầu
+            _orderBLL = new OrderBLL(null); // Khởi tạo ban đầu với null, sẽ được gán lại
+
+            // Khởi tạo lblStatusMessage (giữ nguyên logic bạn đã có)
             if (this.Controls.Find("lblStatusMessage", true).FirstOrDefault() is Label statusLabel)
             {
                 lblStatusMessage = statusLabel;
             }
             else
             {
-                // Nếu không tìm thấy Label, tạo một Label tạm thời để tránh lỗi biên dịch
-                // Bạn nên thêm Label này vào Designer của OrderForm
                 lblStatusMessage = new Label { Name = "lblStatusMessage", Text = "", AutoSize = true, Location = new Point(10, 10) };
                 this.Controls.Add(lblStatusMessage);
             }
@@ -62,20 +59,13 @@ namespace CoffeeManagementSystem
             dgvDouong.AllowUserToDeleteRows = false;
             dgvDouong.EditMode = DataGridViewEditMode.EditProgrammatically;
 
-            // Gán sự kiện DoubleClick cho dgvDouong
-            this.dgvDouong.CellDoubleClick += new DataGridViewCellEventHandler(dgvDouong_CellDoubleClick); // Đã sửa tên phương thức
-            // Gán sự kiện Click cho nút Tạo Hóa Đơn
+            // Gán sự kiện
+            this.dgvDouong.CellDoubleClick += new DataGridViewCellEventHandler(dgvDouong_CellDoubleClick);
             this.btnTaoHoaDon.Click += new EventHandler(btnTaoHoaDon_Click);
-
-            // ĐÃ LOẠI BỎ: Các lời gọi và phương thức liên quan đến ListView tạm thời
-            // SetupListViewHoaDonTamThoi();
-            LoadDanhSachDouong();
-            // CapNhatHienThiHoaDonTamThoi(); // Không còn ListView tạm thời để cập nhật hiển thị
-
-            // Gán sự kiện cho các control trên tab Đồ uống
             this.txtTimkiemdouong.TextChanged += new EventHandler(txtTimkiemdouong_TextChanged);
-            // ĐÃ LOẠI BỎ: dgvDouong.CellClick vì DoubleClick đã xử lý việc chọn món
-            // this.dgvDouong.CellClick += new DataGridViewCellEventHandler(dgvDouong_CellClick);
+
+            LoadDanhSachDouong();
+            // Không còn cần CapNhatHienThiHoaDonTamThoi() ở đây vì không có ListView tạm thời nữa
         }
 
         public OrderForm(string manhanvien, string tenNhanVien) : this() // Gọi constructor mặc định
@@ -91,11 +81,14 @@ namespace CoffeeManagementSystem
             LoadDanhSachDouong();
         }
 
+        /// <summary>
+        /// Tải danh sách đồ uống và hiển thị lên DataGridView.
+        /// </summary>
         private void LoadDanhSachDouong()
         {
             try
             {
-                // CẬP NHẬT: Gọi BLL để lấy danh sách đồ uống
+                // Gọi BLL để lấy danh sách đồ uống
                 List<Douong> danhSach = _orderBLL.LoadAllDouongs();
                 dgvDouong.DataSource = null;
                 dgvDouong.DataSource = danhSach;
@@ -111,11 +104,12 @@ namespace CoffeeManagementSystem
         /// <summary>
         /// Tải danh sách đồ uống đã lọc và hiển thị lên DataGridView.
         /// </summary>
+        /// <param name="searchTerm">Từ khóa tìm kiếm.</param>
         private void LoadFilteredDouongData(string searchTerm)
         {
             try
             {
-                // CẬP NHẬT: Gọi BLL để tìm kiếm đồ uống
+                // Gọi BLL để tìm kiếm đồ uống
                 List<Douong> ketQuaHienThi = _orderBLL.SearchDouongs(searchTerm);
 
                 dgvDouong.DataSource = null;
@@ -134,20 +128,19 @@ namespace CoffeeManagementSystem
             string searchTerm = txtTimkiemdouong.Text.Trim();
             LoadFilteredDouongData(searchTerm);
         }
+
         private void dgvLoaidouong_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && e.RowIndex < dgvDouong.Rows.Count - (dgvDouong.AllowUserToAddRows ? 1 : 0))
             {
-                // Lấy đối tượng Loaidouong từ dòng được click
-                // LƯU Ý: Tên phương thức dgvLoaidouong_CellClick cho dgvDouong có thể gây nhầm lẫn.
-                // Nếu dgvLoaidouong là một DataGridView riêng, code này sẽ đúng cho nó.
-                // Nếu đây là sự kiện của dgvDouong, bạn có thể muốn đổi tên phương thức
-                // và đảm bảo kiểu dữ liệu được lấy ra là Douong, không phải Loaidouong.
+                // Logic này có vẻ thuộc về một DataGridView khác hoặc đang bị gán nhầm sự kiện.
+                // Nếu đây là DataGridView của Đồ uống, thì bạn cần thay đổi kiểu dữ liệu Loaidouong thành Douong.
+                // Giữ nguyên theo cấu trúc bạn đã cung cấp, nhưng lưu ý có thể cần điều chỉnh sau.
                 Loaidouong selectedLoaidouong = dgvDouong.Rows[e.RowIndex].DataBoundItem as Loaidouong;
 
                 if (selectedLoaidouong != null)
                 {
-                    // Mở LoaidouongDetailForm ở chế độ chỉnh sửa
+                    // Mở AddTypeofdrinkForm ở chế độ chỉnh sửa
                     AddTypeofdrinkForm detailForm = new AddTypeofdrinkForm(selectedLoaidouong.Maloai);
                     if (detailForm.ShowDialog() == DialogResult.OK)
                     {
@@ -157,23 +150,27 @@ namespace CoffeeManagementSystem
             }
         }
 
+        // --- Event Handlers (Chỉ gọi các phương thức xử lý logic nghiệp vụ đã được tách ra) ---
+
         private void dgvDouong_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            // Kiểm tra chỉ số dòng hợp lệ
             if (e.RowIndex >= 0 && e.RowIndex < dgvDouong.Rows.Count)
             {
+                // Lấy đối tượng Douong từ dòng được double-click
                 Douong selectedDoUong = dgvDouong.Rows[e.RowIndex].DataBoundItem as Douong;
 
                 if (selectedDoUong != null)
                 {
                     try
                     {
-                        // CẬP NHẬT: Gọi BLL để thêm hoặc cập nhật chi tiết vào danh sách tạm thời
-                        _orderBLL.AddOrUpdateChiTietHoaDonTamThoi(selectedDoUong, danhSachChiTietHoaDonTamThoi);
+                        // Gọi BLL để thêm hoặc cập nhật chi tiết vào danh sách tạm thời của BLL
+                        int totalItems = _orderBLL.AddOrUpdateChiTietHoaDonTamThoi(selectedDoUong);
 
                         // Hiển thị thông báo chọn thành công
                         if (lblStatusMessage != null)
                         {
-                            lblStatusMessage.Text = $"Đã thêm '{selectedDoUong.Tendouong}' vào hóa đơn tạm thời. Tổng số món đã chọn: {danhSachChiTietHoaDonTamThoi.Sum(item => item.Soluong)}";
+                            lblStatusMessage.Text = $"Đã thêm '{selectedDoUong.Tendouong}' vào hóa đơn tạm thời. Tổng số món đã chọn: {totalItems}";
                             _messageTimer.Stop();
                             _messageTimer.Start();
                         }
@@ -190,41 +187,40 @@ namespace CoffeeManagementSystem
             }
         }
 
-        private string GenerateUniqueChiTietHoaDonId()
-        {
-            return "CTHD" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-        }
-
         private void btnTaoHoaDon_Click(object sender, EventArgs e)
         {
-            if (danhSachChiTietHoaDonTamThoi.Count == 0)
-            {
-                MessageBox.Show("Vui lòng chọn đồ uống để tạo hóa đơn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (string.IsNullOrEmpty(CurrentManhanvien) || string.IsNullOrEmpty(CurrentTenNhanvien))
-            {
-                MessageBox.Show("Không thể tạo hóa đơn. Thiếu thông tin nhân viên lập hóa đơn.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             try
             {
-                // CẬP NHẬT: Gọi BLL để tạo hóa đơn và lưu chi tiết vào DB trong một transaction
-                bool hoaDonCreated = _orderBLL.CreateNewOrder(danhSachChiTietHoaDonTamThoi);
+                // Lấy danh sách chi tiết hóa đơn tạm thời từ BLL để kiểm tra
+                List<Chitietdonhang> currentOrderDetails = _orderBLL.GetTemporaryOrderDetails();
+
+                if (currentOrderDetails.Count == 0)
+                {
+                    MessageBox.Show("Vui lòng chọn đồ uống để tạo hóa đơn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Thông tin nhân viên được truyền qua constructor BLL, không cần kiểm tra lại ở đây
+                if (string.IsNullOrEmpty(_orderBLL.GetCurrentMaNhanVien()))
+                {
+                    MessageBox.Show("Không thể tạo hóa đơn. Thiếu thông tin nhân viên lập hóa đơn.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Gọi BLL để tạo hóa đơn và lưu chi tiết vào DB
+                bool hoaDonCreated = _orderBLL.CreateNewOrder();
 
                 if (hoaDonCreated)
                 {
                     // Nếu hóa đơn được tạo thành công trong DB, mở PaymentForm
-                    PaymentForm hoaDonForm = new PaymentForm(danhSachChiTietHoaDonTamThoi, CurrentManhanvien, CurrentTenNhanvien);
+                    // Truyền danh sách chi tiết hóa đơn từ BLL để PaymentForm xử lý
+                    PaymentForm hoaDonForm = new PaymentForm(currentOrderDetails, CurrentManhanvien, CurrentTenNhanvien);
 
                     if (hoaDonForm.ShowDialog() == DialogResult.OK)
                     {
                         // Nếu hóa đơn được thanh toán/lưu thành công trong PaymentForm,
-                        // xóa danh sách tạm thời và cập nhật lại giao diện
-                        danhSachChiTietHoaDonTamThoi.Clear();
-                        // ĐÃ LOẠI BỎ: CapNhatHienThiHoaDonTamThoi(); // Không còn ListView tạm thời để cập nhật hiển thị
+                        // yêu cầu BLL xóa danh sách tạm thời và cập nhật lại giao diện
+                        _orderBLL.ClearTemporaryOrderDetails();
                         if (lblStatusMessage != null)
                         {
                             lblStatusMessage.Text = "Hóa đơn đã được tạo và xử lý thành công!";
@@ -238,16 +234,19 @@ namespace CoffeeManagementSystem
                     }
                     else
                     {
-                        // Người dùng hủy hóa đơn, có thể hỏi xem có muốn giữ lại danh sách tạm thời không
+                        // Người dùng hủy hóa đơn, hỏi xem có muốn giữ lại danh sách tạm thời không
                         if (MessageBox.Show("Bạn có muốn hủy hóa đơn này và xóa các mục đã chọn không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            danhSachChiTietHoaDonTamThoi.Clear();
-                            // ĐÃ LOẠI BỎ: CapNhatHienThiHoaDonTamThoi(); // Không còn ListView tạm thời để cập nhật hiển thị
+                            _orderBLL.ClearTemporaryOrderDetails(); // Yêu cầu BLL xóa
                             if (lblStatusMessage != null)
                             {
                                 lblStatusMessage.Text = "Đã hủy hóa đơn tạm thời.";
                                 _messageTimer.Stop();
                                 _messageTimer.Start();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Đã hủy hóa đơn tạm thời.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                         }
                     }
@@ -275,5 +274,11 @@ namespace CoffeeManagementSystem
             }
             _messageTimer.Stop();
         }
+
+        // KHÔNG CÒN PHƯƠNG THỨC NÀY TRONG FORM NỮA, ĐÃ CHUYỂN VÀO BLL
+        // private string GenerateUniqueChiTietHoaDonId()
+        // {
+        //     return "CTHD" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
+        // }
     }
 }

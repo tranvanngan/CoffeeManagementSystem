@@ -9,20 +9,25 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 // Đảm bảo các namespace này được tham chiếu đúng trong project của bạn
-using CoffeeManagementSystem.DAL; // Chứa LoaidouongDAL, DouongDAL, GiadouongDAL
-using CoffeeManagementSystem; // Chứa các lớp Model: Loaidouong, Douong, Giadouong, và AddDrinkForm, LoaidouongDetailForm
+// THAY THẾ DAL BẰNG BLL
+using CoffeeManagementSystem.BLL;
+using CoffeeManagementSystem; // Chứa các lớp Model: Loaidouong, Douong, Giadouong, và AddDrinkForm, AddTypeofdrinkForm
 
 namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với namespace của Form DrinkForm
 {
     public partial class DrinkForm : Form
     {
-        // Khai báo các đối tượng DAL
-        private LoaidouongDAL loaidouongDAL = new LoaidouongDAL();
-        private DouongDAL douongDAL = new DouongDAL();
+        // Khai báo các đối tượng BLL thay vì DAL
+        private LoaidouongBLL _loaidouongBLL; // Đổi tên biến để thống nhất (_camelCase)
+        private DouongBLL _douongBLL;         // Đổi tên biến để thống nhất (_camelCase)
 
         public DrinkForm()
         {
             InitializeComponent();
+
+            // Khởi tạo các đối tượng BLL
+            _loaidouongBLL = new LoaidouongBLL();
+            _douongBLL = new DouongBLL();
 
             // Gán sự kiện Load cho Form chính
             this.Load += DrinkForm_Load;
@@ -73,18 +78,13 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
         /// </summary>
         private void LoadDanhSachLoaidouong()
         {
-            try
-            {
-                List<Loaidouong> danhSach = loaidouongDAL.GetAllLoaidouongs();
-                dgvLoaidouong.DataSource = null; // Clear old data
-                dgvLoaidouong.DataSource = danhSach;
-                dgvLoaidouong.Refresh();
-                dgvLoaidouong.ClearSelection(); // Xóa chọn dòng
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Không thể tải danh sách loại đồ uống: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            // Gọi BLL để lấy dữ liệu. BLL là nơi xử lý lỗi CSDL và logic nghiệp vụ.
+            // Loại bỏ try-catch vì BLL sẽ xử lý lỗi và có thể thông báo cho người dùng
+            List<Loaidouong> danhSach = _loaidouongBLL.GetAllLoaidouongs();
+            dgvLoaidouong.DataSource = null; // Clear old data
+            dgvLoaidouong.DataSource = danhSach;
+            dgvLoaidouong.Refresh();
+            dgvLoaidouong.ClearSelection(); // Xóa chọn dòng
         }
 
         /// <summary>
@@ -92,27 +92,22 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
         /// </summary>
         private void LoadFilteredLoaidouongData(string searchTerm)
         {
-            try
+            // Gọi BLL để lấy dữ liệu đã lọc. BLL là nơi xử lý lỗi CSDL và logic nghiệp vụ.
+            // Loại bỏ try-catch vì BLL sẽ xử lý lỗi và có thể thông báo cho người dùng
+            List<Loaidouong> ketQuaHienThi;
+            if (string.IsNullOrWhiteSpace(searchTerm))
             {
-                List<Loaidouong> ketQuaHienThi;
-                if (string.IsNullOrWhiteSpace(searchTerm))
-                {
-                    ketQuaHienThi = loaidouongDAL.GetAllLoaidouongs();
-                }
-                else
-                {
-                    ketQuaHienThi = loaidouongDAL.SearchLoaidouongs(searchTerm);
-                }
+                ketQuaHienThi = _loaidouongBLL.GetAllLoaidouongs();
+            }
+            else
+            {
+                ketQuaHienThi = _loaidouongBLL.SearchLoaidouongs(searchTerm);
+            }
 
-                dgvLoaidouong.DataSource = null;
-                dgvLoaidouong.DataSource = ketQuaHienThi;
-                dgvLoaidouong.Refresh();
-                dgvLoaidouong.ClearSelection(); // Xóa chọn dòng
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi tìm kiếm loại đồ uống: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            dgvLoaidouong.DataSource = null;
+            dgvLoaidouong.DataSource = ketQuaHienThi;
+            dgvLoaidouong.Refresh();
+            dgvLoaidouong.ClearSelection(); // Xóa chọn dòng
         }
 
         /// <summary>
@@ -129,7 +124,7 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
         /// </summary>
         private void btnThem_Click(object sender, EventArgs e)
         {
-            // Mở LoaidouongDetailForm ở chế độ thêm mới
+            // Mở AddTypeofdrinkForm ở chế độ thêm mới. Form này cũng sẽ tương tác với BLL.
             AddTypeofdrinkForm detailForm = new AddTypeofdrinkForm();
             if (detailForm.ShowDialog() == DialogResult.OK)
             {
@@ -149,7 +144,7 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
 
                 if (selectedLoaidouong != null)
                 {
-                    // Mở LoaidouongDetailForm ở chế độ chỉnh sửa
+                    // Mở AddTypeofdrinkForm ở chế độ chỉnh sửa. Form này cũng sẽ tương tác với BLL.
                     AddTypeofdrinkForm detailForm = new AddTypeofdrinkForm(selectedLoaidouong.Maloai);
                     if (detailForm.ShowDialog() == DialogResult.OK)
                     {
@@ -169,18 +164,13 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
         /// </summary>
         private void LoadDanhSachDouong()
         {
-            try
-            {
-                List<Douong> danhSach = douongDAL.GetAllDouongs(); // DouongDAL đã được sửa để điền CurrentGia
-                dgvDouong.DataSource = null; // Clear old data
-                dgvDouong.DataSource = danhSach;
-                dgvDouong.Refresh();
-                dgvDouong.ClearSelection(); // Xóa chọn dòng
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Không thể tải danh sách đồ uống: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            // Gọi BLL để lấy dữ liệu. BLL là nơi xử lý lỗi CSDL và logic nghiệp vụ.
+            // Loại bỏ try-catch vì BLL sẽ xử lý lỗi và có thể thông báo cho người dùng
+            List<Douong> danhSach = _douongBLL.GetAllDouongs();
+            dgvDouong.DataSource = null; // Clear old data
+            dgvDouong.DataSource = danhSach;
+            dgvDouong.Refresh();
+            dgvDouong.ClearSelection(); // Xóa chọn dòng
         }
 
         /// <summary>
@@ -188,27 +178,22 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
         /// </summary>
         private void LoadFilteredDouongData(string searchTerm)
         {
-            try
+            // Gọi BLL để lấy dữ liệu đã lọc. BLL là nơi xử lý lỗi CSDL và logic nghiệp vụ.
+            // Loại bỏ try-catch vì BLL sẽ xử lý lỗi và có thể thông báo cho người dùng
+            List<Douong> ketQuaHienThi;
+            if (string.IsNullOrWhiteSpace(searchTerm))
             {
-                List<Douong> ketQuaHienThi;
-                if (string.IsNullOrWhiteSpace(searchTerm))
-                {
-                    ketQuaHienThi = douongDAL.GetAllDouongs();
-                }
-                else
-                {
-                    ketQuaHienThi = douongDAL.SearchDouongs(searchTerm);
-                }
+                ketQuaHienThi = _douongBLL.GetAllDouongs();
+            }
+            else
+            {
+                ketQuaHienThi = _douongBLL.SearchDouongs(searchTerm);
+            }
 
-                dgvDouong.DataSource = null;
-                dgvDouong.DataSource = ketQuaHienThi;
-                dgvDouong.Refresh();
-                dgvDouong.ClearSelection(); // Xóa chọn dòng
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi tìm kiếm đồ uống: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            dgvDouong.DataSource = null;
+            dgvDouong.DataSource = ketQuaHienThi;
+            dgvDouong.Refresh();
+            dgvDouong.ClearSelection(); // Xóa chọn dòng
         }
 
         /// <summary>
@@ -225,7 +210,7 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
         /// </summary>
         private void btnAddDouong_Click(object sender, EventArgs e)
         {
-            // Mở AddDrinkForm ở chế độ thêm mới
+            // Mở AddDrinkForm ở chế độ thêm mới. Form này cũng sẽ tương tác với BLL.
             AddDrinkForm detailForm = new AddDrinkForm(); // Sử dụng tên AddDrinkForm
             if (detailForm.ShowDialog() == DialogResult.OK)
             {
@@ -245,7 +230,7 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
 
                 if (selectedDouong != null)
                 {
-                    // Mở AddDrinkForm ở chế độ chỉnh sửa
+                    // Mở AddDrinkForm ở chế độ chỉnh sửa. Form này cũng sẽ tương tác với BLL.
                     AddDrinkForm detailForm = new AddDrinkForm(selectedDouong.Madouong); // Sử dụng tên AddDrinkForm
                     if (detailForm.ShowDialog() == DialogResult.OK)
                     {

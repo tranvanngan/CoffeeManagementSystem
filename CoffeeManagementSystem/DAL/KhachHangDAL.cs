@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Windows.Forms; // Only used for MessageBox in error handling examples
 using System.Data; // Needed for DBNull.Value
-
+using CoffeeManagementSystem.Utilities;
 // Ensure using namespace contains your BaseDataAccess class
 // Ensure using namespace contains your Khachhang Model class
 using CoffeeManagementSystem; // Based on the namespace of your Khachhang class
@@ -192,6 +192,7 @@ namespace CoffeeManagementSystem.DAL
         /// <param name="khachhang">The Khachhang object containing updated information (Makhachhang is required).</param>
         public void UpdateKhachhang(Khachhang khachhang)
         {
+            Logger.LogDebug($"Đang cập nhật khách hàng độc lập: Mã='{khachhang.Makhachhang}', Tên='{khachhang.Hoten}'.");
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
             {
                 try
@@ -221,9 +222,33 @@ namespace CoffeeManagementSystem.DAL
                 }
                 catch (Exception ex)
                 {
+                    Logger.LogError($"Lỗi khi cập nhật khách hàng '{khachhang.Hoten}' (Mã: {khachhang.Makhachhang}) độc lập.", ex);
                     MessageBox.Show($"Lỗi khi cập nhật khách hàng: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     // throw;
                 }
+            }
+        }
+        public void UpdateKhachhang(Khachhang khachhang, SQLiteConnection connection, SQLiteTransaction transaction) // <-- PHIÊN BẢN CẦN THÊM
+        {
+            // LOG: Bắt đầu cập nhật khách hàng trong transaction
+            Logger.LogDebug($"Đang cập nhật khách hàng trong transaction: Mã='{khachhang.Makhachhang}', Tên='{khachhang.Hoten}', Điểm mới={khachhang.Diemtichluy}.");
+            try
+            {
+                string query = "UPDATE Khachhang SET Hoten = @Hoten, Ngaydangky = @Ngaydangky, Diemtichluy = @Diemtichluy WHERE Makhachhang = @Makhachhang";
+                using (SQLiteCommand command = new SQLiteCommand(query, connection, transaction)) // Truyền transaction vào command
+                {
+                    command.Parameters.AddWithValue("@Hoten", khachhang.Hoten);
+                    command.Parameters.AddWithValue("@Ngaydangky", khachhang.Ngaydangky.ToString("yyyy-MM-dd HH:mm:ss"));
+                    command.Parameters.AddWithValue("@Diemtichluy", khachhang.Diemtichluy);
+                    command.Parameters.AddWithValue("@Makhachhang", khachhang.Makhachhang);
+                    command.ExecuteNonQuery();
+                }
+                Logger.LogInfo($"Đã cập nhật khách hàng '{khachhang.Hoten}' (Mã: {khachhang.Makhachhang}) trong transaction thành công.");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Lỗi khi cập nhật khách hàng '{khachhang.Hoten}' (Mã: {khachhang.Makhachhang}) trong transaction.", ex);
+                throw new Exception($"Lỗi khi cập nhật khách hàng trong transaction: {ex.Message}", ex);
             }
         }
 
