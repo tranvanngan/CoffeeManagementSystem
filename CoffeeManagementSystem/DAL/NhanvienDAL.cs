@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Windows.Forms; // Chỉ dùng cho MessageBox trong ví dụ xử lý lỗi
+// BỎ using System.Windows.Forms; ở DAL vì DAL không nên hiển thị MessageBox
 using System.Data; // Cần cho DBNull.Value
 
 // Đảm bảo using namespace chứa lớp BaseDataAccess của bạn
 // Ví dụ: using CoffeeManagementSystem.DAL;
-// Nếu BaseDataAccess nằm trực tiếp trong CoffeeManagementSystem, bạn không cần using riêng
 // Giả định BaseDataAccess nằm trong cùng namespace hoặc đã được using ở nơi khác.
 
 // Đảm bảo using namespace chứa lớp Model Nhanvien của bạn
@@ -31,50 +30,30 @@ namespace CoffeeManagementSystem.DAL // Đặt DAL trong một namespace con đ�
         public List<Nhanvien> GetAllNhanviens()
         {
             List<Nhanvien> nhanviens = new List<Nhanvien>();
+            string query = "SELECT Manhanvien, Hoten, Ngaysinh, Gioitinh, Diachi, Sodienthoai, Email, Ngayvaolam FROM Nhanvien";
 
-            // Sử dụng ConnectionString từ lớp BaseDataAccess
-            using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
+            try
             {
-                try
+                using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
                 {
-                    connection.Open(); // Mở kết nối
-
-                    string selectSql = "SELECT Manhanvien, Hoten, Ngaysinh, Gioitinh, Diachi, Sodienthoai, Email, Ngayvaolam FROM Nhanvien";
-
-                    using (SQLiteCommand command = new SQLiteCommand(selectSql, connection))
+                    connection.Open();
+                    using (SQLiteCommand cmd = new SQLiteCommand(query, connection))
                     {
-                        using (SQLiteDataReader reader = command.ExecuteReader()) // Thực thi SELECT và lấy DataReader
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
-                            while (reader.Read()) // Đọc từng dòng dữ liệu
+                            while (reader.Read())
                             {
-                                Nhanvien nhanvien = new Nhanvien
-                                {
-                                    // Đọc dữ liệu từ reader và ánh xạ vào thuộc tính của object Nhanvien
-                                    Manhanvien = reader["Manhanvien"].ToString(),
-                                    Hoten = reader["Hoten"].ToString(),
-                                    // Đọc TEXT và chuyển đổi sang DateTime
-                                    Ngaysinh = DateTime.Parse(reader["Ngaysinh"].ToString()),
-                                    Gioitinh = reader["Gioitinh"].ToString(),
-                                    Diachi = reader["Diachi"].ToString(),
-                                    // Kiểm tra DBNull cho các cột có thể NULL
-                                    Sodienthoai = reader["Sodienthoai"] != DBNull.Value ? reader["Sodienthoai"].ToString() : null,
-                                    Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : null,
-                                    // Đọc TEXT và chuyển đổi sang DateTime
-                                    Ngayvaolam = DateTime.Parse(reader["Ngayvaolam"].ToString())
-                                };
-                                nhanviens.Add(nhanvien); // Thêm object vào danh sách
+                                nhanviens.Add(MapDataReaderToNhanvien(reader));
                             }
-                        } // DataReader tự đóng khi thoát using
+                        }
                     }
                 }
-                catch (Exception ex)
-                {
-                    // Xử lý lỗi (ví dụ: hiển thị MessageBox hoặc ghi log)
-                    MessageBox.Show($"Lỗi khi lấy danh sách nhân viên: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // Tùy chọn: ném lại exception để lớp gọi xử lý
-                    // throw;
-                }
-            } // Connection tự đóng khi thoát using
+            }
+            catch (Exception ex)
+            {
+                // Thay vì MessageBox, ném lại ngoại lệ để BLL xử lý
+                throw new Exception("Lỗi DAL khi lấy danh sách nhân viên: " + ex.Message, ex);
+            }
             return nhanviens; // Trả về danh sách nhân viên
         }
 
@@ -106,25 +85,15 @@ namespace CoffeeManagementSystem.DAL // Đặt DAL trong một namespace con đ�
                         {
                             if (reader.Read()) // Đọc hàng đầu tiên (và duy nhất) nếu có
                             {
-                                nhanvien = new Nhanvien
-                                {
-                                    Manhanvien = reader["Manhanvien"].ToString(),
-                                    Hoten = reader["Hoten"].ToString(),
-                                    Ngaysinh = DateTime.Parse(reader["Ngaysinh"].ToString()),
-                                    Gioitinh = reader["Gioitinh"].ToString(),
-                                    Diachi = reader["Diachi"].ToString(),
-                                    Sodienthoai = reader["Sodienthoai"] != DBNull.Value ? reader["Sodienthoai"].ToString() : null,
-                                    Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : null,
-                                    Ngayvaolam = DateTime.Parse(reader["Ngayvaolam"].ToString())
-                                };
+                                nhanvien = MapDataReaderToNhanvien(reader);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi lấy nhân viên theo ID: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // throw;
+                    // Thay vì MessageBox, ném lại ngoại lệ để BLL xử lý
+                    throw new Exception("Lỗi DAL khi lấy nhân viên theo ID: " + ex.Message, ex);
                 }
             }
             return nhanvien; // Trả về object Nhanvien hoặc null
@@ -138,7 +107,8 @@ namespace CoffeeManagementSystem.DAL // Đặt DAL trong một namespace con đ�
         /// Thêm một nhân viên mới vào CSDL.
         /// </summary>
         /// <param name="nhanvien">Đối tượng Nhanvien cần thêm.</param>
-        public void AddNhanvien(Nhanvien nhanvien)
+        /// <returns>True nếu thêm thành công, ngược lại False.</returns>
+        public bool AddNhanvien(Nhanvien nhanvien) // THAY ĐỔI TỪ VOID SANG BOOL
         {
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
             {
@@ -152,25 +122,16 @@ namespace CoffeeManagementSystem.DAL // Đặt DAL trong một namespace con đ�
                     using (SQLiteCommand command = new SQLiteCommand(insertSql, connection))
                     {
                         // Sử dụng Parameters để chèn dữ liệu
-                        command.Parameters.AddWithValue("@Manhanvien", nhanvien.Manhanvien);
-                        command.Parameters.AddWithValue("@Hoten", nhanvien.Hoten);
-                        // Chuyển DateTime sang TEXT để lưu
-                        command.Parameters.AddWithValue("@Ngaysinh", nhanvien.Ngaysinh.ToString("yyyy-MM-dd HH:mm:ss"));
-                        command.Parameters.AddWithValue("@Gioitinh", nhanvien.Gioitinh);
-                        command.Parameters.AddWithValue("@Diachi", nhanvien.Diachi);
-                        // Xử lý cột có thể NULL: nếu giá trị C# là null, chèn DBNull.Value
-                        command.Parameters.AddWithValue("@Sodienthoai", (object)nhanvien.Sodienthoai ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@Email", (object)nhanvien.Email ?? DBNull.Value);
-                        // Chuyển DateTime sang TEXT để lưu
-                        command.Parameters.AddWithValue("@Ngayvaolam", nhanvien.Ngayvaolam.ToString("yyyy-MM-dd HH:mm:ss"));
+                        AddNhanvienParameters(command, nhanvien); // Dùng phương thức hỗ trợ chung
 
-                        command.ExecuteNonQuery(); // Thực thi lệnh INSERT
+                        int rowsAffected = command.ExecuteNonQuery(); // Thực thi lệnh INSERT
+                        return rowsAffected > 0; // Trả về true nếu có ít nhất 1 hàng bị ảnh hưởng
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi thêm nhân viên: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // throw;
+                    // Thay vì MessageBox, ném lại ngoại lệ để BLL xử lý
+                    throw new Exception("Lỗi DAL khi thêm nhân viên: " + ex.Message, ex);
                 }
             }
         }
@@ -183,7 +144,8 @@ namespace CoffeeManagementSystem.DAL // Đặt DAL trong một namespace con đ�
         /// Cập nhật thông tin của một nhân viên.
         /// </summary>
         /// <param name="nhanvien">Đối tượng Nhanvien chứa thông tin cập nhật (cần có Manhanvien).</param>
-        public void UpdateNhanvien(Nhanvien nhanvien)
+        /// <returns>True nếu cập nhật thành công, ngược lại False.</returns>
+        public bool UpdateNhanvien(Nhanvien nhanvien) // THAY ĐỔI TỪ VOID SANG BOOL
         {
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
             {
@@ -204,23 +166,16 @@ namespace CoffeeManagementSystem.DAL // Đặt DAL trong một namespace con đ�
                     using (SQLiteCommand command = new SQLiteCommand(updateSql, connection))
                     {
                         // Sử dụng Parameters để cập nhật dữ liệu
-                        command.Parameters.AddWithValue("@Hoten", nhanvien.Hoten);
-                        command.Parameters.AddWithValue("@Ngaysinh", nhanvien.Ngaysinh.ToString("yyyy-MM-dd HH:mm:ss"));
-                        command.Parameters.AddWithValue("@Gioitinh", nhanvien.Gioitinh);
-                        command.Parameters.AddWithValue("@Diachi", nhanvien.Diachi);
-                        command.Parameters.AddWithValue("@Sodienthoai", (object)nhanvien.Sodienthoai ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@Email", (object)nhanvien.Email ?? DBNull.Value);
-                        command.Parameters.AddWithValue("@Ngayvaolam", nhanvien.Ngayvaolam.ToString("yyyy-MM-dd HH:mm:ss"));
-                        // Parameter cho điều kiện WHERE
-                        command.Parameters.AddWithValue("@Manhanvien", nhanvien.Manhanvien);
+                        AddNhanvienParameters(command, nhanvien); // Dùng phương thức hỗ trợ chung
 
-                        command.ExecuteNonQuery(); // Thực thi lệnh UPDATE
+                        int rowsAffected = command.ExecuteNonQuery(); // Thực thi lệnh UPDATE
+                        return rowsAffected > 0; // Trả về true nếu có ít nhất 1 hàng bị ảnh hưởng
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi cập nhật nhân viên: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // throw;
+                    // Thay vì MessageBox, ném lại ngoại lệ để BLL xử lý
+                    throw new Exception("Lỗi DAL khi cập nhật nhân viên: " + ex.Message, ex);
                 }
             }
         }
@@ -233,7 +188,8 @@ namespace CoffeeManagementSystem.DAL // Đặt DAL trong một namespace con đ�
         /// Xóa một nhân viên khỏi CSDL.
         /// </summary>
         /// <param name="manhanvien">Mã nhân viên cần xóa.</param>
-        public void DeleteNhanvien(string manhanvien)
+        /// <returns>True nếu xóa thành công, ngược lại False.</returns>
+        public bool DeleteNhanvien(string manhanvien) // THAY ĐỔI TỪ VOID SANG BOOL
         {
             using (SQLiteConnection connection = new SQLiteConnection(ConnectionString))
             {
@@ -247,13 +203,14 @@ namespace CoffeeManagementSystem.DAL // Đặt DAL trong một namespace con đ�
                         // Sử dụng Parameter cho điều kiện WHERE
                         command.Parameters.AddWithValue("@Manhanvien", manhanvien);
 
-                        command.ExecuteNonQuery(); // Thực thi lệnh DELETE
+                        int rowsAffected = command.ExecuteNonQuery(); // Thực thi lệnh DELETE
+                        return rowsAffected > 0; // Trả về true nếu có ít nhất 1 hàng bị ảnh hưởng
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi xóa nhân viên: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // throw;
+                    // Thay vì MessageBox, ném lại ngoại lệ để BLL xử lý
+                    throw new Exception("Lỗi DAL khi xóa nhân viên: " + ex.Message, ex);
                 }
             }
         }
@@ -290,10 +247,10 @@ namespace CoffeeManagementSystem.DAL // Đặt DAL trong một namespace con đ�
                         SELECT Manhanvien, Hoten, Ngaysinh, Gioitinh, Diachi, Sodienthoai, Email, Ngayvaolam
                         FROM Nhanvien
                         WHERE LOWER(Manhanvien) LIKE @SearchTerm
-                           OR LOWER(Hoten) LIKE @SearchTerm
-                           OR LOWER(Diachi) LIKE @SearchTerm
-                           OR LOWER(Sodienthoai) LIKE @SearchTerm
-                           OR LOWER(Email) LIKE @SearchTerm";
+                            OR LOWER(Hoten) LIKE @SearchTerm
+                            OR LOWER(Diachi) LIKE @SearchTerm
+                            OR LOWER(Sodienthoai) LIKE @SearchTerm
+                            OR LOWER(Email) LIKE @SearchTerm";
 
                     using (SQLiteCommand command = new SQLiteCommand(selectSql, connection))
                     {
@@ -305,29 +262,52 @@ namespace CoffeeManagementSystem.DAL // Đặt DAL trong một namespace con đ�
                         {
                             while (reader.Read())
                             {
-                                Nhanvien nhanvien = new Nhanvien
-                                {
-                                    Manhanvien = reader["Manhanvien"].ToString(),
-                                    Hoten = reader["Hoten"].ToString(),
-                                    Ngaysinh = DateTime.Parse(reader["Ngaysinh"].ToString()),
-                                    Gioitinh = reader["Gioitinh"].ToString(),
-                                    Diachi = reader["Diachi"].ToString(),
-                                    Sodienthoai = reader["Sodienthoai"] != DBNull.Value ? reader["Sodienthoai"].ToString() : null,
-                                    Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : null,
-                                    Ngayvaolam = DateTime.Parse(reader["Ngayvaolam"].ToString())
-                                };
-                                nhanviens.Add(nhanvien);
+                                nhanviens.Add(MapDataReaderToNhanvien(reader));
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi tìm kiếm nhân viên: {ex.Message}", "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // throw;
+                    // Thay vì MessageBox, ném lại ngoại lệ để BLL xử lý
+                    throw new Exception("Lỗi DAL khi tìm kiếm nhân viên: " + ex.Message, ex);
                 }
             }
             return nhanviens; // Trả về danh sách nhân viên phù hợp
+        }
+
+        // =====================================================
+        // PHƯƠNG THỨC HỖ TRỢ: ÁNH XẠ DATAREADER SANG NHANVIEN OBJECT
+        // =====================================================
+        private Nhanvien MapDataReaderToNhanvien(SQLiteDataReader reader)
+        {
+            return new Nhanvien
+            {
+                Manhanvien = reader["Manhanvien"].ToString(),
+                Hoten = reader["Hoten"].ToString(),
+                Ngaysinh = DateTime.Parse(reader["Ngaysinh"].ToString()),
+                Gioitinh = reader["Gioitinh"].ToString(),
+                Diachi = reader["Diachi"].ToString(),
+                Sodienthoai = reader["Sodienthoai"] != DBNull.Value ? reader["Sodienthoai"].ToString() : null,
+                Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : null,
+                Ngayvaolam = DateTime.Parse(reader["Ngayvaolam"].ToString())
+            };
+        }
+
+        // =====================================================
+        // PHƯƠNG THỨC HỖ TRỢ: THÊM THAM SỐ CHO LỆNH COMMAND
+        // =====================================================
+        // Sử dụng chung cho Insert và Update
+        private void AddNhanvienParameters(SQLiteCommand cmd, Nhanvien nhanvien)
+        {
+            cmd.Parameters.AddWithValue("@Manhanvien", nhanvien.Manhanvien);
+            cmd.Parameters.AddWithValue("@Hoten", nhanvien.Hoten);
+            cmd.Parameters.AddWithValue("@Ngaysinh", nhanvien.Ngaysinh.ToString("yyyy-MM-dd HH:mm:ss"));
+            cmd.Parameters.AddWithValue("@Gioitinh", nhanvien.Gioitinh);
+            cmd.Parameters.AddWithValue("@Diachi", nhanvien.Diachi);
+            cmd.Parameters.AddWithValue("@Sodienthoai", (object)nhanvien.Sodienthoai ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Email", (object)nhanvien.Email ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Ngayvaolam", nhanvien.Ngayvaolam.ToString("yyyy-MM-dd HH:mm:ss"));
         }
     }
 }

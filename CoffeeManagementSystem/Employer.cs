@@ -7,13 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CoffeeManagementSystem.DAL;
+// Bỏ using CoffeeManagementSystem.DAL; // KHÔNG DÙNG DAL TRỰC TIẾP TẠI FORM
+using CoffeeManagementSystem.BLL; // Thêm using cho BLL
+
 namespace CoffeeManagementSystem
 {
     public partial class EmployerForm : Form
     {
-        private NhanvienDAL nhanvienDAL = new NhanvienDAL();
-        private CalamviecDAL calamviecDAL = new CalamviecDAL();
+        private NhanvienBLL nhanvienBLL = new NhanvienBLL(); // Thay NhanvienDAL thành NhanvienBLL
+        // Giữ nguyên nếu bạn có CalamviecBLL riêng thì nên thay đổi sau
+
         public EmployerForm()
         {
             InitializeComponent();
@@ -43,13 +46,13 @@ namespace CoffeeManagementSystem
             //dgvCalamviec.AutoGenerateColumns = false;
             //dgvCalamviec.AllowUserToAddRows = false;
             //dgvCalamviec.AllowUserToDeleteRows = false;
-           // dgvCalamviec.EditMode = DataGridViewEditMode.EditProgrammatically;
+            // dgvCalamviec.EditMode = DataGridViewEditMode.EditProgrammatically;
 
             // Assign events to Shift tab controls
             //this.txtTimKiemCalamviec.KeyDown += new KeyEventHandler(txtTimKiemCalamviec_KeyDown);
-           // this.txtTimKiemCalamviec.TextChanged += new EventHandler(txtTimKiemCalamviec_TextChanged);
-           // this.dgvCalamviec.CellClick += new DataGridViewCellEventHandler(dgvCalamviec_CellClick);
-           // this.btnAddCalamviec.Click += new EventHandler(btnAddCalamviec_Click);
+            // this.txtTimKiemCalamviec.TextChanged += new EventHandler(txtTimKiemCalamviec_TextChanged);
+            // this.dgvCalamviec.CellClick += new DataGridViewCellEventHandler(dgvCalamviec_CellClick);
+            // this.btnAddCalamviec.Click += new EventHandler(btnAddCalamviec_Click);
             //this.btnRefreshCalamviec.Click += new EventHandler(btnRefreshCalamviec_Click);
             // this.btnExportCalamviec.Click += new EventHandler(btnExportCalamviec_Click);
             // If there's a separate search button for shifts, uncomment and assign its click event
@@ -66,14 +69,15 @@ namespace CoffeeManagementSystem
             // Ensure the TabControl is named tabControlMain and the TabPage is named tabPageNhanvien
             //if (tabControlMain.TabPages.ContainsKey("tabPageNhanvien"))
             //{
-               // tabControlMain.SelectedTab = tabControlMain.TabPages["tabPageNhanvien"];
+            // tabControlMain.SelectedTab = tabControlMain.TabPages["tabPageNhanvien"];
             //}
         }
         private void LoadDanhSachNhanvien()
         {
             try
             {
-                List<Nhanvien> danhSach = nhanvienDAL.GetAllNhanviens();
+                // Gọi BLL để lấy danh sách nhân viên
+                List<Nhanvien> danhSach = nhanvienBLL.GetAllNhanviens(); // Đã sửa từ nhanvienDAL.GetAllNhanviens()
                 dgvNhanvien.DataSource = danhSach;
                 dgvNhanvien.Refresh();
             }
@@ -110,11 +114,13 @@ namespace CoffeeManagementSystem
                 List<Nhanvien> ketQuaHienThi;
                 if (string.IsNullOrWhiteSpace(searchTerm))
                 {
-                    ketQuaHienThi = nhanvienDAL.GetAllNhanviens();
+                    // Gọi BLL để lấy tất cả nhân viên
+                    ketQuaHienThi = nhanvienBLL.GetAllNhanviens(); // Đã sửa từ nhanvienDAL.GetAllNhanviens()
                 }
                 else
                 {
-                    ketQuaHienThi = nhanvienDAL.SearchNhanviens(searchTerm);
+                    // Gọi BLL để tìm kiếm nhân viên
+                    ketQuaHienThi = nhanvienBLL.SearchNhanviens(searchTerm); // Đã sửa từ nhanvienDAL.SearchNhanviens()
                 }
 
                 dgvNhanvien.DataSource = ketQuaHienThi;
@@ -130,22 +136,22 @@ namespace CoffeeManagementSystem
                 MessageBox.Show($"Lỗi khi tìm kiếm nhân viên: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-       // private void LoadDanhSachCalamviec()
+        // private void LoadDanhSachCalamviec()
         //{
-         //   try
-          //  {
-          //      List<Calamviec> danhSach = calamviecDAL.GetAllCalamviecs();
-           //     dgvCalamviec.DataSource = danhSach;
-            //    dgvCalamviec.Refresh();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Không thể tải danh sách ca làm việc: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-       // }
+        //   try
+        //   {
+        //      List<Calamviec> danhSach = calamviecDAL.GetAllCalamviecs();
+        //     dgvCalamviec.DataSource = danhSach;
+        //      dgvCalamviec.Refresh();
+        //   }
+        //   catch (Exception ex)
+        //   {
+        //      MessageBox.Show("Không thể tải danh sách ca làm việc: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //   }
+        // }
 
         // Method to load filtered shifts and display them in the DataGridView
-        
+
         private void loadtabPageNhanvien()
         {
             // ... logic tải UserControl FormNhanvien vào TabPage ...
@@ -216,36 +222,33 @@ namespace CoffeeManagementSystem
                 }
             }
         }
-        
+
         //private void btnAddCalamviec_Click(object sender, EventArgs e)
         //{
         //    FormChiTietCalamviec formChiTiet = new FormChiTietCalamviec();
-         //   if (formChiTiet.ShowDialog() == DialogResult.OK)
-          //  {
-          //      LoadDanhSachCalamviec(); // Reload list after successful save
-          //  }
-      //  }
-      //  private void txtTimKiemCalamviec_KeyDown(object sender, KeyEventArgs e)
-       // {
-         //   if (e.KeyCode == Keys.Enter)
-         //   {
-           //     e.Handled = true;
-            //    e.SuppressKeyPress = true;
-              //  string searchTerm = txtTimKiemCalamviec.Text.Trim();
-             //   LoadFilteredCalamviecData(searchTerm);
-           // }
+        //    if (formChiTiet.ShowDialog() == DialogResult.OK)
+        //    {
+        //        LoadDanhSachCalamviec(); // Reload list after successful save
+        //    }
+        //}
+        // private void txtTimKiemCalamviec_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    if (e.KeyCode == Keys.Enter)
+        //    {
+        //        e.Handled = true;
+        //        e.SuppressKeyPress = true;
+        //        string searchTerm = txtTimKiemCalamviec.Text.Trim();
+        //        LoadFilteredCalamviecData(searchTerm);
+        //    }
         //}
 
         // TextChanged event on the shift search TextBox
-       // private void txtTimKiemCalamviec_TextChanged(object sender, EventArgs e)
+        // private void txtTimKiemCalamviec_TextChanged(object sender, EventArgs e)
         //{
         //    string searchTerm = txtTimKiemCalamviec.Text.Trim();
-         //   LoadFilteredCalamviecData(searchTerm);
+        //    LoadFilteredCalamviecData(searchTerm);
         //}
 
-        // CellClick event for the shift DataGridView
-        
-        
 
         private void tabPageNhanvien_Click(object sender, EventArgs e)
         {

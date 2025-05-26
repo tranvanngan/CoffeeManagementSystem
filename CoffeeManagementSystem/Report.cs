@@ -96,7 +96,7 @@ namespace CoffeeManagementSystem
 
                 // Cột "TenKhachhang" - Tự động lấp đầy
                 DataGridViewTextBoxColumn tenKHColumn = new DataGridViewTextBoxColumn();
-                tenKHColumn.DataPropertyName = "TenKhachhang";
+                tenKHColumn.DataPropertyName = "Hoten";
                 tenKHColumn.Name = "TenKhachhang";
                 tenKHColumn.HeaderText = "Tên Khách hàng";
                 tenKHColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // Tự động lấp đầy
@@ -106,7 +106,7 @@ namespace CoffeeManagementSystem
 
                 // Cột "Sodienthoa"
                 DataGridViewTextBoxColumn sdtColumn = new DataGridViewTextBoxColumn();
-                sdtColumn.DataPropertyName = "Sodienthoa";
+                sdtColumn.DataPropertyName = "Sodienthoai";
                 sdtColumn.Name = "Sodienthoa";
                 sdtColumn.HeaderText = "Số điện thoại";
                 sdtColumn.Width = 120; // Chiều rộng cố định

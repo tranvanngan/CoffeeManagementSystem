@@ -95,6 +95,7 @@
     </Compile>
     <Compile Include="BLL\DouongBLL.cs" />
     <Compile Include="BLL\InforBLL.cs" />
+    <Compile Include="BLL\NhanvienBLL.cs" />
     <Compile Include="BLL\OrderBLL.cs" />
     <Compile Include="Calamviec.cs">
       <SubType>Form</SubType>
@@ -287,9 +288,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\3bestseller.png" />
-    <None Include="QuanLyCaPheDatabase.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="QuanLyCaPheDatabase.db" />
     <None Include="Resources\banner.png" />
     <Content Include="Resources\BaoCao.png" />
     <None Include="Resources\BaoCao1.png" />
