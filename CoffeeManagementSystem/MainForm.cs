@@ -131,7 +131,7 @@ namespace CoffeeManagementSystem
 
         }
 
-        private void btnTaikhoan_Click(object sender, EventArgs e)
+        private void btnTaiKhoan_Click(object sender, EventArgs e)
         {
             LoadFormCon(new Infor(_loggedInMaNhanVien));
         }
@@ -154,5 +154,6 @@ namespace CoffeeManagementSystem
             // Application.Exit(); // Không nên dùng Application.Exit() ở đây nếu bạn muốn DangNhapForm tiếp tục chạy.
             // this.Close(); // Dùng this.Close() để đóng MainForm hiện tại.
         }
+
     }
 }

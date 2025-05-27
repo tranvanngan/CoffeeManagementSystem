@@ -13,6 +13,7 @@ namespace CoffeeManagementSystem
 {
     public partial class MainEmployer : Form
     {
+        private string _loggedInMaNhanVien; 
         private string _maNhanVienHienTai;
         private string _tenNhanVienHienTai;
 
@@ -25,6 +26,7 @@ namespace CoffeeManagementSystem
         // Constructor MỚI để nhận thông tin nhân viên từ DangNhapForm
         public MainEmployer(string maNhanVien, string tenNhanVien) : this() // Gọi constructor mặc định
         {
+            _loggedInMaNhanVien = maNhanVien; 
             _maNhanVienHienTai = maNhanVien;
             _tenNhanVienHienTai = tenNhanVien;
 
@@ -115,12 +117,7 @@ namespace CoffeeManagementSystem
             // Sự kiện vẽ cho panel2
         }
 
-        private void btnTaikhoan_Click(object sender, EventArgs e)
-        {
-            LoadFormCon(new Infor(_maNhanVienHienTai));
-        }
-
-        private void btnLogout_Click(object sender, EventArgs e)
+        private void btnDangXuat_Click(object sender, EventArgs e)
         {
             this.Hide();
 
@@ -131,5 +128,12 @@ namespace CoffeeManagementSystem
             loginForm.Show();
             this.Close();
         }
+
+        private void btnTaiKhoan_Click(object sender, EventArgs e)
+        {
+            LoadFormCon(new Infor(_loggedInMaNhanVien));
+        }
+
+        
     }
 }

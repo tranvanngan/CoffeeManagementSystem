@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -34,6 +34,46 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -93,9 +133,18 @@
     <Compile Include="AddUser.Designer.cs">
       <DependentUpon>AddUser.cs</DependentUpon>
     </Compile>
-    <Compile Include="BLL\DouongBLL.cs" />
-    <Compile Include="BLL\InforBLL.cs" />
-    <Compile Include="BLL\OrderBLL.cs" />
+    <Compile Include="bll\AuthBLL.cs" />
+    <Compile Include="bll\ChitietdonhangBLL.cs" />
+    <Compile Include="bll\DonhangBLL.cs" />
+    <Compile Include="bll\DouongBLL.cs" />
+    <Compile Include="bll\GiadouongBLL.cs" />
+    <Compile Include="bll\InforBLL.cs" />
+    <Compile Include="bll\KhachhangBLL.cs" />
+    <Compile Include="bll\LoaidouongBLL.cs" />
+    <Compile Include="bll\NhanvienBLL.cs" />
+    <Compile Include="bll\OrderBLL.cs" />
+    <Compile Include="bll\PaymentBLL.cs" />
+    <Compile Include="bll\ReportBLL.cs" />
     <Compile Include="Calamviec.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,20 +163,20 @@
     <Compile Include="CustomerInfor.Designer.cs">
       <DependentUpon>CustomerInfor.cs</DependentUpon>
     </Compile>
-    <Compile Include="DAL\BaseDataAccess.cs" />
-    <Compile Include="DAL\CalamviecDAL.cs" />
-    <Compile Include="DAL\ChamcongDAL.cs" />
-    <Compile Include="DAL\ChitietdonhangDAL.cs" />
-    <Compile Include="DAL\DonhangDAL.cs" />
-    <Compile Include="DAL\DouongDAL.cs" />
-    <Compile Include="DAL\DouongReportDAL.cs" />
-    <Compile Include="DAL\GiadouongDAL.cs" />
-    <Compile Include="DAL\KhachHangDAL.cs" />
-    <Compile Include="DAL\LoaidouongDAL.cs" />
-    <Compile Include="DAL\LuongDAL.cs" />
-    <Compile Include="DAL\NhanvienDAL.cs" />
-    <Compile Include="DAL\ReportDAL.cs" />
-    <Compile Include="DAL\TaikhoanDAL.cs" />
+    <Compile Include="dal\BaseDataAccess.cs" />
+    <Compile Include="dal\CalamviecDAL.cs" />
+    <Compile Include="dal\ChamcongDAL.cs" />
+    <Compile Include="dal\ChitietdonhangDAL.cs" />
+    <Compile Include="dal\DonhangDAL.cs" />
+    <Compile Include="dal\DouongDAL.cs" />
+    <Compile Include="dal\DouongReportDAL.cs" />
+    <Compile Include="dal\GiadouongDAL.cs" />
+    <Compile Include="dal\KhachHangDAL.cs" />
+    <Compile Include="dal\LoaidouongDAL.cs" />
+    <Compile Include="dal\LuongDAL.cs" />
+    <Compile Include="dal\NhanvienDAL.cs" />
+    <Compile Include="dal\ReportDAL.cs" />
+    <Compile Include="dal\TaikhoanDAL.cs" />
     <Compile Include="DangNhapForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -215,6 +264,7 @@
     <Compile Include="Salary.Designer.cs">
       <DependentUpon>Salary.cs</DependentUpon>
     </Compile>
+    <Compile Include="utilities\Logger.cs" />
     <EmbeddedResource Include="AddDrink.resx">
       <DependentUpon>AddDrink.cs</DependentUpon>
     </EmbeddedResource>
@@ -288,13 +338,15 @@
   <ItemGroup>
     <Content Include="Resources\3bestseller.png" />
     <None Include="QuanLyCaPheDatabase.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\banner.png" />
     <Content Include="Resources\BaoCao.png" />
     <None Include="Resources\BaoCao1.png" />
     <Content Include="Resources\bestseller.png" />
     <Content Include="Resources\Cam nhạt đơn giản thức uống banner.png" />
+    <None Include="Resources\close.png" />
+    <None Include="Resources\close_black.png" />
     <Content Include="Resources\CoffeCover.png" />
     <None Include="Resources\CoffeCover1.png" />
     <Content Include="Resources\coffeeshopLogin.jpg" />
@@ -302,10 +354,12 @@
     <Content Include="Resources\DoUong.png" />
     <None Include="Resources\LuongThuong1.png" />
     <None Include="Resources\DoUong1.png" />
+    <None Include="Resources\hoadon.png" />
     <Content Include="Resources\KhachHang.png" />
     <None Include="Resources\NhanVien1.png" />
     <None Include="Resources\KhachHang1.png" />
     <None Include="Resources\Logout_35px.png" />
+    <None Include="Resources\logout.png" />
     <Content Include="Resources\LuongThuong.png" />
     <Content Include="Resources\NhanVien.png" />
     <None Include="Resources\TaiKhoan.png" />
@@ -313,6 +367,7 @@
     <Content Include="Resources\TrangChu.png" />
     <None Include="Resources\TrangChu1.png" />
     <Content Include="Resources\Trắng Xanh Hình Ảnh Hiện Đại Đồng Giá Sale Deal Ưu Đãi Đồ Ăn Thức Uống Banner Ngang.png" />
+    <None Include="Resources\Xuat.png" />
     <Content Include="Resources\Đầy Màu Sắc Minh Họa Vui Tươi Hình Ảnh Sale Deal Ưu Đãi Đồ Ăn Thức Uống Banner.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

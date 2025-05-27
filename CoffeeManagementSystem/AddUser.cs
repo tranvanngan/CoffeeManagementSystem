@@ -9,22 +9,23 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 // Đảm bảo using namespace chứa lớp Nhanvien (Model)
-using CoffeeManagementSystem; // Dựa trên namespace của lớp Nhanvien bạn cung cấp
+using CoffeeManagementSystem;
 
-// Đảm bảo using namespace chứa lớp NhanvienDAL (DAL)
-using CoffeeManagementSystem.DAL; // Thay thế bằng namespace thực tế của bạn nếu khác
+// Đảm bảo using namespace chứa lớp NhanvienBLL (BLL)
+using CoffeeManagementSystem.BLL; // Thay thế bằng namespace thực tế của bạn nếu khác
 
 namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với dự án của bạn
 {
     public partial class FormChiTietNhanvien : Form
     {
-        private NhanvienDAL nhanvienDAL = new NhanvienDAL(); // Đối tượng DAL
+        private NhanvienBLL nhanvienBLL; // Thay thế NhanvienDAL bằng NhanvienBLL
         private Nhanvien currentNhanvien; // Đối tượng Nhanvien hiện tại (null nếu thêm mới)
 
         // Constructor cho chế độ Thêm mới
         public FormChiTietNhanvien()
         {
             InitializeComponent();
+            nhanvienBLL = new NhanvienBLL(); // Khởi tạo BLL
             this.Text = "Thêm Nhân Viên Mới"; // Tiêu đề Form
 
             // Hiển thị tất cả các nút
@@ -48,6 +49,7 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
         public FormChiTietNhanvien(Nhanvien nhanvienToEdit)
         {
             InitializeComponent();
+            nhanvienBLL = new NhanvienBLL(); // Khởi tạo BLL
             this.Text = "Cập Nhật Thông Tin Nhân Viên"; // Tiêu đề Form
             currentNhanvien = nhanvienToEdit; // Lưu đối tượng nhân viên cần sửa
 
@@ -133,7 +135,7 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
         {
             Nhanvien newNhanvien = GetNhanvienInfoFromControls();
 
-            // Kiểm tra dữ liệu bắt buộc
+            // Kiểm tra dữ liệu bắt buộc (có thể chuyển logic này sang BLL để tái sử dụng)
             if (string.IsNullOrEmpty(newNhanvien.Manhanvien) || string.IsNullOrEmpty(newNhanvien.Hoten) || string.IsNullOrEmpty(newNhanvien.Gioitinh) || string.IsNullOrEmpty(newNhanvien.Diachi))
             {
                 MessageBox.Show("Mã nhân viên, Họ tên, Giới tính và Địa chỉ không được để trống.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -142,12 +144,23 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
 
             try
             {
-                nhanvienDAL.AddNhanvien(newNhanvien);
-                MessageBox.Show("Thêm nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                // Gọi BLL để thêm nhân viên và kiểm tra kết quả trả về
+                if (nhanvienBLL.AddNhanvien(newNhanvien)) // Đã sửa: gọi BLL và kiểm tra bool
+                {
+                    MessageBox.Show("Thêm nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Thêm nhân viên thất bại. Có thể mã nhân viên đã tồn tại hoặc dữ liệu không hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            catch (Exception ex)
+            catch (ArgumentException ex) // Bắt lỗi nghiệp vụ từ BLL (ví dụ: mã nhân viên trùng, định dạng sai)
+            {
+                MessageBox.Show($"Lỗi nhập liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex) // Bắt các lỗi khác (ví dụ: lỗi kết nối CSDL)
             {
                 MessageBox.Show("Lỗi khi thêm nhân viên: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -158,7 +171,7 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
         {
             Nhanvien updatedNhanvien = GetNhanvienInfoFromControls();
 
-            // Kiểm tra dữ liệu bắt buộc
+            // Kiểm tra dữ liệu bắt buộc (có thể chuyển logic này sang BLL để tái sử dụng)
             if (string.IsNullOrEmpty(updatedNhanvien.Hoten) || string.IsNullOrEmpty(updatedNhanvien.Gioitinh) || string.IsNullOrEmpty(updatedNhanvien.Diachi))
             {
                 MessageBox.Show("Họ tên, Giới tính và Địa chỉ không được để trống.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -167,12 +180,23 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
 
             try
             {
-                nhanvienDAL.UpdateNhanvien(updatedNhanvien);
-                MessageBox.Show("Cập nhật nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                // Gọi BLL để cập nhật nhân viên và kiểm tra kết quả trả về
+                if (nhanvienBLL.UpdateNhanvien(updatedNhanvien)) // Đã sửa: gọi BLL và kiểm tra bool
+                {
+                    MessageBox.Show("Cập nhật nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Cập nhật nhân viên thất bại. Không tìm thấy nhân viên hoặc dữ liệu không hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            catch (Exception ex)
+            catch (ArgumentException ex) // Bắt lỗi nghiệp vụ từ BLL
+            {
+                MessageBox.Show($"Lỗi nhập liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex) // Bắt các lỗi khác
             {
                 MessageBox.Show("Lỗi khi cập nhật nhân viên: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -193,12 +217,23 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
             {
                 try
                 {
-                    nhanvienDAL.DeleteNhanvien(currentNhanvien.Manhanvien);
-                    MessageBox.Show("Xóa nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
+                    // Gọi BLL để xóa nhân viên và kiểm tra kết quả trả về
+                    if (nhanvienBLL.DeleteNhanvien(currentNhanvien.Manhanvien)) // Đã sửa: gọi BLL và kiểm tra bool
+                    {
+                        MessageBox.Show("Xóa nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Xóa nhân viên thất bại. Không tìm thấy nhân viên.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
-                catch (Exception ex)
+                catch (ArgumentException ex) // Bắt lỗi nghiệp vụ từ BLL
+                {
+                    MessageBox.Show($"Lỗi nhập liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                catch (Exception ex) // Bắt các lỗi khác
                 {
                     MessageBox.Show("Lỗi khi xóa nhân viên: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -210,6 +245,15 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+
+
+        // Sự kiện click nút đóng Form (X) ở góc trên bên phải
+
+        private void lblCid_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
