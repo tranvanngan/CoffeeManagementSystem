@@ -4,18 +4,52 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq; // Cần thiết nếu bạn dùng LINQ (cho Sum())
-
+using System.Drawing;
+using System.Drawing.Printing;
 namespace CoffeeManagementSystem
 {
     public partial class ReportForm : Form
     {
         private ReportBLL _reportBLL; // Khai báo đối tượng BLL thay vì các DAL riêng lẻ
+                                      // Đối tượng để điều khiển việc in ấn
+        private PrintDocument printDocumentPotentialCustomers;
+        private PrintDocument printDocumentRevenue;
+        private PrintDocument printDocumentProductSales;
 
+        // Các đối tượng PrintPreviewDialog để xem trước khi in
+        private PrintPreviewDialog printPreviewDialogPotentialCustomers;
+        private PrintPreviewDialog printPreviewDialogRevenue;
+        private PrintPreviewDialog printPreviewDialogProductSales;
+
+        // Biến để lưu trữ DataGridView hiện tại đang được in
+        private DataGridView dgvToPrint;
+        // Biến để theo dõi số trang hiện tại khi in
+        private int currentRowIndex = 0;
+        private string reportTitle = ""; // Tiêu đề báo cáo
+        private string reportDateRange = ""; // Khoảng thời gian báo cáo
         public ReportForm()
         {
             InitializeComponent();
 
             _reportBLL = new ReportBLL(); // Khởi tạo BLL
+                                          // Khởi tạo PrintDocument và PrintPreviewDialog cho báo cáo Khách hàng tiềm năng
+            printDocumentPotentialCustomers = new PrintDocument();
+            printDocumentPotentialCustomers.PrintPage += new PrintPageEventHandler(this.printDocument_PrintPage);
+            printPreviewDialogPotentialCustomers = new PrintPreviewDialog();
+            printPreviewDialogPotentialCustomers.Document = printDocumentPotentialCustomers;
+
+            // Khởi tạo PrintDocument và PrintPreviewDialog cho báo cáo Doanh thu
+            printDocumentRevenue = new PrintDocument();
+            printDocumentRevenue.PrintPage += new PrintPageEventHandler(this.printDocument_PrintPage);
+            printPreviewDialogRevenue = new PrintPreviewDialog();
+            printPreviewDialogRevenue.Document = printDocumentRevenue;
+
+            // Khởi tạo PrintDocument và PrintPreviewDialog cho báo cáo Bán hàng theo đồ uống
+            printDocumentProductSales = new PrintDocument();
+            printDocumentProductSales.PrintPage += new PrintPageEventHandler(this.printDocument_PrintPage);
+            printPreviewDialogProductSales = new PrintPreviewDialog();
+            printPreviewDialogProductSales.Document = printDocumentProductSales;
+
 
             // Thiết lập giá trị mặc định cho DateTimePicker của báo cáo doanh thu
             dtpRevenueStartDate.Value = DateTime.Now.AddMonths(-1);
@@ -34,6 +68,154 @@ namespace CoffeeManagementSystem
             this.dtpProductSalesEndDate.ValueChanged += new EventHandler(this.dtpProductSales_ValueChanged);
             // Tải báo cáo cho tab được chọn mặc định khi form được mở lần đầu
             tabControlReports_SelectedIndexChanged(tabControlReports, EventArgs.Empty);
+        }
+        private void printDocument_PrintPage(object sender, PrintPageEventArgs e)
+        {
+            Graphics graphics = e.Graphics;
+            Font font = new Font("Arial", 10);
+            Font headerFont = new Font("Arial", 14, FontStyle.Bold);
+            Font subHeaderFont = new Font("Arial", 12, FontStyle.Bold);
+            float lineHeight = font.GetHeight();
+            float x = e.MarginBounds.Left;
+            float y = e.MarginBounds.Top;
+            float colWidth = 0;
+
+            // In tiêu đề báo cáo
+            StringFormat sfCenter = new StringFormat();
+            sfCenter.Alignment = StringAlignment.Center;
+            sfCenter.LineAlignment = StringAlignment.Center;
+            graphics.DrawString(reportTitle, headerFont, Brushes.Black, e.PageBounds.Width / 2, y, sfCenter);
+            y += headerFont.GetHeight() + 10; // Khoảng cách sau tiêu đề
+
+            // In khoảng thời gian (nếu có)
+            if (!string.IsNullOrEmpty(reportDateRange))
+            {
+                graphics.DrawString(reportDateRange, subHeaderFont, Brushes.Black, e.PageBounds.Width / 2, y, sfCenter);
+                y += subHeaderFont.GetHeight() + 20; // Khoảng cách sau khoảng thời gian
+            }
+            else
+            {
+                y += 20; // Khoảng cách nếu không có khoảng thời gian
+            }
+
+
+            // Tính toán chiều rộng cột dựa trên DataGridView đang in
+            // Cần phải tính lại vì DataGridView có thể thay đổi số lượng và độ rộng cột
+            List<float> columnWidths = new List<float>();
+            float totalPrintableWidth = e.MarginBounds.Width;
+            float totalProportionalWidth = 0;
+
+            foreach (DataGridViewColumn col in dgvToPrint.Columns)
+            {
+                if (col.Visible) // Chỉ in các cột hiển thị
+                {
+                    // Nếu cột có Fill, xử lý riêng sau
+                    if (col.AutoSizeMode == DataGridViewAutoSizeColumnMode.Fill)
+                    {
+                        // Tạm thời coi là 1 đơn vị tỉ lệ, sẽ chia lại sau
+                        totalProportionalWidth += 1;
+                        columnWidths.Add(0); // Đặt chỗ cho cột Fill
+                    }
+                    else
+                    {
+                        // Sử dụng chiều rộng thực tế của cột trong DataGridView
+                        columnWidths.Add(col.Width);
+                        totalPrintableWidth -= col.Width;
+                    }
+                }
+            }
+
+            // Phân bổ chiều rộng cho các cột Fill
+            for (int i = 0; i < dgvToPrint.Columns.Count; i++)
+            {
+                DataGridViewColumn col = dgvToPrint.Columns[i];
+                if (col.Visible && col.AutoSizeMode == DataGridViewAutoSizeColumnMode.Fill)
+                {
+                    if (totalProportionalWidth > 0)
+                    {
+                        columnWidths[i] = totalPrintableWidth / totalProportionalWidth;
+                    }
+                    else
+                    {
+                        columnWidths[i] = col.Width; // Fallback nếu không có cột nào là Fill
+                    }
+                }
+            }
+
+
+            // In tiêu đề cột
+            float currentX = x;
+            for (int i = 0; i < dgvToPrint.Columns.Count; i++)
+            {
+                DataGridViewColumn col = dgvToPrint.Columns[i];
+                if (col.Visible)
+                {
+                    colWidth = columnWidths[i];
+                    graphics.DrawString(col.HeaderText, subHeaderFont, Brushes.Black, currentX, y);
+                    currentX += colWidth;
+                }
+            }
+            y += subHeaderFont.GetHeight() + 5; // Khoảng cách sau tiêu đề cột
+            graphics.DrawLine(Pens.Black, e.MarginBounds.Left, y, e.MarginBounds.Right, y); // Đường kẻ dưới tiêu đề
+            y += 5; // Khoảng cách sau đường kẻ
+
+            // In dữ liệu
+            while (currentRowIndex < dgvToPrint.Rows.Count)
+            {
+                DataGridViewRow row = dgvToPrint.Rows[currentRowIndex];
+                if (row.Visible) // Chỉ in các hàng hiển thị
+                {
+                    if (y + lineHeight > e.MarginBounds.Bottom)
+                    {
+                        e.HasMorePages = true; // Còn dữ liệu, chuyển sang trang mới
+                        currentRowIndex++; // Chuẩn bị cho hàng đầu tiên của trang tiếp theo
+                        return; // Dừng việc vẽ trên trang hiện tại
+                    }
+
+                    currentX = x;
+                    for (int i = 0; i < dgvToPrint.Columns.Count; i++)
+                    {
+                        DataGridViewColumn col = dgvToPrint.Columns[i];
+                        if (col.Visible)
+                        {
+                            colWidth = columnWidths[i];
+                            object cellValue = row.Cells[col.Name].Value; // Lấy giá trị dựa trên tên cột
+
+                            string text = (cellValue == null) ? "" : cellValue.ToString();
+
+                            // Áp dụng định dạng cho các cột số/ngày nếu cần
+                            if (col.DefaultCellStyle.Format != null && cellValue is IFormattable)
+                            {
+                                text = ((IFormattable)cellValue).ToString(col.DefaultCellStyle.Format, System.Globalization.CultureInfo.CurrentCulture);
+                            }
+
+                            // Căn lề cho cột
+                            StringFormat cellSf = new StringFormat(StringFormatFlags.NoWrap);
+                            if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleRight || col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.TopRight || col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.BottomRight)
+                            {
+                                cellSf.Alignment = StringAlignment.Far;
+                            }
+                            else if (col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.MiddleCenter || col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.TopCenter || col.DefaultCellStyle.Alignment == DataGridViewContentAlignment.BottomCenter)
+                            {
+                                cellSf.Alignment = StringAlignment.Center;
+                            }
+                            else
+                            {
+                                cellSf.Alignment = StringAlignment.Near;
+                            }
+
+                            // Vẽ chuỗi
+                            graphics.DrawString(text, font, Brushes.Black, new RectangleF(currentX, y, colWidth, lineHeight), cellSf);
+                            currentX += colWidth;
+                        }
+                    }
+                    y += lineHeight;
+                }
+                currentRowIndex++;
+            }
+
+            e.HasMorePages = false; // Đã in hết dữ liệu
+            currentRowIndex = 0; // Reset lại cho lần in tiếp theo
         }
         private void dtpRevenue_ValueChanged(object sender, EventArgs e)
         {
@@ -450,16 +632,32 @@ namespace CoffeeManagementSystem
 
         private void btnPrint_Click(object sender, EventArgs e)
         {
-
+            // Báo cáo Khách hàng tiềm năng
+            dgvToPrint = dgvPotentialCustomers; // Gán DataGridView cần in
+            reportTitle = "BÁO CÁO TOP 10 KHÁCH HÀNG TIỀM NĂNG";
+            reportDateRange = ""; // Không có khoảng thời gian cho báo cáo này
+            currentRowIndex = 0; // Reset số trang
+            printPreviewDialogPotentialCustomers.ShowDialog();
         }
 
         private void btnPrintDoanhThu_Click(object sender, EventArgs e)
         {
+            // Báo cáo Doanh thu
+            dgvToPrint = dgvRevenue; // Gán DataGridView cần in
+            reportTitle = "BÁO CÁO DOANH THU";
+            reportDateRange = $"Từ ngày: {dtpRevenueStartDate.Value.ToShortDateString()} đến ngày: {dtpRevenueEndDate.Value.ToShortDateString()}";
+            currentRowIndex = 0; // Reset số trang
+            printPreviewDialogRevenue.ShowDialog();
         }
-
 
         private void btnPrintBestseller_Click(object sender, EventArgs e)
         {
+            // Báo cáo Bán hàng theo đồ uống
+            dgvToPrint = dgvProductSales; // Gán DataGridView cần in
+            reportTitle = "BÁO CÁO SẢN PHẨM BÁN CHẠY NHẤT";
+            reportDateRange = $"Từ ngày: {dtpProductSalesStartDate.Value.ToShortDateString()} đến ngày: {dtpProductSalesEndDate.Value.ToShortDateString()}";
+            currentRowIndex = 0; // Reset số trang
+            printPreviewDialogProductSales.ShowDialog();
         }
 
     }
