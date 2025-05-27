@@ -447,7 +447,6 @@
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.dgvPotentialCustomers);
-            this.tabPage1.Controls.Add(this.panel2);
             this.tabPage1.Location = new System.Drawing.Point(4, 34);
             this.tabPage1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPage1.Name = "tabPage1";
@@ -483,12 +482,12 @@
             this.Column6});
             this.dgvPotentialCustomers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvPotentialCustomers.EnableHeadersVisualStyles = false;
-            this.dgvPotentialCustomers.Location = new System.Drawing.Point(3, 52);
+            this.dgvPotentialCustomers.Location = new System.Drawing.Point(3, 2);
             this.dgvPotentialCustomers.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvPotentialCustomers.Name = "dgvPotentialCustomers";
             this.dgvPotentialCustomers.RowHeadersVisible = false;
             this.dgvPotentialCustomers.RowHeadersWidth = 51;
-            this.dgvPotentialCustomers.Size = new System.Drawing.Size(1602, 778);
+            this.dgvPotentialCustomers.Size = new System.Drawing.Size(1602, 828);
             this.dgvPotentialCustomers.TabIndex = 4;
             // 
             // Column1
@@ -686,11 +685,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.DateTimePicker dtToTopSelling;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.DateTimePicker dtFromTopSelling;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabControl tabControlReports;
         private System.Windows.Forms.DataGridView dgvProductSales;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;

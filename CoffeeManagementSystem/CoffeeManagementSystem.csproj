@@ -145,6 +145,8 @@
     <Compile Include="bll\OrderBLL.cs" />
     <Compile Include="bll\PaymentBLL.cs" />
     <Compile Include="bll\ReportBLL.cs" />
+    <Compile Include="BLL\PaymentBLL.cs" />
+    <Compile Include="BLL\ReportBLL.cs" />
     <Compile Include="Calamviec.cs">
       <SubType>Form</SubType>
     </Compile>
