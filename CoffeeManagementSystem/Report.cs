@@ -81,14 +81,19 @@ namespace CoffeeManagementSystem
         {
             try
             {
-                // Gọi BLL để lấy dữ liệu
                 List<Khachhang> potentialCustomers = _reportBLL.GetPotentialCustomersReport();
 
-                dgvPotentialCustomers.AutoGenerateColumns = false;
-                dgvPotentialCustomers.Rows.Clear();
+                // 1. Đảm bảo dgvPotentialCustomers không có nguồn dữ liệu cũ
+                dgvPotentialCustomers.DataSource = null;
+
+                // 2. Xóa tất cả các cột cũ (đảm bảo không bị trùng lặp cột)
                 dgvPotentialCustomers.Columns.Clear();
 
-                // Cột "STT"
+                // 3. Cấu hình cột (Chỉ cấu hình một lần khi form/DGV được tạo hoặc khi reset)
+                // (Nếu bạn đã cấu hình các cột này trong Designer, bạn có thể bỏ qua bước này.
+                // Tuy nhiên, vì bạn đang tạo thủ công, hãy giữ lại và đảm bảo nó được gọi một lần.)
+
+                // Cột "STT" - KHÔNG GÁN DataPropertyName, sẽ điền thủ công hoặc qua CellFormatting
                 DataGridViewTextBoxColumn sttColumn = new DataGridViewTextBoxColumn();
                 sttColumn.Name = "STT";
                 sttColumn.HeaderText = "STT";
@@ -98,9 +103,9 @@ namespace CoffeeManagementSystem
                 sttColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvPotentialCustomers.Columns.Add(sttColumn);
 
-                // Cột "Makhachhang"
+                // Các cột dữ liệu khác
                 DataGridViewTextBoxColumn maKHColumn = new DataGridViewTextBoxColumn();
-                maKHColumn.DataPropertyName = "Makhachhang";
+                maKHColumn.DataPropertyName = "Makhachhang"; // DGV sẽ tự lấy giá trị từ đây
                 maKHColumn.Name = "Makhachhang";
                 maKHColumn.HeaderText = "Mã Khách hàng";
                 maKHColumn.Width = 120;
@@ -109,9 +114,8 @@ namespace CoffeeManagementSystem
                 maKHColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvPotentialCustomers.Columns.Add(maKHColumn);
 
-                // Cột "TenKhachhang" - Tự động lấp đầy
                 DataGridViewTextBoxColumn tenKHColumn = new DataGridViewTextBoxColumn();
-                tenKHColumn.DataPropertyName = "Hoten";
+                tenKHColumn.DataPropertyName = "Hoten"; // DGV sẽ tự lấy giá trị từ đây
                 tenKHColumn.Name = "TenKhachhang";
                 tenKHColumn.HeaderText = "Tên Khách hàng";
                 tenKHColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -119,7 +123,6 @@ namespace CoffeeManagementSystem
                 tenKHColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvPotentialCustomers.Columns.Add(tenKHColumn);
 
-                // Cột "Sodienthoai"
                 DataGridViewTextBoxColumn sdtColumn = new DataGridViewTextBoxColumn();
                 sdtColumn.DataPropertyName = "Sodienthoai";
                 sdtColumn.Name = "Sodienthoa";
@@ -130,7 +133,6 @@ namespace CoffeeManagementSystem
                 sdtColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvPotentialCustomers.Columns.Add(sdtColumn);
 
-                // Cột "Email" - Tự động lấp đầy
                 DataGridViewTextBoxColumn emailColumn = new DataGridViewTextBoxColumn();
                 emailColumn.DataPropertyName = "Email";
                 emailColumn.Name = "Email";
@@ -140,7 +142,6 @@ namespace CoffeeManagementSystem
                 emailColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvPotentialCustomers.Columns.Add(emailColumn);
 
-                // Cột "Ngaydangky"
                 DataGridViewTextBoxColumn ngayDangKyColumn = new DataGridViewTextBoxColumn();
                 ngayDangKyColumn.DataPropertyName = "Ngaydangky";
                 ngayDangKyColumn.Name = "Ngaydangky";
@@ -152,7 +153,6 @@ namespace CoffeeManagementSystem
                 ngayDangKyColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvPotentialCustomers.Columns.Add(ngayDangKyColumn);
 
-                // Cột "DiemTichLuy"
                 DataGridViewTextBoxColumn diemTichLuyColumn = new DataGridViewTextBoxColumn();
                 diemTichLuyColumn.DataPropertyName = "DiemTichLuy";
                 diemTichLuyColumn.Name = "DiemTichLuy";
@@ -164,14 +164,15 @@ namespace CoffeeManagementSystem
                 diemTichLuyColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvPotentialCustomers.Columns.Add(diemTichLuyColumn);
 
-                // Gán dữ liệu vào DataGridView SAU KHI CÁC CỘT ĐÃ ĐƯỢC CẤU HÌNH ĐẦY ĐỦ
+
+                // 4. Gán dữ liệu cho DataSource sau khi các cột đã được định nghĩa
+                // KHÔNG CẦN DgvPotentialCustomers.Rows.Clear() trước khi gán DataSource
+                // Và KHÔNG CẦN thêm hàng thủ công sau đó.
                 dgvPotentialCustomers.DataSource = potentialCustomers;
 
-                // Điền STT sau khi gán DataSource
-                for (int i = 0; i < dgvPotentialCustomers.Rows.Count; i++)
-                {
-                    dgvPotentialCustomers.Rows[i].Cells["STT"].Value = i + 1;
-                }
+                // 5. Điền STT bằng sự kiện CellFormatting
+                // Đảm bảo bạn đã đăng ký sự kiện này trong constructor hoặc trong Designer
+                // dgvPotentialCustomers.CellFormatting += dgvPotentialCustomers_CellFormatting;
 
                 if (potentialCustomers.Count == 0)
                 {
@@ -184,18 +185,21 @@ namespace CoffeeManagementSystem
             }
         }
 
-        /// <summary>
-        /// Tải dữ liệu báo cáo doanh thu và hiển thị lên DataGridView.
-        /// </summary>
+        // Thêm sự kiện CellFormatting vào Form của bạn
+        private void dgvPotentialCustomers_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dgvPotentialCustomers.Columns[e.ColumnIndex].Name == "STT" && e.RowIndex >= 0)
+            {
+                e.Value = e.RowIndex + 1;
+                e.FormattingApplied = true; // Đánh dấu là đã xử lý định dạng
+            }
+        }
         private void LoadRevenueReport()
         {
             try
             {
                 DateTime startDate = dtpRevenueStartDate.Value.Date;
                 DateTime endDate = dtpRevenueEndDate.Value.Date;
-                dgvRevenue.DataSource = null;
-                dgvRevenue.Rows.Clear();
-                dgvRevenue.Columns.Clear();
 
                 // Kiểm tra lỗi ngày trước khi gọi BLL
                 if (startDate > endDate)
@@ -208,14 +212,15 @@ namespace CoffeeManagementSystem
                 // Gọi BLL để lấy dữ liệu, BLL sẽ ném exception nếu ngày không hợp lệ
                 List<RevenueReportItem> revenueData = _reportBLL.GetRevenueReport(startDate, endDate);
 
-                // Quan trọng: Đảm bảo AutoGenerateColumns là false
+                // Quan trọng: Ngắt kết nối nguồn dữ liệu cũ và xóa cột cũ
+                dgvRevenue.DataSource = null;
+                dgvRevenue.Columns.Clear(); // Xóa tất cả các cột cũ
+
+                // Đảm bảo AutoGenerateColumns là false
                 dgvRevenue.AutoGenerateColumns = false;
 
-                // Xóa tất cả các hàng và cột hiện có để đảm bảo cấu trúc mới
-                dgvRevenue.Rows.Clear();
-                dgvRevenue.Columns.Clear();
-
-                // Cột "No" (Số thứ tự)
+                // Cấu hình các cột (nếu chưa cấu hình trong Designer)
+                // Cột "No" (Số thứ tự) - KHÔNG GÁN DataPropertyName
                 DataGridViewTextBoxColumn noColumn = new DataGridViewTextBoxColumn();
                 noColumn.Name = "No";
                 noColumn.HeaderText = "No";
@@ -227,6 +232,7 @@ namespace CoffeeManagementSystem
 
                 // Cột "Date" (Ngày)
                 DataGridViewTextBoxColumn dateColumn = new DataGridViewTextBoxColumn();
+                dateColumn.DataPropertyName = "Ngay"; // DGV sẽ tự lấy giá trị từ đây
                 dateColumn.Name = "Date";
                 dateColumn.HeaderText = "Date";
                 dateColumn.Width = 200;
@@ -236,8 +242,9 @@ namespace CoffeeManagementSystem
                 dateColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvRevenue.Columns.Add(dateColumn);
 
-                // Cột "Price" (Giá) - Sẽ tự động điền đầy phần còn lại
+                // Cột "Price" (Giá)
                 DataGridViewTextBoxColumn priceColumn = new DataGridViewTextBoxColumn();
+                priceColumn.DataPropertyName = "Tongtien"; // DGV sẽ tự lấy giá trị từ đây
                 priceColumn.Name = "Price";
                 priceColumn.HeaderText = "Price";
                 priceColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -247,17 +254,14 @@ namespace CoffeeManagementSystem
                 priceColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dgvRevenue.Columns.Add(priceColumn);
 
-                // Thêm dữ liệu vào các cột đã có sẵn
-                for (int i = 0; i < revenueData.Count; i++)
-                {
-                    RevenueReportItem item = revenueData[i];
-                    int rowIndex = dgvRevenue.Rows.Add();
+                // Gán dữ liệu vào DataSource sau khi các cột đã được định nghĩa
+                // KHÔNG CẦN dgvRevenue.Rows.Clear() trước khi gán DataSource
+                // Và KHÔNG CẦN thêm hàng thủ công bằng Rows.Add() và gán Cell.Value
+                dgvRevenue.DataSource = revenueData;
 
-                    // Gán giá trị vào các ô của hàng mới
-                    dgvRevenue.Rows[rowIndex].Cells["No"].Value = i + 1;
-                    dgvRevenue.Rows[rowIndex].Cells["Date"].Value = item.Ngay;
-                    dgvRevenue.Rows[rowIndex].Cells["Price"].Value = item.Tongtien;
-                }
+                // Điền STT bằng sự kiện CellFormatting
+                // Đảm bảo bạn đã đăng ký sự kiện này trong constructor hoặc trong Designer
+                // dgvRevenue.CellFormatting += dgvRevenue_CellFormatting;
 
                 // Tính tổng doanh thu và hiển thị lên lblTotalPrice
                 decimal totalRevenue = revenueData.Sum(item => item.Tongtien);
@@ -268,13 +272,23 @@ namespace CoffeeManagementSystem
                     MessageBox.Show("Không có dữ liệu doanh thu trong khoảng thời gian đã chọn.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-            catch (ArgumentException ex) // Bắt lỗi từ BLL nếu ngày không hợp lệ
+            catch (ArgumentException ex)
             {
                 MessageBox.Show(ex.Message, "Lỗi Ngày", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi tải báo cáo doanh thu: {ex.Message}\nVui lòng kiểm tra kết nối CSDL và dữ liệu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Thêm sự kiện CellFormatting vào Form của bạn
+        private void dgvRevenue_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dgvRevenue.Columns[e.ColumnIndex].Name == "No" && e.RowIndex >= 0)
+            {
+                e.Value = e.RowIndex + 1;
+                e.FormattingApplied = true; // Đánh dấu là đã xử lý định dạng
             }
         }
 

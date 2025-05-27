@@ -297,46 +297,6 @@ namespace CoffeeManagementSystem
         private void lblNguoiLapValue_Click(object sender, EventArgs e)
         {
 
-        /// Helper method để tạo ID duy nhất cho Madonhang.
-        /// </summary>
-        private string GenerateUniqueDonhangId()
-        {
-            return "DH" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-        }
-
-        private string GenerateUniqueKhachhangId()
-        {
-            return "KH" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-        /// Helper method để tạo ID duy nhất cho Madonhang.
-        /// </summary>
-        private string GenerateUniqueDonhangId()
-        {
-            return "DH" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-        }
-
-        private string GenerateUniqueKhachhangId()
-        {
-            return "KH" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-        /// Helper method để tạo ID duy nhất cho Madonhang.
-        /// </summary>
-        private string GenerateUniqueDonhangId()
-        {
-            return "DH" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-        }
-
-        private string GenerateUniqueKhachhangId()
-        {
-            return "KH" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-        /// Helper method để tạo ID duy nhất cho Madonhang.
-        /// </summary>
-        private string GenerateUniqueDonhangId()
-        {
-            return "DH" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-        }
-
-        private string GenerateUniqueKhachhangId()
-        {
-            return "KH" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
         }
     }
 }
