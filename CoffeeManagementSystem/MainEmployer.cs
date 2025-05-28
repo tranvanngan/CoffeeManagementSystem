@@ -21,22 +21,19 @@ namespace CoffeeManagementSystem
         public MainEmployer()
         {
             InitializeComponent();
+            LoadFormCon(new DashboardForm());
         }
 
         // Constructor MỚI để nhận thông tin nhân viên từ DangNhapForm
-        public MainEmployer(string maNhanVien, string tenNhanVien) : this() // Gọi constructor mặc định
+        public MainEmployer(string maNhanVien, string tenNhanVien) : this() 
         {
             _loggedInMaNhanVien = maNhanVien; 
             _maNhanVienHienTai = maNhanVien;
             _tenNhanVienHienTai = tenNhanVien;
-
-            // Tùy chọn: Hiển thị tên nhân viên trên lblName hoặc lblNhanVien nếu bạn có
-            if (lblName != null) // Hoặc tên control label của bạn
+            if (lblName != null) 
             {
                 lblName.Text = tenNhanVien;
             }
-            // Hoặc nếu bạn có một label khác cho vị trí/tên người dùng
-            // if (lblChaoMung != null) { lblChaoMung.Text = $"Chào mừng, {tenNhanVien}"; }
         }
 
         private void LoadFormCon(Form formCon)
@@ -55,18 +52,17 @@ namespace CoffeeManagementSystem
         }
 
         private void MainForm_Load(object sender, EventArgs e) // Tên method nên là MainEmployer_Load để đúng với tên Form
-        {
-            // Bạn có thể đặt logic load ban đầu ở đây, ví dụ tải dữ liệu, thiết lập UI
+        {           
         }
 
         private void add1_Load(object sender, EventArgs e)
         {
-            // Sự kiện này có thể không cần thiết nếu 'add1' không phải là một control cụ thể
+          
         }
 
         private void guna2GradientPanel2_Paint(object sender, PaintEventArgs e)
         {
-            // Sự kiện vẽ cho guna2GradientPanel2
+           
         }
 
         private void btnKhachHang_Click(object sender, EventArgs e)
@@ -79,12 +75,11 @@ namespace CoffeeManagementSystem
             this.Close();
         }
 
-        // ĐÃ SỬA: Truyền thông tin nhân viên vào OrderForm
         private void btnOrder_Click(object sender, EventArgs e)
         {
             // Tạo OrderForm và truyền mã nhân viên, tên nhân viên
             OrderForm orderForm = new OrderForm(_maNhanVienHienTai, _tenNhanVienHienTai);
-            LoadFormCon(orderForm); // Sử dụng phương thức LoadFormCon để hiển thị OrderForm
+            LoadFormCon(orderForm); 
         }
 
         private void lblNhanVien_Click(object sender, EventArgs e)

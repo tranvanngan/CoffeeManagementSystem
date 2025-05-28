@@ -18,28 +18,14 @@ namespace CoffeeManagementSystem
         public string CurrentTenNhanvien { get; set; }
 
         private Timer _messageTimer;
-        // KHÔNG CÒN KHAI BÁO DOUONGDAL TRỰC TIẾP TẠI ĐÂY NỮA
-        // private DouongDAL douongDAL; // ĐÃ BỎ: Logic này thuộc về BLL
 
         private OrderBLL _orderBLL;
-
-        // KHÔNG CÒN KHAI BÁO DANH SÁCH TẠM THỜI TRỰC TIẾP TẠI ĐÂY NỮA
-        // private List<Chitietdonhang> danhSachChiTietHoaDonTamThoi; // ĐÃ BỎ: Logic này thuộc về BLL
 
         public OrderForm()
         {
             InitializeComponent();
 
-            // KHÔNG CÒN KHỞI TẠO DOUONGDAL TRỰC TIẾP TẠI ĐÂY NỮA
-            // douongDAL = new DouongDAL(); // ĐÃ BỎ
-
-            // KHÔNG CÒN KHỞI TẠO DANH SÁCH TẠM THỜI TRỰC TIẾP TẠI ĐÂY NỮA
-            // danhSachChiTietHoaDonTamThoi = new List<Chitietdonhang>(); // ĐÃ BỎ
-
-            // OrderBLL sẽ được khởi tạo lại trong constructor có tham số, hoặc dùng mã mặc định ban đầu
-            _orderBLL = new OrderBLL(null); // Khởi tạo ban đầu với null, sẽ được gán lại
-
-            // Khởi tạo lblStatusMessage (giữ nguyên logic bạn đã có)
+            _orderBLL = new OrderBLL(null); 
             if (this.Controls.Find("lblStatusMessage", true).FirstOrDefault() is Label statusLabel)
             {
                 lblStatusMessage = statusLabel;
@@ -65,7 +51,6 @@ namespace CoffeeManagementSystem
             this.txtTimkiemdouong.TextChanged += new EventHandler(txtTimkiemdouong_TextChanged);
 
             LoadDanhSachDouong();
-            // Không còn cần CapNhatHienThiHoaDonTamThoi() ở đây vì không có ListView tạm thời nữa
         }
 
         public OrderForm(string manhanvien, string tenNhanVien) : this() // Gọi constructor mặc định
@@ -81,9 +66,7 @@ namespace CoffeeManagementSystem
             LoadDanhSachDouong();
         }
 
-        /// <summary>
-        /// Tải danh sách đồ uống và hiển thị lên DataGridView.
-        /// </summary>
+        //Tải danh sách đồ uống và hiển thị lên DataGridView.
         private void LoadDanhSachDouong()
         {
             try
@@ -133,9 +116,6 @@ namespace CoffeeManagementSystem
         {
             if (e.RowIndex >= 0 && e.RowIndex < dgvDouong.Rows.Count - (dgvDouong.AllowUserToAddRows ? 1 : 0))
             {
-                // Logic này có vẻ thuộc về một DataGridView khác hoặc đang bị gán nhầm sự kiện.
-                // Nếu đây là DataGridView của Đồ uống, thì bạn cần thay đổi kiểu dữ liệu Loaidouong thành Douong.
-                // Giữ nguyên theo cấu trúc bạn đã cung cấp, nhưng lưu ý có thể cần điều chỉnh sau.
                 Loaidouong selectedLoaidouong = dgvDouong.Rows[e.RowIndex].DataBoundItem as Loaidouong;
 
                 if (selectedLoaidouong != null)
@@ -149,8 +129,6 @@ namespace CoffeeManagementSystem
                 }
             }
         }
-
-        // --- Event Handlers (Chỉ gọi các phương thức xử lý logic nghiệp vụ đã được tách ra) ---
 
         private void dgvDouong_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -274,11 +252,5 @@ namespace CoffeeManagementSystem
             }
             _messageTimer.Stop();
         }
-
-        // KHÔNG CÒN PHƯƠNG THỨC NÀY TRONG FORM NỮA, ĐÃ CHUYỂN VÀO BLL
-        // private string GenerateUniqueChiTietHoaDonId()
-        // {
-        //     return "CTHD" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-        // }
     }
 }

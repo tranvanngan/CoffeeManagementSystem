@@ -1,9 +1,8 @@
-﻿// Trong file: DangNhapForm.cs
-
+﻿
 using System;
 using System.Windows.Forms;
-using CoffeeManagementSystem.BLL; // Thêm dòng này để sử dụng BLL
-using CoffeeManagementSystem;     // Đảm bảo namespace này chứa lớp Taikhoan (Model)
+using CoffeeManagementSystem.BLL; 
+using CoffeeManagementSystem;     
 
 namespace CoffeeManagementSystem
 {
