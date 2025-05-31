@@ -7,19 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-// Đảm bảo các namespace này được tham chiếu đúng trong project của bạn
-// THAY THẾ DAL BẰNG BLL
 using CoffeeManagementSystem.BLL;
-using CoffeeManagementSystem; // Chứa các lớp Model: Loaidouong, Douong, Giadouong, và AddDrinkForm, AddTypeofdrinkForm
+using CoffeeManagementSystem; 
 
-namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với namespace của Form DrinkForm
+namespace CoffeeManagementSystem 
 {
     public partial class DrinkForm : Form
     {
         // Khai báo các đối tượng BLL thay vì DAL
-        private LoaidouongBLL _loaidouongBLL; // Đổi tên biến để thống nhất (_camelCase)
-        private DouongBLL _douongBLL;         // Đổi tên biến để thống nhất (_camelCase)
+        private LoaidouongBLL _loaidouongBLL; 
+        private DouongBLL _douongBLL;         
 
         public DrinkForm()
         {
@@ -31,11 +28,6 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
 
             // Gán sự kiện Load cho Form chính
             this.Load += DrinkForm_Load;
-
-            // =====================================================
-            // Cấu hình DataGridView và gán sự kiện cho Tab Loại đồ uống
-            // (Giả định các control này nằm trên tabPageLoaidouong)
-            // =====================================================
             dgvLoaidouong.AutoGenerateColumns = false;
             dgvLoaidouong.AllowUserToAddRows = false;
             dgvLoaidouong.AllowUserToDeleteRows = false;
@@ -45,11 +37,6 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
             this.txtTimkiemloaidouong.TextChanged += new EventHandler(txtTimkiemloaidouong_TextChanged);
             this.btnThemloaidouong.Click += new EventHandler(btnThem_Click);
             this.dgvLoaidouong.CellClick += new DataGridViewCellEventHandler(dgvLoaidouong_CellClick);
-
-            // =====================================================
-            // Cấu hình DataGridView và gán sự kiện cho Tab Đồ uống
-            // (Giả định các control này nằm trên tabPageDouong)
-            // =====================================================
             dgvDouong.AutoGenerateColumns = false;
             dgvDouong.AllowUserToAddRows = false;
             dgvDouong.AllowUserToDeleteRows = false;
@@ -68,32 +55,18 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
             LoadDanhSachLoaidouong();
             LoadDanhSachDouong();
         }
-
-        // =====================================================
-        // CÁC PHƯƠNG THỨC VÀ SỰ KIỆN CHO TAB LOẠI ĐỒ UỐNG
-        // =====================================================
-
-        /// <summary>
-        /// Tải danh sách loại đồ uống và hiển thị lên DataGridView.
-        /// </summary>
+        //Tải danh sách loại đồ uống và hiển thị lên DataGridView.
         private void LoadDanhSachLoaidouong()
-        {
-            // Gọi BLL để lấy dữ liệu. BLL là nơi xử lý lỗi CSDL và logic nghiệp vụ.
-            // Loại bỏ try-catch vì BLL sẽ xử lý lỗi và có thể thông báo cho người dùng
+        {        
             List<Loaidouong> danhSach = _loaidouongBLL.GetAllLoaidouongs();
             dgvLoaidouong.DataSource = null; // Clear old data
             dgvLoaidouong.DataSource = danhSach;
             dgvLoaidouong.Refresh();
             dgvLoaidouong.ClearSelection(); // Xóa chọn dòng
         }
-
-        /// <summary>
-        /// Tải danh sách loại đồ uống đã lọc và hiển thị lên DataGridView.
-        /// </summary>
+        //Tải danh sách loại đồ uống đã lọc và hiển thị lên DataGridView.
         private void LoadFilteredLoaidouongData(string searchTerm)
-        {
-            // Gọi BLL để lấy dữ liệu đã lọc. BLL là nơi xử lý lỗi CSDL và logic nghiệp vụ.
-            // Loại bỏ try-catch vì BLL sẽ xử lý lỗi và có thể thông báo cho người dùng
+        {           
             List<Loaidouong> ketQuaHienThi;
             if (string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -109,19 +82,14 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
             dgvLoaidouong.Refresh();
             dgvLoaidouong.ClearSelection(); // Xóa chọn dòng
         }
-
-        /// <summary>
-        /// Xử lý sự kiện TextChanged của ô tìm kiếm loại đồ uống.
-        /// </summary>
+        //Xử lý sự kiện TextChanged của ô tìm kiếm loại đồ uống.
         private void txtTimkiemloaidouong_TextChanged(object sender, EventArgs e)
         {
             string searchTerm = txtTimkiemloaidouong.Text.Trim();
             LoadFilteredLoaidouongData(searchTerm);
         }
 
-        /// <summary>
-        /// Xử lý sự kiện click nút "Thêm mới" loại đồ uống.
-        /// </summary>
+        //Xử lý sự kiện click nút "Thêm mới" loại đồ uống.
         private void btnThem_Click(object sender, EventArgs e)
         {
             // Mở AddTypeofdrinkForm ở chế độ thêm mới. Form này cũng sẽ tương tác với BLL.
@@ -132,9 +100,7 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
             }
         }
 
-        /// <summary>
-        /// Xử lý sự kiện click vào dòng DataGridView loại đồ uống để mở form chi tiết.
-        /// </summary>
+        //Xử lý sự kiện click vào dòng DataGridView loại đồ uống để mở form chi tiết.
         private void dgvLoaidouong_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && e.RowIndex < dgvLoaidouong.Rows.Count - (dgvLoaidouong.AllowUserToAddRows ? 1 : 0))
@@ -144,7 +110,6 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
 
                 if (selectedLoaidouong != null)
                 {
-                    // Mở AddTypeofdrinkForm ở chế độ chỉnh sửa. Form này cũng sẽ tương tác với BLL.
                     AddTypeofdrinkForm detailForm = new AddTypeofdrinkForm(selectedLoaidouong.Maloai);
                     if (detailForm.ShowDialog() == DialogResult.OK)
                     {
@@ -154,32 +119,18 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
             }
         }
 
-
-        // =====================================================
-        // CÁC PHƯƠNG THỨC VÀ SỰ KIỆN CHO TAB ĐỒ UỐNG
-        // =====================================================
-
-        /// <summary>
-        /// Tải danh sách đồ uống và hiển thị lên DataGridView.
-        /// </summary>
+        //Tải danh sách đồ uống và hiển thị lên DataGridView.
         private void LoadDanhSachDouong()
-        {
-            // Gọi BLL để lấy dữ liệu. BLL là nơi xử lý lỗi CSDL và logic nghiệp vụ.
-            // Loại bỏ try-catch vì BLL sẽ xử lý lỗi và có thể thông báo cho người dùng
+        {            
             List<Douong> danhSach = _douongBLL.GetAllDouongs();
             dgvDouong.DataSource = null; // Clear old data
             dgvDouong.DataSource = danhSach;
             dgvDouong.Refresh();
             dgvDouong.ClearSelection(); // Xóa chọn dòng
         }
-
-        /// <summary>
-        /// Tải danh sách đồ uống đã lọc và hiển thị lên DataGridView.
-        /// </summary>
+        //Tải danh sách đồ uống đã lọc và hiển thị lên DataGridView.
         private void LoadFilteredDouongData(string searchTerm)
-        {
-            // Gọi BLL để lấy dữ liệu đã lọc. BLL là nơi xử lý lỗi CSDL và logic nghiệp vụ.
-            // Loại bỏ try-catch vì BLL sẽ xử lý lỗi và có thể thông báo cho người dùng
+        {         
             List<Douong> ketQuaHienThi;
             if (string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -194,33 +145,23 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
             dgvDouong.DataSource = ketQuaHienThi;
             dgvDouong.Refresh();
             dgvDouong.ClearSelection(); // Xóa chọn dòng
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện TextChanged của ô tìm kiếm đồ uống.
-        /// </summary>
+        }     
+        //Xử lý sự kiện TextChanged của ô tìm kiếm đồ uống.      
         private void txtTimkiemdouong_TextChanged(object sender, EventArgs e)
         {
             string searchTerm = txtTimkiemdouong.Text.Trim();
             LoadFilteredDouongData(searchTerm);
         }
-
-        /// <summary>
-        /// Xử lý sự kiện click nút "Thêm mới" đồ uống.
-        /// </summary>
+        //Xử lý sự kiện click nút "Thêm mới" đồ uống.
         private void btnAddDouong_Click(object sender, EventArgs e)
-        {
-            // Mở AddDrinkForm ở chế độ thêm mới. Form này cũng sẽ tương tác với BLL.
-            AddDrinkForm detailForm = new AddDrinkForm(); // Sử dụng tên AddDrinkForm
+        {           
+            AddDrinkForm detailForm = new AddDrinkForm(); 
             if (detailForm.ShowDialog() == DialogResult.OK)
             {
                 LoadDanhSachDouong(); // Tải lại danh sách sau khi thêm mới thành công
             }
-        }
-
-        /// <summary>
-        /// Xử lý sự kiện click vào dòng DataGridView đồ uống để mở form chi tiết.
-        /// </summary>
+        }      
+        //Xử lý sự kiện click vào dòng DataGridView đồ uống để mở form chi tiết.       
         private void dgvDouong_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && e.RowIndex < dgvDouong.Rows.Count - (dgvDouong.AllowUserToAddRows ? 1 : 0))
@@ -229,12 +170,11 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với nam
                 Douong selectedDouong = dgvDouong.Rows[e.RowIndex].DataBoundItem as Douong;
 
                 if (selectedDouong != null)
-                {
-                    // Mở AddDrinkForm ở chế độ chỉnh sửa. Form này cũng sẽ tương tác với BLL.
-                    AddDrinkForm detailForm = new AddDrinkForm(selectedDouong.Madouong); // Sử dụng tên AddDrinkForm
+                {                   
+                    AddDrinkForm detailForm = new AddDrinkForm(selectedDouong.Madouong); 
                     if (detailForm.ShowDialog() == DialogResult.OK)
                     {
-                        LoadDanhSachDouong(); // Tải lại danh sách sau khi chỉnh sửa/xóa thành công
+                        LoadDanhSachDouong(); 
                     }
                 }
             }

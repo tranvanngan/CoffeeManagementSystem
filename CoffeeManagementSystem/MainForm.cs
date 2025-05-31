@@ -25,18 +25,15 @@ namespace CoffeeManagementSystem
         }
 
         // Constructor MỚI để nhận thông tin nhân viên từ DangNhapForm
-        public MainForm(string maNhanVien, string tenNhanVien) : this() // Gọi constructor mặc định
+        public MainForm(string maNhanVien, string tenNhanVien) : this() 
         {
             _loggedInMaNhanVien = maNhanVien;
             _loggedInTenNhanVien = tenNhanVien;
 
-            // Tùy chọn: Hiển thị tên nhân viên trên lblName hoặc một label khác trên MainForm
-            if (lblName != null) // Giả định bạn có một Label tên là lblName trên MainForm để hiển thị tên người dùng
+            if (lblName != null) 
             {
                 lblName.Text = tenNhanVien;
             }
-            // Hoặc nếu bạn có một label khác cho vị trí/tên người dùng, ví dụ:
-            // if (lblChaoMung != null) { lblChaoMung.Text = $"Chào mừng, {tenNhanVien}"; }
         }
 
         private void LoadFormCon(Form formCon)
@@ -56,12 +53,12 @@ namespace CoffeeManagementSystem
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            // Bạn có thể đặt logic load ban đầu ở đây, ví dụ tải dữ liệu, thiết lập UI
+
         }
 
         private void add1_Load(object sender, EventArgs e)
         {
-            // Sự kiện này có thể không cần thiết nếu 'add1' không phải là một control cụ thể
+           
         }
 
         private void guna2GradientPanel2_Paint(object sender, PaintEventArgs e)
@@ -80,9 +77,7 @@ namespace CoffeeManagementSystem
         }
 
         private void btnEmployer_Click(object sender, EventArgs e)
-        {
-            // Khi mở EmployerForm, truyền thông tin nhân viên đã đăng nhập
-            // Đảm bảo EmployerForm cũng có constructor nhận 2 tham số này
+        {          
             LoadFormCon(new EmployerForm());
         }
 
@@ -108,7 +103,7 @@ namespace CoffeeManagementSystem
 
         private void btnSalary_Click(object sender, EventArgs e)
         {
-            LoadFormCon(new SalaryForm());
+           
         }
 
         private void lblQuanLy_Click(object sender, EventArgs e)
@@ -147,12 +142,7 @@ namespace CoffeeManagementSystem
 
             // 3. Hiển thị DangNhapForm
             loginForm.Show();
-            this.Close();
-
-            // 4. Đóng MainForm hiện tại sau khi DangNhapForm được hiển thị
-            // (Điều này quan trọng để đảm bảo MainForm được giải phóng tài nguyên)
-            // Application.Exit(); // Không nên dùng Application.Exit() ở đây nếu bạn muốn DangNhapForm tiếp tục chạy.
-            // this.Close(); // Dùng this.Close() để đóng MainForm hiện tại.
+            this.Close();         
         }
 
     }

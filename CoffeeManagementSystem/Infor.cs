@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
-using CoffeeManagementSystem.BLL; // Đảm bảo using namespace của BLL
-// Đảm bảo using namespace chứa các Model của bạn (Nhanvien, Taikhoan)
-// using CoffeeManagementSystem.Models; // Nếu các model Nhanvien, Taikhoan nằm trong Models namespace
+using CoffeeManagementSystem.BLL;
 
 namespace CoffeeManagementSystem
 {
     public partial class Infor : Form
     {
-        private InforBLL _inforBLL; // Instance của lớp BLL
-        private string _loggedInManhanvien; // Mã nhân viên của người dùng hiện tại
+        private InforBLL _inforBLL; 
+        private string _loggedInManhanvien; 
 
         public Infor(string manhanvien)
         {
@@ -81,9 +79,7 @@ namespace CoffeeManagementSystem
             }
         }
 
-        /// <summary>
-        /// Xử lý sự kiện click nút "Lưu thay đổi".
-        /// </summary>
+        //Xử lý sự kiện click nút "Lưu thay đổi".
         private void btnLuuThayDoi_Click(object sender, EventArgs e)
         {
             // Lấy dữ liệu mới từ các control để tạo đối tượng Nhanvien và Taikhoan
@@ -96,14 +92,14 @@ namespace CoffeeManagementSystem
                 Diachi = txtDiaChi.Text.Trim(),
                 Sodienthoai = txtSoDienThoai.Text.Trim(),
                 Email = txtEmail.Text.Trim(),
-                Ngayvaolam = dtpNgayVaoLam.Value // Ngày vào làm giữ nguyên
+                Ngayvaolam = dtpNgayVaoLam.Value //giữ nguyên
             };
 
             Taikhoan updatedTaikhoan = new Taikhoan
             {
                 Tendangnhap = txtTenDangNhap.Text, // Tên đăng nhập giữ nguyên
                 Matkhau = txtMatKhau.Text.Trim(),
-                Manhanvien = txtMaNhanVien.Text // Liên kết với nhân viên
+                Manhanvien = txtMaNhanVien.Text 
             };
 
             try
@@ -125,11 +121,11 @@ namespace CoffeeManagementSystem
             {
                 MessageBox.Show(argEx.Message, "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            catch (InvalidOperationException invEx) // Bắt lỗi trạng thái từ BLL
+            catch (InvalidOperationException invEx) 
             {
                 MessageBox.Show(invEx.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            catch (Exception ex) // Bắt lỗi chung từ BLL hoặc DAL (qua BLL)
+            catch (Exception ex) 
             {
                 MessageBox.Show($"Lỗi khi lưu thay đổi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

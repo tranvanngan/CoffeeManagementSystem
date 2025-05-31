@@ -2,22 +2,21 @@
 
 using System;
 using System.Windows.Forms;
-// using CoffeeManagementSystem.DAL; // BỎ DÒNG NÀY - KHÔNG GỌI TRỰC TIẾP DAL TỪ FORM
-using CoffeeManagementSystem.BLL; // THÊM DÒNG NÀY để sử dụng BLL
-using CoffeeManagementSystem;    // Đảm bảo namespace này chứa các Model
+using CoffeeManagementSystem.BLL; 
+using CoffeeManagementSystem;    
 
 namespace CoffeeManagementSystem
 {
     public partial class AddTypeofdrinkForm : Form
     {
-        private LoaidouongBLL _loaidouongBLL; // THAY ĐỔI: Khai báo đối tượng BLL
+        private LoaidouongBLL _loaidouongBLL; 
         private Loaidouong _currentLoaidouong;
         private bool _isNewEntry = false;
 
         public AddTypeofdrinkForm()
         {
             InitializeComponent();
-            _loaidouongBLL = new LoaidouongBLL(); // THAY ĐỔI: Khởi tạo đối tượng BLL
+            _loaidouongBLL = new LoaidouongBLL(); 
             _isNewEntry = true;
             this.Text = "Thêm Loại Đồ Uống Mới";
             txtMaloai.Enabled = true;
@@ -32,7 +31,7 @@ namespace CoffeeManagementSystem
         public AddTypeofdrinkForm(string maloai)
         {
             InitializeComponent();
-            _loaidouongBLL = new LoaidouongBLL(); // THAY ĐỔI: Khởi tạo đối tượng BLL
+            _loaidouongBLL = new LoaidouongBLL(); 
             _isNewEntry = false;
             this.Text = "Chi Tiết Loại Đồ Uống";
             txtMaloai.Enabled = false;
@@ -50,7 +49,6 @@ namespace CoffeeManagementSystem
         {
             try
             {
-                // THAY ĐỔI: Gọi BLL thay vì DAL
                 _currentLoaidouong = _loaidouongBLL.GetLoaidouongById(maloai);
                 if (_currentLoaidouong != null)
                 {
@@ -65,7 +63,6 @@ namespace CoffeeManagementSystem
             }
             catch (Exception ex)
             {
-                // Hiển thị lỗi từ BLL
                 MessageBox.Show($"Lỗi khi tải chi tiết loại đồ uống: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
             }
@@ -92,7 +89,7 @@ namespace CoffeeManagementSystem
                     Maloai = txtMaloai.Text.Trim(),
                     Tenloai = txtTenloai.Text.Trim()
                 };
-                // THAY ĐỔI: Gọi BLL thay vì DAL
+               
                 _loaidouongBLL.AddLoaidouong(newLoai);
                 MessageBox.Show("Thêm loại đồ uống thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
@@ -135,7 +132,6 @@ namespace CoffeeManagementSystem
             try
             {
                 _currentLoaidouong.Tenloai = txtTenloai.Text.Trim();
-                // THAY ĐỔI: Gọi BLL thay vì DAL
                 _loaidouongBLL.UpdateLoaidouong(_currentLoaidouong);
                 MessageBox.Show("Cập nhật loại đồ uống thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
@@ -175,7 +171,6 @@ namespace CoffeeManagementSystem
             {
                 try
                 {
-                    // THAY ĐỔI: Gọi BLL thay vì DAL
                     _loaidouongBLL.DeleteLoaidouong(_currentLoaidouong.Maloai);
                     MessageBox.Show("Xóa loại đồ uống thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.DialogResult = DialogResult.OK;

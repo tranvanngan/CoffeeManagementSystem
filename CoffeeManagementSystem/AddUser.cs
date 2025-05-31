@@ -8,25 +8,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// Đảm bảo using namespace chứa lớp Nhanvien (Model)
 using CoffeeManagementSystem;
-
-// Đảm bảo using namespace chứa lớp NhanvienBLL (BLL)
-using CoffeeManagementSystem.BLL; // Thay thế bằng namespace thực tế của bạn nếu khác
-
-namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với dự án của bạn
+using CoffeeManagementSystem.BLL; 
+namespace CoffeeManagementSystem 
 {
     public partial class FormChiTietNhanvien : Form
     {
-        private NhanvienBLL nhanvienBLL; // Thay thế NhanvienDAL bằng NhanvienBLL
-        private Nhanvien currentNhanvien; // Đối tượng Nhanvien hiện tại (null nếu thêm mới)
+        private NhanvienBLL nhanvienBLL; 
+        private Nhanvien currentNhanvien; 
 
         // Constructor cho chế độ Thêm mới
         public FormChiTietNhanvien()
         {
             InitializeComponent();
-            nhanvienBLL = new NhanvienBLL(); // Khởi tạo BLL
-            this.Text = "Thêm Nhân Viên Mới"; // Tiêu đề Form
+            nhanvienBLL = new NhanvienBLL(); 
+            this.Text = "Thêm Nhân Viên Mới"; 
 
             // Hiển thị tất cả các nút
             btnSave.Visible = true;
@@ -49,8 +45,8 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
         public FormChiTietNhanvien(Nhanvien nhanvienToEdit)
         {
             InitializeComponent();
-            nhanvienBLL = new NhanvienBLL(); // Khởi tạo BLL
-            this.Text = "Cập Nhật Thông Tin Nhân Viên"; // Tiêu đề Form
+            nhanvienBLL = new NhanvienBLL();
+            this.Text = "Cập Nhật Thông Tin Nhân Viên"; 
             currentNhanvien = nhanvienToEdit; // Lưu đối tượng nhân viên cần sửa
 
             // Hiển thị tất cả các nút
@@ -76,7 +72,6 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
         // Phương thức khởi tạo ComboBox Giới tính
         private void InitializeGioitinhComboBox()
         {
-            // Đảm bảo tên control là cbxGioitinh
             cbGioiTinh.Items.Add("Nam");
             cbGioiTinh.Items.Add("Nữ");
             cbGioiTinh.Items.Add("Khác");
@@ -88,7 +83,6 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
         {
             if (currentNhanvien != null)
             {
-                // Đảm bảo tên control txtMaNV, txtHoTen, txtDiaChi, txtSDT, txtEmail khớp
                 txtMaNV.Text = currentNhanvien.Manhanvien;
                 txtHoTen.Text = currentNhanvien.Hoten;
                 dateTimePickerNgaySinh.Value = currentNhanvien.Ngaysinh;
@@ -103,15 +97,11 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
         // Phương thức lấy thông tin từ các control và tạo/cập nhật đối tượng Nhanvien
         private Nhanvien GetNhanvienInfoFromControls()
         {
-            Nhanvien nhanvien = currentNhanvien ?? new Nhanvien();
-
-            // Mã nhân viên chỉ được lấy từ TextBox khi THÊM MỚI
-            if (currentNhanvien == null) // Chế độ thêm mới
+            Nhanvien nhanvien = currentNhanvien ?? new Nhanvien();         
+            if (currentNhanvien == null) 
             {
                 nhanvien.Manhanvien = txtMaNV.Text.Trim();
-            }
-            // else: Manhanvien đã có giá trị từ currentNhanvien và không cần thay đổi từ txtMaNV
-
+            }        
             nhanvien.Hoten = txtHoTen.Text.Trim();
             nhanvien.Ngaysinh = dateTimePickerNgaySinh.Value;
             nhanvien.Gioitinh = cbGioiTinh.SelectedItem?.ToString(); // Lấy giá trị từ ComboBox
@@ -126,16 +116,11 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
             return nhanvien;
         }
 
-        // =====================================================
-        // XỬ LÝ CÁC NÚT TRÊN FORM CHI TIẾT
-        // =====================================================
-
         // Sự kiện click nút "Lưu" (cho chế độ Thêm mới)
         private void btnSave_Click(object sender, EventArgs e)
         {
             Nhanvien newNhanvien = GetNhanvienInfoFromControls();
 
-            // Kiểm tra dữ liệu bắt buộc (có thể chuyển logic này sang BLL để tái sử dụng)
             if (string.IsNullOrEmpty(newNhanvien.Manhanvien) || string.IsNullOrEmpty(newNhanvien.Hoten) || string.IsNullOrEmpty(newNhanvien.Gioitinh) || string.IsNullOrEmpty(newNhanvien.Diachi))
             {
                 MessageBox.Show("Mã nhân viên, Họ tên, Giới tính và Địa chỉ không được để trống.", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -145,7 +130,7 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
             try
             {
                 // Gọi BLL để thêm nhân viên và kiểm tra kết quả trả về
-                if (nhanvienBLL.AddNhanvien(newNhanvien)) // Đã sửa: gọi BLL và kiểm tra bool
+                if (nhanvienBLL.AddNhanvien(newNhanvien)) 
                 {
                     MessageBox.Show("Thêm nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.DialogResult = DialogResult.OK;
@@ -156,11 +141,11 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
                     MessageBox.Show("Thêm nhân viên thất bại. Có thể mã nhân viên đã tồn tại hoặc dữ liệu không hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
-            catch (ArgumentException ex) // Bắt lỗi nghiệp vụ từ BLL (ví dụ: mã nhân viên trùng, định dạng sai)
+            catch (ArgumentException ex) 
             {
                 MessageBox.Show($"Lỗi nhập liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            catch (Exception ex) // Bắt các lỗi khác (ví dụ: lỗi kết nối CSDL)
+            catch (Exception ex) 
             {
                 MessageBox.Show("Lỗi khi thêm nhân viên: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -181,7 +166,7 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
             try
             {
                 // Gọi BLL để cập nhật nhân viên và kiểm tra kết quả trả về
-                if (nhanvienBLL.UpdateNhanvien(updatedNhanvien)) // Đã sửa: gọi BLL và kiểm tra bool
+                if (nhanvienBLL.UpdateNhanvien(updatedNhanvien)) 
                 {
                     MessageBox.Show("Cập nhật nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.DialogResult = DialogResult.OK;
@@ -218,7 +203,7 @@ namespace CoffeeManagementSystem // Đảm bảo namespace này khớp với d�
                 try
                 {
                     // Gọi BLL để xóa nhân viên và kiểm tra kết quả trả về
-                    if (nhanvienBLL.DeleteNhanvien(currentNhanvien.Manhanvien)) // Đã sửa: gọi BLL và kiểm tra bool
+                    if (nhanvienBLL.DeleteNhanvien(currentNhanvien.Manhanvien)) 
                     {
                         MessageBox.Show("Xóa nhân viên thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;

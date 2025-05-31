@@ -147,12 +147,6 @@
     <Compile Include="bll\ReportBLL.cs" />
     <Compile Include="BLL\PaymentBLL.cs" />
     <Compile Include="BLL\ReportBLL.cs" />
-    <Compile Include="Calamviec.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Calamviec.Designer.cs">
-      <DependentUpon>Calamviec.cs</DependentUpon>
-    </Compile>
     <Compile Include="Customer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -166,8 +160,6 @@
       <DependentUpon>CustomerInfor.cs</DependentUpon>
     </Compile>
     <Compile Include="dal\BaseDataAccess.cs" />
-    <Compile Include="dal\CalamviecDAL.cs" />
-    <Compile Include="dal\ChamcongDAL.cs" />
     <Compile Include="dal\ChitietdonhangDAL.cs" />
     <Compile Include="dal\DonhangDAL.cs" />
     <Compile Include="dal\DouongDAL.cs" />
@@ -175,7 +167,6 @@
     <Compile Include="dal\GiadouongDAL.cs" />
     <Compile Include="dal\KhachHangDAL.cs" />
     <Compile Include="dal\LoaidouongDAL.cs" />
-    <Compile Include="dal\LuongDAL.cs" />
     <Compile Include="dal\NhanvienDAL.cs" />
     <Compile Include="dal\ReportDAL.cs" />
     <Compile Include="dal\TaikhoanDAL.cs" />
@@ -222,16 +213,12 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="model\Calamviec.cs" />
-    <Compile Include="model\Chamcong.cs" />
     <Compile Include="model\Chitietdonhang.cs" />
     <Compile Include="model\Donhang.cs" />
     <Compile Include="model\Douong.cs" />
     <Compile Include="model\Giadouong.cs" />
     <Compile Include="model\Khachhang.cs" />
-    <Compile Include="model\Lichsuluong.cs" />
     <Compile Include="model\Loaidouong.cs" />
-    <Compile Include="model\Luong.cs" />
     <Compile Include="model\Nhanvien.cs" />
     <Compile Include="model\Taikhoan.cs" />
     <Compile Include="model\Thanhtoan.cs" />
@@ -260,12 +247,6 @@
     <Compile Include="Report.Designer.cs">
       <DependentUpon>Report.cs</DependentUpon>
     </Compile>
-    <Compile Include="Salary.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Salary.Designer.cs">
-      <DependentUpon>Salary.cs</DependentUpon>
-    </Compile>
     <Compile Include="utilities\Logger.cs" />
     <EmbeddedResource Include="AddDrink.resx">
       <DependentUpon>AddDrink.cs</DependentUpon>
@@ -275,9 +256,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddUser.resx">
       <DependentUpon>AddUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Calamviec.resx">
-      <DependentUpon>Calamviec.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Customer.resx">
       <DependentUpon>Customer.cs</DependentUpon>
@@ -319,9 +297,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Report.resx">
       <DependentUpon>Report.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Salary.resx">
-      <DependentUpon>Salary.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

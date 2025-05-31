@@ -7,15 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CoffeeManagementSystem.BLL; // Đảm bảo đã using namespace chứa KhachhangBLL
-
+using CoffeeManagementSystem.BLL; 
 namespace CoffeeManagementSystem
 {
     public partial class CustomerForm : Form
     {
-        private KhachhangBLL khachhangBLL; // Thay đổi từ KhachhangDAL sang KhachhangBLL
-
-        // Constructor của Form
+        private KhachhangBLL khachhangBLL; 
         public CustomerForm()
         {
             InitializeComponent();
@@ -45,16 +42,13 @@ namespace CoffeeManagementSystem
                 List<Khachhang> danhSach = khachhangBLL.GetAllKhachhangs(); // Gọi BLL
 
                 // Gán danh sách làm nguồn dữ liệu cho DataGridView
-                dgvKhachHang.DataSource = danhSach;
-
-                // Tùy chọn: Tự động điều chỉnh kích thước cột
-                // dgvKhachHang.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+                dgvKhachHang.DataSource = danhSach;             
             }
             catch (InvalidOperationException bllEx) // Bắt lỗi nghiệp vụ từ BLL
             {
                 MessageBox.Show("Lỗi nghiệp vụ khi tải danh sách khách hàng: " + bllEx.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            catch (Exception ex) // Bắt các lỗi khác (ví dụ: lỗi kết nối CSDL)
+            catch (Exception ex) 
             {
                 // Xử lý lỗi nếu không tải được dữ liệu
                 MessageBox.Show("Không thể tải danh sách khách hàng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -77,16 +71,12 @@ namespace CoffeeManagementSystem
                 {
                     // Nếu có từ khóa, gọi phương thức tìm kiếm
                     ketQuaHienThi = khachhangBLL.SearchKhachhangs(searchTerm); // Gọi BLL
-                }
-
-                // Gán kết quả (toàn bộ hoặc đã lọc) làm nguồn dữ liệu cho DataGridView
+                }            
                 dgvKhachHang.DataSource = ketQuaHienThi;
-
-                // Tùy chọn: Thông báo nếu không tìm thấy kết quả (chỉ khi có từ khóa và kết quả rỗng)
+            
                 if (ketQuaHienThi.Count == 0 && !string.IsNullOrWhiteSpace(searchTerm))
                 {
-                    // Bạn có thể hiển thị thông báo hoặc không, tùy ý
-                    // MessageBox.Show($"Không tìm thấy khách hàng nào phù hợp với từ khóa '{searchTerm}'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Không tìm thấy khách hàng nào phù hợp với từ khóa '{searchTerm}'.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (InvalidOperationException bllEx) // Bắt lỗi nghiệp vụ từ BLL
@@ -162,8 +152,6 @@ namespace CoffeeManagementSystem
                 // Hiển thị Form Chi Tiết dưới dạng Dialog
                 if (formChiTiet.ShowDialog() == DialogResult.OK)
                 {
-                    // Nếu Form Chi Tiết trả về DialogResult.OK (nghĩa là đã thêm thành công)
-                    // Tải lại danh sách khách hàng trên Form chính để hiển thị dữ liệu mới
                     LoadDanhSachKhachHang();
                 }
             }

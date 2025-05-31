@@ -11,7 +11,7 @@ namespace CoffeeManagementSystem
 {
     public partial class AddDrinkForm : Form
     {
-        // Khởi tạo các đối tượng BLL. Cấu trúc này được giữ nguyên theo phiên bản bạn muốn dùng BLL.
+        // Khởi tạo các đối tượng BLL
         private DouongBLL _douongBLL = new DouongBLL();
         private GiadouongBLL _giadouongBLL = new GiadouongBLL();
         private LoaidouongBLL _loaidouongBLL = new LoaidouongBLL();
